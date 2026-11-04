@@ -2,7 +2,7 @@
 
 namespace Fuzzion.PreProcess;
 
-public static class StringPreprocessor
+public static partial class StringPreprocessor
 {
     public static Func<string, string> Full { get; } = Default;
     public static Func<string, string> None { get; } = static s => s;

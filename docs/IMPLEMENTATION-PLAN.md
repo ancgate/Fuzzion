@@ -23,7 +23,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 4 - Set-based metrics | Done |
 | 5 - Process | Done (see the implementation note under #26) |
 | 6 - Edit operations | Done |
-| 7-9 | Not started |
+| 7 - Unicode | Done (see the implementation note under #31) |
+| 8-9 | Not started |
 
 ---
 
@@ -1013,6 +1014,15 @@ Add:
   generic `T` paths. Expose it as `Fuzz.Ratio(a, b, TextUnit.CodePoint)` or a
   `FuzzOptions` object (decide in API review).
 
+**Implementation note (as built):** a `TextUnit` enum overload would make existing calls
+such as `Fuzz.Ratio(a, b, 0)` ambiguous (a literal 0 converts to any enum), and an options
+class would clash with `Fuzz.Ratio(a, b, null)`. Instead, `CodePoints.Compare(a, b, metric)`
+replaces each distinct character outside the BMP by one unused private-use character
+(in code point order) for that comparison, so **every** metric and scorer sees one
+character per code point, and `CodePoints.Scorer(...)` wraps a scorer for `Process` and
+`Cdist`. Building this found that token scorers sorted words culture-sensitively instead
+of ordinally; that is fixed.
+
 **Size:** M
 
 **Unit tests**
@@ -1189,8 +1199,8 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #30 Levenshtein `scoreCutoff` / `scoreHint`
 
 ### Phase 7 - Unicode
-- [ ] #31 Code-point mode and `FullUnicode`
-- [ ] #32 `RemoveDiacritics` and `Compose`
+- [x] #31 Code-point mode and `FullUnicode`
+- [x] #32 `RemoveDiacritics` and `Compose`
 
 ### Phase 8 - Performance
 - [ ] #33 SIMD batch scoring

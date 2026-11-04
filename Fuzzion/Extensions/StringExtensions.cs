@@ -77,7 +77,8 @@ internal static class StringExtensions
     {
         var words = SplitByAnySpace(input);
 
-        Array.Sort(words);
+        // Ordinal, as Python sorts by code point; culture-sensitive order would also vary by machine.
+        Array.Sort(words, StringComparer.Ordinal);
 
         return words;
     }

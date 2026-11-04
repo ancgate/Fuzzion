@@ -30,3 +30,13 @@ Regression tests are in `Fuzzion.Tests/OracleFoundBugsTests.cs`.
 |---|---|---|
 | `Indel.NormalizedDistance` divided by the lengths **after** trimming the shared prefix and suffix (532 of 2,958 oracle values wrong) | `("abc", "abcd")` gave 1.0 | 1/7 ≈ 0.142857 |
 | `LongestCommonSubsequence.NormalizedSimilarity` of two empty sequences | 0 | 1 |
+| Token scorers sorted words with the current culture instead of ordinally (found with a mixed-case oracle added in Phase 7) | `TokenSortRatio("Zoo apple", "apple zoo")` gave 88.9, and results depended on the machine's culture | 55.6 |
+
+## UTF-16 versus code points
+
+Fuzzion compares UTF-16 `char`s, so characters outside the Basic Multilingual Plane
+(emoji, CJK Extension B, ...) count as two characters, where RapidFuzz counts one. This
+is deliberate (it is the natural unit of .NET strings and costs nothing); use
+`CodePoints.Compare` or `CodePoints.Scorer` for RapidFuzz's behavior. The oracle checks
+both: plain metrics on BMP-only text, and `CodePoints` on text with emoji and CJK
+Extension B.

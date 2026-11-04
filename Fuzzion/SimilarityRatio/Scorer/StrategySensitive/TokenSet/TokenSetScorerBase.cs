@@ -18,7 +18,7 @@ public abstract class TokenSetScorerBase : StrategySensitiveScorerBase
 
         var intersection = GetIntersectionAndExcept(tokens1, tokens2);
 
-        intersection.Sort();
+        intersection.Sort(StringComparer.Ordinal);
         var sortedIntersection = string.Join(" ", intersection);
         var sortedDiff1To2 = TokenSetScorerHelpers.JoinIntersectionAndDifference(sortedIntersection, tokens1);
         var sortedDiff2To1 = TokenSetScorerHelpers.JoinIntersectionAndDifference(sortedIntersection, tokens2);
@@ -69,7 +69,7 @@ internal static class TokenSetScorerHelpers
     private static string JoinSorted(IEnumerable<string> tokens)
     {
         var sortedTokens = new List<string>(tokens);
-        sortedTokens.Sort();
+        sortedTokens.Sort(StringComparer.Ordinal);
         return string.Join(" ", sortedTokens);
     }
 }

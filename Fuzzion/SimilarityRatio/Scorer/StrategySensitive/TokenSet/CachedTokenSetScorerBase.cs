@@ -22,7 +22,7 @@ public abstract class CachedTokenSetScorerBase(string input1) : ICachedRatioScor
 
         var intersection = TokenSetScorerHelpers.GetIntersectionAndExcept(tokens1, tokens2);
 
-        intersection.Sort();
+        intersection.Sort(StringComparer.Ordinal);
 
         var sortedIntersection = string.Join(" ", intersection);
         var sortedDiff1To2 = TokenSetScorerHelpers.JoinIntersectionAndDifference(sortedIntersection, tokens1);

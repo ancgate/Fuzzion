@@ -295,6 +295,29 @@ var best = Process.ExtractOneBy(query, events, e => e.Name);
 var top = Process.ExtractTopBy(query, events, e => e.Name, limit: 2);
 ```
 
+### Unicode: Accents and Whole Characters
+
+`StringPreprocessor.RemoveDiacritics` strips accents (`"Crème Brûlée"` → `"Creme Brulee"`,
+`ß` → `ss`), and `StringPreprocessor.Compose` chains cleanup steps:
+
+```csharp
+var clean = StringPreprocessor.Compose(StringPreprocessor.RemoveDiacritics, StringPreprocessor.Full);
+Fuzz.Ratio("Crème BRÛLÉE!", "creme brulee", clean); // 100
+```
+
+`StringPreprocessor.FullUnicode` is like `Full` but matches RapidFuzz's `default_process`:
+it keeps all numbers (`²`, `½`), lowercases `İ`, and treats emoji and other characters
+outside the Basic Multilingual Plane as one character.
+
+.NET stores such characters as two `char`s, so every metric normally counts them twice.
+`CodePoints.Compare` counts each character once, as Python does, with any metric:
+
+```csharp
+Fuzz.Ratio("😀abc", "😀abd");                      // 80 (UTF-16: the emoji counts as 2)
+CodePoints.Compare("😀abc", "😀abd", Fuzz.Ratio);  // 75, as RapidFuzz
+var scorer = CodePoints.Scorer(ScorerCache.Get<WeightedRatioScorer>()); // for Process / Cdist
+```
+
 ### Distance Scorers, Matrices and Deduplication
 
 Search with a distance (lower is better) by wrapping it with `Scorers.FromDistance`.

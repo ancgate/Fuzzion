@@ -304,6 +304,55 @@ def process_cases(rng: random.Random) -> dict:
     return {"queries": queries, "choices": choices, "cdist": cdist, "extract_distance": extract, "choices_words": words, "dedupe": dedupe}
 
 
+def unicode_cases(rng: random.Random) -> dict:
+    """Code point comparisons (characters outside the BMP) and default_process outputs."""
+    from rapidfuzz.utils import default_process
+
+    # Emoji, CJK Extension B and Deseret letters are stored as two UTF-16 units in .NET.
+    alphabet = "ab c😀😁𠀀𠀁𐐀𐐨"
+    pairs = []
+    for i in range(300):
+        a = rand_string(rng, alphabet, 0, 12)
+        b = rand_string(rng, alphabet, 0, 12) if i % 2 == 0 else mutate(rng, a, alphabet, rng.randint(1, 3))
+        pairs.append({
+            "a": a,
+            "b": b,
+            "ratio": fuzz.ratio(a, b),
+            "partial_ratio": fuzz.partial_ratio(a, b),
+            "token_set_ratio": fuzz.token_set_ratio(a, b),
+            "wratio": fuzz.WRatio(a, b),
+            "levenshtein": Levenshtein.distance(a, b),
+            "indel": Indel.distance(a, b),
+            "jaro_winkler": JaroWinkler.similarity(a, b),
+        })
+
+    # Letters (incl. title case and outside the BMP), all kinds of numbers, marks,
+    # punctuation, underscore, whitespace and emoji.
+    mixed = "aZ09 _.-!\t\n\u00b2\u00bd\u216b\u0663\u0130\u03a3\u01c5\u00df\u00e9\u0301\u4e2d\U0001F600\U00020000\U00010400"
+    processed = []
+    for _ in range(300):
+        text = rand_string(rng, mixed, 0, 16)
+        processed.append({"input": text, "default_process": default_process(text)})
+
+    # Mixed-case words and punctuation: token scorers sort words by code point
+    # ("Zoo" before "apple"), which a culture-sensitive sort would get wrong.
+    vocabulary = ["apple", "Apple", "Zoo", "zoo", "Banana", "b2b", "_id", "X", "x", "New", "york", "Mets", "émile", "Émile", "z-ray"]
+    mixed_case = []
+    for _ in range(200):
+        a = " ".join(rng.choice(vocabulary) for _ in range(rng.randint(1, 5)))
+        b = " ".join(rng.choice(vocabulary) for _ in range(rng.randint(1, 5)))
+        mixed_case.append({
+            "a": a,
+            "b": b,
+            "token_sort_ratio": fuzz.token_sort_ratio(a, b),
+            "token_set_ratio": fuzz.token_set_ratio(a, b),
+            "partial_token_sort_ratio": fuzz.partial_token_sort_ratio(a, b),
+            "wratio": fuzz.WRatio(a, b),
+        })
+
+    return {"pairs": pairs, "default_process": processed, "mixed_case": mixed_case}
+
+
 def write(name: str, payload: dict) -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     data = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
@@ -332,6 +381,8 @@ def main() -> int:
         print(f"{path.relative_to(OUT_DIR.parents[2])}: {len(rows)} rows, {path.stat().st_size:,} bytes")
     # Separate random stream, so adding these cases does not change the pairs above.
     path = write("process-cases", {"meta": meta, **process_cases(random.Random(SEED + 1))})
+    print(f"{path.relative_to(OUT_DIR.parents[2])}: {path.stat().st_size:,} bytes")
+    path = write("unicode-cases", {"meta": meta, **unicode_cases(random.Random(SEED + 2))})
     print(f"{path.relative_to(OUT_DIR.parents[2])}: {path.stat().st_size:,} bytes")
     return 0
 
