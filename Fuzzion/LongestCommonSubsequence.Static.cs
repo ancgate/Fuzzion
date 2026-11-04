@@ -241,18 +241,14 @@ public sealed partial class LongestCommonSubsequence
         ReadOnlySpan<T> s2,
         Processor<T> processor = null) where T : IEquatable<T>
     {
-
-        if (s1.IsEmpty || s2.IsEmpty)
-        {
-            return 0;
-        }
-
         if (processor != null)
         {
             processor(ref s1);
             processor(ref s2);
         }
 
+        // Two empty sequences are identical (similarity 1); NormalizedDistance handles
+        // the one-empty case (distance 1, similarity 0).
         double normSim = 1.0 - NormalizedDistance(s1, s2);
 
         return normSim;

@@ -6,8 +6,11 @@
 
 - **Breaking:** Package ID is now `Fuzzion`; assembly name is `Fuzzion`.
 - **Breaking:** Root namespace `Raffinert.FuzzySharp` is now `Fuzzion` (sub-namespaces keep their names, for example `Fuzzion.PreProcess`).
-- No behavior changes: the public API and all scores match Raffinert.FuzzySharp v6.0.1.
+- The public API matches Raffinert.FuzzySharp v6.0.1. Scores match too, apart from the two bug fixes below.
 - Added `THIRD-PARTY-NOTICES.md` (shipped inside the NuGet package) and the [implementation plan](docs/IMPLEMENTATION-PLAN.md).
+- Fixed `Indel.NormalizedDistance` dividing by the lengths left after trimming the shared prefix and suffix instead of the full lengths (for example `("abc", "abcd")` returned 1.0 instead of 1/7). Inherited from Raffinert.FuzzySharp v6.0.1.
+- Fixed `LongestCommonSubsequence.NormalizedSimilarity` returning 0 instead of 1 for two empty sequences.
+- Added oracle tests that compare Fuzzion with Python RapidFuzz 3.14.6 (`tools/oracle`, `Fuzzion.Tests/Oracle`). Deliberate differences are listed in [docs/known-differences.md](docs/known-differences.md).
 
 ## History inherited from Raffinert.FuzzySharp
 

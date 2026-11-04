@@ -19,6 +19,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
+    <PackageReference Include="System.Text.Json" Version="9.0.22" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Oracle\data\*.json;Oracle\data\*.json.gz" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Fuzzion\Fuzzion.csproj" />
   </ItemGroup>

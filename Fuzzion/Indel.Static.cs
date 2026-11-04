@@ -141,8 +141,8 @@ public sealed partial class Indel
             processor(ref s2);
         }
 
-        SequenceUtils.TrimCommonAffixAndSwapIfNeeded(ref s1, ref s2);
-
+        // Do not trim the common prefix/suffix here: normalization must use the full
+        // lengths. Distance() trims internally.
         return NormalizedDistanceImpl(s1, s2);
     }
 
