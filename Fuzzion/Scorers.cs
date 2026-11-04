@@ -36,6 +36,18 @@ public static class Scorers
     }
 
     /// <summary>
+    /// The Levenshtein distance (unit costs) as a distance scorer. Same results as
+    /// <c>FromDistance((a, b) => Levenshtein.Distance(a, b), maxDistance)</c>, but
+    /// <see cref="Process.Cdist"/> recognizes it and scores short choices many at a time with
+    /// SIMD, and the maximum is used to stop each comparison early.
+    /// </summary>
+    public static IDistanceScorer Levenshtein(int? maxDistance = null)
+    {
+        if (maxDistance < 0) throw new ArgumentOutOfRangeException(nameof(maxDistance), maxDistance, "maxDistance must be 0 or more.");
+        return new LevenshteinScorer(maxDistance);
+    }
+
+    /// <summary>
     /// A similarity scorer (higher is better) from any function, for example
     /// <c>Scorers.FromSimilarity((a, b) => 100 * JaroWinkler.Similarity(a, b))</c>.
     /// </summary>
@@ -55,6 +67,20 @@ public static class Scorers
         {
             preprocessor ??= StringPreprocessor.Full;
             return distance(preprocessor(input1), preprocessor(input2));
+        }
+    }
+
+    internal sealed class LevenshteinScorer(int? maxDistance) : IDistanceScorer
+    {
+        public int? MaxDistance { get; } = maxDistance;
+
+        public double Score(string input1, string input2) =>
+            Fuzzion.Levenshtein.Distance(input1, input2, scoreCutoff: MaxDistance);
+
+        public double Score(string input1, string input2, Func<string, string> preprocessor)
+        {
+            preprocessor ??= StringPreprocessor.Full;
+            return Score(preprocessor(input1), preprocessor(input2));
         }
     }
 

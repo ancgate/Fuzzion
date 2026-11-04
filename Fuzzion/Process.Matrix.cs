@@ -49,9 +49,14 @@ public static partial class Process
         var processedChoices = MatrixScoring.Process(choices, processor);
         var result = new double[processedQueries.Length, processedChoices.Length];
 
-        // Plain Ratio and QRatio score short choices many at a time with SIMD (plan item #33).
+        // Ratio, QRatio and Scorers.Levenshtein score short choices many at a time with SIMD (plan item #33).
         var isQRatio = scoring.Scorer is QRatioScorer;
-        var batch = scoring.Scorer is DefaultRatioScorer || isQRatio ? BatchRatio.TryCreate(processedChoices) : null;
+        var batch = scoring.Scorer switch
+        {
+            DefaultRatioScorer or QRatioScorer => BatchRatio.TryCreate(processedChoices),
+            Scorers.LevenshteinScorer => BatchRatio.TryCreate(processedChoices, BatchRatio.Metric.Levenshtein),
+            _ => null,
+        };
 
         MatrixScoring.ForEachRow(processedQueries.Length, workers, cancellationToken, row =>
         {

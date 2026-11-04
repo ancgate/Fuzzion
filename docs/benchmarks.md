@@ -25,6 +25,24 @@ and the full length shown. Default job.
 
 Source: `CdistBenchmarks`.
 
+### `Cdist` with `Scorers.Levenshtein`
+
+100 queries (16 characters) × 2,000 choices (8-16 characters), default job.
+
+| Scalar | SIMD | Speed-up |
+|---|---|---|
+| 51.7 ms | 3.9 ms | **13x** |
+
+Source: `BatchSearchBenchmarks`.
+
+### Not shipped: SIMD for `Extract*`
+
+Batching the choices of a single `Process.ExtractTop` call was measured and made it
+**slower** (Ratio: 239 µs → 496 µs; Levenshtein: 427 µs → 502 µs, 2,000 choices): with
+one query, building the per-choice bit tables costs more than the vectorized loop
+saves. In `Cdist` the tables are reused for every query, which is where SIMD pays off.
+The `Extract*` methods therefore keep the scalar path; for many queries, use `Cdist`.
+
 ## Damerau-Levenshtein (P8.3)
 
 String path (array of last rows for characters below 256) versus the generic path
@@ -40,6 +58,21 @@ Similar random strings. Default job.
 Damerau-Levenshtein needs a full O(n·m) table (RapidFuzz's too), so it stays far slower
 than the bit-parallel Levenshtein on long strings. Source: `DamerauLevenshteinBenchmarks`.
 
+## Jaro (P8.2, P8.4)
+
+Time relative to `Levenshtein.Distance` on the same input; default job.
+
+| Length | Before Phase 8 | `Jaro.Similarity` now | Cached `new Jaro(a).SimilarityWith(b)` |
+|---|---|---|---|
+| 8 | 1.1x | **0.97x** | 0.94x |
+| 64 | 3.9x | **1.41x** | **1.06x** |
+| 256 | 5.1x | **0.66x** | 0.52x |
+| 1,024 | 7.0x | **0.26x** | 0.27x |
+
+Inputs of up to 16 characters use the plain algorithm (cheaper than building bit masks);
+longer ones the bit-parallel search on one or several 64-bit words. The cached instance
+builds its bit pattern once and allocates nothing per call. Source: `JaroBenchmarks`.
+
 ## Phase 2 metrics after P8.1 and P8.2
 
 Time relative to `Levenshtein.Distance` on the same input. Short run, so only the order
@@ -48,7 +81,7 @@ of magnitude is meaningful.
 | Metric | 8 | 64 | 256 | 1,024 | Before Phase 8 (256 / 1,024) |
 |---|---|---|---|---|---|
 | `Osa` (P8.1: multi-word bit-parallel above 64) | ~1x | ~1x | **~2x** | **~1.5x** | 38x / 67x |
-| `Jaro` (P8.2: bit-parallel up to 64) | ~2x | **~1.4x** (was 3.9x) | ~5x | ~4x | 5x / 7x (unchanged: scalar above 64) |
+| `Jaro` | see the Jaro table above | | | | |
 | `Hamming`, `Prefix` | < 0.1x | < 0.1x | < 0.03x | < 0.01x | unchanged |
 
 Source: `DistanceMetricsBenchmarks`.
@@ -65,11 +98,10 @@ rough.
 
 Source: `LevenshteinCutoffBenchmarks`.
 
-## Not yet done
+## Regression check
 
-- **CI regression job** (optional in the plan): a short benchmark run that fails on a
-  slowdown of more than 20%. Not added, because shared CI runners are about as noisy as
-  this container.
-- See the Phase 8 notes in `docs/IMPLEMENTATION-PLAN.md` for remaining speed-ups
-  (multi-word Jaro, caching in the Jaro instance classes, SIMD for `Extract*` and for
-  distance scorers).
+The *Benchmark regression check* workflow (`.github/workflows/benchmarks.yml`, run on
+demand) measures the base branch and the current branch on the same runner and fails
+when any benchmark is more than 20% slower (`tools/benchmarks/compare.py`). It uses
+BenchmarkDotNet's medium job: in testing, short runs of identical code differed by up
+to 19%.

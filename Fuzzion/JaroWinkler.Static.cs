@@ -30,6 +30,18 @@ public sealed partial class JaroWinkler
     {
         ValidatePrefixWeight(prefixWeight);
 
+        return Boost(Jaro.Similarity(s1, s2), s1, s2, prefixWeight);
+    }
+
+    /// <summary>Adds the Winkler bonus for the shared start of up to 4 characters to a Jaro similarity.</summary>
+    internal static double Boost<T>(double jaro, ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, double prefixWeight)
+        where T : notnull, IEquatable<T>
+    {
+        if (jaro <= BoostThreshold)
+        {
+            return jaro;
+        }
+
         var maxPrefix = Math.Min(Math.Min(s1.Length, s2.Length), MaxPrefix);
         var prefix = 0;
         while (prefix < maxPrefix && s1[prefix].Equals(s2[prefix]))
@@ -37,14 +49,7 @@ public sealed partial class JaroWinkler
             prefix++;
         }
 
-        var similarity = Jaro.Similarity(s1, s2);
-        if (similarity > BoostThreshold)
-        {
-            similarity += prefix * prefixWeight * (1.0 - similarity);
-            similarity = Math.Min(similarity, 1.0);
-        }
-
-        return similarity;
+        return Math.Min(jaro + prefix * prefixWeight * (1.0 - jaro), 1.0);
     }
 
     /// <summary><c>1 - Similarity</c>, from 0 (equal) to 1.</summary>

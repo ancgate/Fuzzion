@@ -23,6 +23,16 @@ internal sealed class BatchRatio
 
     private readonly IBatch[] _batches;
 
+    /// <summary>What a batch computes for each choice.</summary>
+    internal enum Metric
+    {
+        /// <summary><see cref="Fuzz.Ratio(string, string)"/> (bit-parallel LCS / Indel).</summary>
+        Ratio,
+
+        /// <summary><see cref="Levenshtein.Distance(string, string, int, int, int, int?, int?)"/> with unit costs (Hyyrö 2003).</summary>
+        Levenshtein,
+    }
+
     private BatchRatio(IBatch[] batches, bool[] handled)
     {
         _batches = batches;
@@ -33,7 +43,10 @@ internal sealed class BatchRatio
     public bool[] Handled { get; }
 
     /// <summary>Prepares the choices, or returns null when SIMD is unavailable or disabled.</summary>
-    public static BatchRatio TryCreate(IReadOnlyList<string> choices)
+    public static BatchRatio TryCreate(IReadOnlyList<string> choices) => TryCreate(choices, Metric.Ratio);
+
+    /// <summary>Prepares the choices for <paramref name="metric"/>, or returns null when SIMD is unavailable or disabled.</summary>
+    public static BatchRatio TryCreate(IReadOnlyList<string> choices, Metric metric)
     {
 #if NETCOREAPP3_0_OR_GREATER
         if (Disabled || !Vector.IsHardwareAccelerated || choices.Count == 0)
@@ -55,10 +68,10 @@ internal sealed class BatchRatio
 
         var batches = new List<IBatch>();
         var handled = new bool[choices.Count];
-        AddBatches<byte>(choices, byWidth[0], batches, handled);
-        AddBatches<ushort>(choices, byWidth[1], batches, handled);
-        AddBatches<uint>(choices, byWidth[2], batches, handled);
-        AddBatches<ulong>(choices, byWidth[3], batches, handled);
+        AddBatches<byte>(metric, choices, byWidth[0], batches, handled);
+        AddBatches<ushort>(metric, choices, byWidth[1], batches, handled);
+        AddBatches<uint>(metric, choices, byWidth[2], batches, handled);
+        AddBatches<ulong>(metric, choices, byWidth[3], batches, handled);
 
         return batches.Count == 0 ? null : new BatchRatio(batches.ToArray(), handled);
 #else
@@ -81,14 +94,14 @@ internal sealed class BatchRatio
     }
 
 #if NETCOREAPP3_0_OR_GREATER
-    private static void AddBatches<T>(IReadOnlyList<string> choices, List<int> indices, List<IBatch> batches, bool[] handled)
+    private static void AddBatches<T>(Metric metric, IReadOnlyList<string> choices, List<int> indices, List<IBatch> batches, bool[] handled)
         where T : unmanaged
     {
         var lanes = Vector<T>.Count;
         for (var start = 0; start < indices.Count; start += lanes)
         {
             var count = Math.Min(lanes, indices.Count - start);
-            batches.Add(new Batch<T>(choices, indices.GetRange(start, count)));
+            batches.Add(new Batch<T>(metric, choices, indices.GetRange(start, count)));
             for (var k = 0; k < count; k++) handled[indices[start + k]] = true;
         }
     }
@@ -97,14 +110,16 @@ internal sealed class BatchRatio
     {
         private static readonly int Lanes = Vector<T>.Count;
 
+        private readonly Metric _metric;
         private readonly int[] _columns;
         private readonly int[] _lengths;
         private readonly Vector<T> _initial;
         private readonly T[] _latin1;               // 256 rows of Lanes masks
         private readonly Dictionary<char, Vector<T>> _other;
 
-        public Batch(IReadOnlyList<string> choices, List<int> columns)
+        public Batch(Metric metric, IReadOnlyList<string> choices, List<int> columns)
         {
+            _metric = metric;
             _columns = columns.ToArray();
             _lengths = new int[_columns.Length];
             _latin1 = new T[256 * Lanes];
@@ -148,6 +163,12 @@ internal sealed class BatchRatio
 
         public void Score(string query, Span<double> row)
         {
+            if (_metric == Metric.Levenshtein)
+            {
+                ScoreLevenshtein(query, row);
+                return;
+            }
+
             var s = _initial;
             foreach (var c in query)
             {
@@ -177,6 +198,82 @@ internal sealed class BatchRatio
                 row[_columns[lane]] = 100 * (1 - normalizedDistance);
             }
         }
+
+        /// <summary>
+        /// Hyyrö's bit-parallel Levenshtein on every lane, the same steps as
+        /// <c>Levenshtein.DistanceSingleULong</c>. A left shift by one is <c>v + v</c>. Each
+        /// lane's distance change is kept in the lane (at most ±64 between flushes, so it
+        /// fits even in 8 bits) and added to an integer total every 64 characters.
+        /// </summary>
+        private void ScoreLevenshtein(string query, Span<double> row)
+        {
+            Span<int> distance = stackalloc int[Lanes];
+            for (var lane = 0; lane < _columns.Length; lane++) distance[lane] = _lengths[lane];
+
+            var lastBits = new T[Lanes];
+            for (var lane = 0; lane < _columns.Length; lane++) lastBits[lane] = FromUInt64(1UL << (_lengths[lane] - 1));
+            var last = new Vector<T>(lastBits);
+            var one = new Vector<T>(FromUInt64(1));
+
+            var vp = _initial;
+            var vn = Vector<T>.Zero;
+            var delta = Vector<T>.Zero;
+            var pending = 0;
+
+            foreach (var c in query)
+            {
+                Vector<T> pm;
+                if (c < 256)
+                {
+                    pm = new Vector<T>(_latin1, c * Lanes);
+                }
+                else if (!_other.TryGetValue(c, out pm))
+                {
+                    pm = Vector<T>.Zero;
+                }
+
+                var x = pm | vn;
+                var d0 = (((x & vp) + vp) ^ vp) | x | vn;
+                var hp = vn | ~(d0 | vp);
+                var hn = d0 & vp;
+
+                // Vector.Equals gives all ones (-1) per true lane: subtracting adds 1.
+                delta = delta - Vector.Equals(hp & last, last) + Vector.Equals(hn & last, last);
+
+                hp = (hp + hp) | one;
+                hn += hn;
+                vp = hn | ~(d0 | hp);
+                vn = hp & d0;
+
+                if (++pending == 64)
+                {
+                    Flush(delta, distance);
+                    delta = Vector<T>.Zero;
+                    pending = 0;
+                }
+            }
+
+            Flush(delta, distance);
+            for (var lane = 0; lane < _columns.Length; lane++)
+            {
+                row[_columns[lane]] = distance[lane];
+            }
+        }
+
+        private void Flush(Vector<T> delta, Span<int> distance)
+        {
+            for (var lane = 0; lane < _columns.Length; lane++)
+            {
+                distance[lane] += ToSigned(delta[lane]);
+            }
+        }
+
+        /// <summary>Reads a lane value as a signed number (the deltas wrap around).</summary>
+        private static int ToSigned(T value) =>
+            typeof(T) == typeof(byte) ? (sbyte)(byte)(object)value :
+            typeof(T) == typeof(ushort) ? (short)(ushort)(object)value :
+            typeof(T) == typeof(uint) ? (int)(uint)(object)value :
+            (int)(long)(ulong)(object)value;
 
         private static ulong LowBits(int n) => n >= 64 ? ulong.MaxValue : (1UL << n) - 1;
 
