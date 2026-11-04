@@ -15,6 +15,7 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
     private readonly string _input1;
     private readonly CachedTokenSortScorer _tokenSortScorer;
     private readonly CachedTokenSetScorer _tokenSetScorer;
+    private readonly CachedPartialTokenSetScorer _partialTokenSetScorer;
     private bool _disposed;
 
     public CachedWeightedRatioScorer(string input1)
@@ -24,6 +25,7 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
         _baseRatioScorer = new CachedDefaultRatioScorer(_strategy);
         _tokenSortScorer = new CachedTokenSortScorer(_input1);
         _tokenSetScorer = new CachedTokenSetScorer(_input1);
+        _partialTokenSetScorer = new CachedPartialTokenSetScorer(_input1);
     }
 
     public double Score(string input2)
@@ -52,8 +54,9 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
         if (tryPartials)
         {
             double partial = Fuzz.PartialRatio(_input1, input2) * partialScale;
-            double partialSor = _tokenSortScorer.Score(input2) * unbaseScale * partialScale;
-            double partialSet = _tokenSetScorer.Score(input2) * unbaseScale * partialScale;
+            // Partial token scores, as in WeightedRatioScorer and RapidFuzz.
+            double partialSor = Fuzz.PartialTokenSortRatio(_input1, input2) * unbaseScale * partialScale;
+            double partialSet = _partialTokenSetScorer.Score(input2) * unbaseScale * partialScale;
 
             return Math.Max(baseRatio, Math.Max(partial, Math.Max(partialSor, partialSet)));
         }
@@ -73,5 +76,7 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
         _disposed = true;
         _strategy.Dispose();
         _tokenSortScorer.Dispose();
+        _tokenSetScorer.Dispose();
+        _partialTokenSetScorer.Dispose();
     }
 }

@@ -17,7 +17,7 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | Phase | Status |
 |---|---|
 | 0 - Rebrand | Done |
-| 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two deliberate differences (see `docs/known-differences.md`, decision pending) |
+| 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two inherited differences, now changed to match RapidFuzz (D8, D9) |
 | 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
 | 3-9 | Not started |
 
@@ -1095,6 +1095,8 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 | D5 | Code-point mode API (#31) | An options object (`FuzzOptions`), so later options don't need more overloads |
 | D6 | `Cdist` return type | `double[,]` first; add `float[,]` if memory use is a problem |
 | D7 | Tanimoto definition | On q-gram counts, so it differs from Jaccard |
+| D8 | Score of two empty strings in `Ratio` / `TokenSortRatio` | **Decided:** 100, as RapidFuzz (was 0) |
+| D9 | `WeightedRatio` partial branch | **Decided:** partial token scores, as RapidFuzz |
 
 ---
 

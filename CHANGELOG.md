@@ -7,6 +7,9 @@
 - Added `Hamming` (with `pad`), `Jaro`, `JaroWinkler` (with `prefixWeight`, 0 to 1), `Osa` (optimal string alignment), `DamerauLevenshtein` (unrestricted), `Prefix` and `Postfix`. Each has `Distance`, `Similarity`, `NormalizedDistance` and `NormalizedSimilarity` with `string` and generic span overloads, and all match Python RapidFuzz 3.14.6 on every oracle value.
 - Added instance classes `Hamming`, `Jaro`, `JaroWinkler`, `Osa`, `DamerauLevenshtein` and their generic `...T<T>` versions.
 - Added `Indel.Similarity`.
+- **Behavior change:** `Fuzz.Ratio` and `Fuzz.TokenSortRatio` (and the cached and generic ratio scorers) now return 100 for two empty strings, as RapidFuzz and TheFuzz do. One empty string still scores 0.
+- **Behavior change:** `Fuzz.WeightedRatio` and `CachedWeightedRatioScorer` now use `PartialTokenSortRatio` and `PartialTokenSetRatio` when one string is at least 1.5 times longer than the other, as RapidFuzz's `WRatio` does. Scores in that case are often higher, which can change `Process.Extract*` results (the default scorer). All 410 oracle sentence pairs now match RapidFuzz.
+- Fixed `CachedWeightedRatioScorer.Dispose` not disposing its token-set scorer.
 - Performance: `Osa` is bit-parallel for inputs up to 64 characters (as fast as `Levenshtein`); longer inputs, `Jaro` and `DamerauLevenshtein` use straightforward algorithms for now. See the performance follow-ups in the implementation plan.
 
 ## Fuzzion 0.1.0-preview.1

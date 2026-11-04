@@ -229,54 +229,19 @@ public class OracleTests
     }
 
     /// <summary>
-    /// Cases where Fuzzion deliberately differs from RapidFuzz. Each one is explained in
-    /// docs/known-differences.md; keep the two in sync.
+    /// Cases where Fuzzion deliberately differs from RapidFuzz. Each one must be explained
+    /// in docs/known-differences.md; keep the two in sync. There are none today.
     /// </summary>
-    private static bool IsKnownDifference(string metric, OracleRow row)
-    {
-        // KD1: Fuzzion scores two empty strings 0; RapidFuzz scores them 100.
-        if ((metric == "ratio" || metric == "token_sort_ratio") && row.A.Length == 0 && row.B.Length == 0)
-        {
-            return true;
-        }
-
-        // KD2: Fuzzion's WeightedRatio uses full (not partial) token scores when one
-        // string is at least 1.5 times longer than the other.
-        if (metric == "wratio" && IsWRatioPartialBranch(row))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    private static bool IsWRatioPartialBranch(OracleRow row)
-    {
-        int len1 = row.A.Length, len2 = row.B.Length;
-        if (len1 == 0 || len2 == 0)
-        {
-            return false;
-        }
-
-        return (double)Math.Max(len1, len2) / Math.Min(len1, len2) >= 1.5;
-    }
+    private static bool IsKnownDifference(string metric, OracleRow row) => false;
 
     [Fact]
-    public void KnownDifferencesStillExist()
+    public void WRatioPartialBranchIsCompared()
     {
-        // If one of these starts matching RapidFuzz, the difference was fixed: remove it
-        // from IsKnownDifference and from docs/known-differences.md.
-        Assert.Equal(0, Fuzz.Ratio("", "", NoCleanup));
-        Assert.Equal(81, Fuzz.WeightedRatio("smith corp", "limited smitzh corp", NoCleanup), 6);
-    }
+        // The partial branch (one string at least 1.5x longer) must be covered by the oracle.
+        var partialRows = OracleData.SentencePairs.Count(r =>
+            r.A.Length > 0 && r.B.Length > 0 &&
+            (double)Math.Max(r.A.Length, r.B.Length) / Math.Min(r.A.Length, r.B.Length) >= 1.5);
 
-    [Fact]
-    public void KnownDifferencesSkipOnlyAFewRows()
-    {
-        var skipped = OracleData.SentencePairs.Count(r => IsKnownDifference("wratio", r));
-        var compared = OracleData.SentencePairs.Count - skipped;
-
-        // The non-partial WRatio branch must still be checked on most rows.
-        Assert.True(compared > 200, $"only {compared} WRatio rows are compared");
+        Assert.True(partialRows > 40, $"only {partialRows} sentence pairs reach WRatio's partial branch");
     }
 }

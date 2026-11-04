@@ -1,4 +1,4 @@
-using Xunit;
+﻿using Xunit;
 using Fuzzion.PreProcess;
 using Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
@@ -118,11 +118,13 @@ public class RatioTests
     }
 
     [Fact]
-    public void TestEmptyStringsScore0()
+    public void TestEmptyStrings()
     {
+        // One empty input scores 0; two empty inputs are identical and score 100
+        // (same as RapidFuzz and TheFuzz).
         Assert.Equal(0, Fuzz.Ratio("test_string", ""));
         Assert.Equal(0, Fuzz.PartialRatio("test_string", ""));
-        Assert.Equal(0, Fuzz.Ratio("", ""));
+        Assert.Equal(100, Fuzz.Ratio("", ""));
         Assert.Equal(100, Fuzz.PartialRatio("", ""));
         Assert.Equal(0, Fuzz.PartialRatio("", "x"));
 

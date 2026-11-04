@@ -9,9 +9,11 @@ internal class CachedDefaultRatioStrategy<T>(T[] input1) : IDisposable
 
     public double Calculate(T[] input2)
     {
+        // Two empty inputs are identical (100); exactly one empty input scores 0.
+        // Matches RapidFuzz and TheFuzz (see docs/known-differences.md, KD1).
         if (input1.Length == 0 || input2.Length == 0)
         {
-            return 0;
+            return input1.Length == 0 && input2.Length == 0 ? 100 : 0;
         }
 
         var result = 100 * _indel.NormalizedSimilarityWith(input2);

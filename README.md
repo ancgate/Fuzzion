@@ -193,7 +193,7 @@ Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the qu
 // 94.94949494949495
 ```
 
-`WeightedRatio` intentionally retains its legacy full `TokenSortRatio`/`TokenSetRatio` partial branch for compatibility.
+`WeightedRatio` gives the same results as RapidFuzz's `WRatio`. When one string is at least 1.5 times longer than the other, it compares the shorter one with parts of the longer one using the partial token scores. Because `PartialTokenSetRatio` is 100 whenever two strings share a word, short choices that share one common word with the query can score 85.5 (for example `"braves vs mets"` for any query containing "vs"). If that is too generous for your data, use `TokenSortRatio`, `TokenSetRatio` or `Ratio` as the scorer.
 
 ## Process Extraction
 
@@ -572,6 +572,12 @@ Fuzzion 0.1 has the same API as Raffinert.FuzzySharp v6.0.1. Change the package 
 
 - Package: `Raffinert.FuzzySharp` → `Fuzzion`
 - Namespaces: `Raffinert.FuzzySharp` → `Fuzzion` (for example `Raffinert.FuzzySharp.PreProcess` → `Fuzzion.PreProcess`)
+
+Some scores change, to match RapidFuzz (see [docs/known-differences.md](docs/known-differences.md)):
+
+- `Ratio` and `TokenSortRatio` of two empty strings are 100 (were 0).
+- `WeightedRatio` uses the partial token scores when one string is at least 1.5 times longer, so those scores are often higher.
+- `Indel.NormalizedDistance` and `LongestCommonSubsequence.NormalizedSimilarity` had bugs that are fixed.
 
 ### From original FuzzySharp
 

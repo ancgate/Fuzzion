@@ -33,10 +33,11 @@ public class WeightedRatioScorer : ScorerBase
 
         if (tryPartials)
         {
+            // Strings of very different lengths: compare the shorter one with parts of the
+            // longer one, using the partial token scores (as FuzzyWuzzy and RapidFuzz do).
             double partial = Fuzz.PartialRatio(input1, input2) * partialScale;
-            // Keep the legacy full TokenSort/TokenSet partial branch for compatibility.
-            double partialSor = Fuzz.TokenSortRatio(input1, input2) * unbaseScale * partialScale;
-            double partialSet = Fuzz.TokenSetRatio(input1, input2) * unbaseScale * partialScale;
+            double partialSor = Fuzz.PartialTokenSortRatio(input1, input2) * unbaseScale * partialScale;
+            double partialSet = Fuzz.PartialTokenSetRatio(input1, input2) * unbaseScale * partialScale;
 
             return Math.Max(baseRatio, Math.Max(partial, Math.Max(partialSor, partialSet)));
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -354,10 +354,20 @@ public class ProcessPipelineTests
 
         var result1 = pipeline.ExtractOne(query1, _baseballStrings);
         var result2 = pipeline.ExtractOne(query2, _baseballStrings);
+        var result1Again = pipeline.ExtractOne(query1, _baseballStrings);
 
-        Assert.NotNull(result1);
-        Assert.NotNull(result2);
-        Assert.NotEqual(result1.Value, result2.Value);
+        // Reusing a pipeline must give the same results as fresh one-off calls.
+        // (Both queries' best match is "braves vs mets", as in RapidFuzz: the partial
+        // token-set score is 100 when strings share any word, here "vs" and "mets".)
+        var expected1 = Process.ExtractOne(query1, _baseballStrings);
+        var expected2 = Process.ExtractOne(query2, _baseballStrings);
+
+        Assert.Equal(expected1.Value, result1.Value);
+        Assert.Equal(expected1.Score, result1.Score, 10);
+        Assert.Equal(expected2.Value, result2.Value);
+        Assert.Equal(expected2.Score, result2.Score, 10);
+        Assert.Equal(result1.Value, result1Again.Value);
+        Assert.Equal(result1.Score, result1Again.Score, 10);
     }
 }
 
