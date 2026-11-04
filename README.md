@@ -499,6 +499,31 @@ int typos = DamerauLevenshtein.Distance("recieve", "receive");               // 
 classes (for example `new JaroWinkler(query).SimilarityWith(candidate)`) and generic
 versions (`JaroWinklerT<T>`).
 
+### Set-Based and Block Metrics
+
+These compare strings by their q-grams (overlapping substrings of length q, bigrams by
+default), or compare any two collections, such as word lists:
+
+| Class | Measures | Example |
+|---|---|---|
+| `Jaccard` | Shared q-grams ÷ all q-grams | `Jaccard.Similarity("night", "nacht")` → 0.143 |
+| `SorensenDice` | 2 × shared ÷ (q-grams in A + in B) | `SorensenDice.Similarity("night", "nacht")` → 0.25 |
+| `Overlap` | Shared ÷ q-grams in the smaller one | `Overlap.Similarity(new[] {"new", "york"}, new[] {"new", "york", "mets"})` → 1 |
+| `Tanimoto` | Like Jaccard, but repeated q-grams count | `Tanimoto.Similarity("aaab", "aab")` → 0.75 |
+| `RatcliffObershelp` | Python `difflib.SequenceMatcher.ratio()` | `RatcliffObershelp.Similarity("WIKIMEDIA", "WIKIMANIA")` → 0.778 |
+| `LongestCommonSubstring` | Longest run of consecutive shared characters | `LongestCommonSubstring.Of("xabcdey", "zzabcdq")` → `"abcd"` |
+
+Options: `new QGramOptions(q: 3, pad: true, mode: QGramMode.Multiset)` changes the
+q-gram length, adds start/end markers so short strings still have q-grams, and counts
+repeated q-grams. `LongestCommonSubsequence.Of(a, b)` returns the subsequence itself.
+
+To combine several metrics into a yes/no answer:
+
+```csharp
+bool same = "Jon Smith".ApproximatelyEquals("John Smith", Tolerance.Normal,
+    SimilarityMetric.JaroWinkler, SimilarityMetric.Levenshtein); // true
+```
+
 ### Instance Distance Classes
 
 The `Levenshtein`, `Indel`, and `LongestCommonSubsequence` classes also offer an **instance API** for one-to-many comparisons. The constructor pre-computes a bit-parallel pattern match vector from the source string, which is then reused across all subsequent calls. This avoids rebuilding the internal data structure on every comparison, giving a significant speedup when comparing one source against many targets.

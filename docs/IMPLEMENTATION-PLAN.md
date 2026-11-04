@@ -20,7 +20,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two inherited differences, now changed to match RapidFuzz (D8, D9) |
 | 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
 | 3 - Fuzz scorer parity | Done |
-| 4-9 | Not started |
+| 4 - Set-based metrics | Done |
+| 5-9 | Not started |
 
 ---
 
@@ -706,7 +707,9 @@ public static class Tanimoto    { ... }
 On plain sets Tanimoto equals Jaccard exactly. Defining it on counts is what makes it
 a separate metric; say so in the XML docs.
 
-Both empty gives 1.0. One empty gives 0.0. Each metric gets an `IEnumerable<T>`
+Both empty gives 1.0. One empty gives 0.0. Two strings that are both too short to have
+any q-gram (for example `"a"` and `"b"` with bigrams) are compared for plain equality,
+so `"a"` vs `"b"` is 0, not 1. Each metric gets an `IEnumerable<T>`
 overload so callers can compare word sets as well as q-grams. **Size:** S each.
 
 **Unit tests** (bigrams, set mode; values from the Python reference in
@@ -1147,15 +1150,15 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #23 Missing cached scorers
 
 ### Phase 4 - Set-based metrics
-- [ ] #8 Q-gram helper
-- [ ] #9 Jaccard
-- [ ] #10 Sørensen-Dice
-- [ ] #11 Overlap coefficient
-- [ ] #12 Tanimoto
-- [ ] #13 Ratcliff-Obershelp
-- [ ] #14 Longest common substring
-- [ ] #15 LCS as a string
-- [ ] #16 `ApproximatelyEquals` (optional)
+- [x] #8 Q-gram helper
+- [x] #9 Jaccard
+- [x] #10 Sørensen-Dice
+- [x] #11 Overlap coefficient
+- [x] #12 Tanimoto
+- [x] #13 Ratcliff-Obershelp
+- [x] #14 Longest common substring
+- [x] #15 LCS as a string
+- [x] #16 `ApproximatelyEquals` (optional)
 
 ### Phase 5 - Process
 - [ ] #26 Scorers where lower is better

@@ -161,6 +161,25 @@ public sealed partial class LongestCommonSubsequence
     }
 
     /// <summary>
+    /// One longest common subsequence of the two strings, as text (for example
+    /// <c>("abcde", "ace")</c> gives <c>"ace"</c>). When several exist, this is the one
+    /// built from <see cref="MatchingBlocks{T}"/>.
+    /// </summary>
+    public static string Of(string s1, string s2)
+    {
+        if (s1 == null) throw new ArgumentNullException(nameof(s1));
+        if (s2 == null) throw new ArgumentNullException(nameof(s2));
+
+        var builder = new System.Text.StringBuilder();
+        foreach (var block in MatchingBlocks(s1.AsSpan(), s2.AsSpan()))
+        {
+            builder.Append(s1, block.SourcePos, block.Length);
+        }
+
+        return builder.ToString();
+    }
+
+    /// <summary>
     /// Returns a list of matching blocks (contiguous matching subsequences) between s1 and s2.
     /// </summary>
     /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>

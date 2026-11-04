@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import difflib
 import gzip
+from collections import Counter
 import json
 import random
 import sys
@@ -157,6 +158,39 @@ def sentence_pairs(rng: random.Random) -> list[tuple[str, str, str]]:
     return pairs
 
 
+# ---- Set-based metrics -------------------------------------------------------------
+# RapidFuzz has no q-gram metrics, so these are plain reference implementations of the
+# textbook formulas, with the same edge-case rules as Fuzzion (see SetMetrics.cs):
+# two empty collections -> 1; one empty -> 0; two strings with no q-grams -> equality.
+
+
+def qgrams(s: str, q: int, pad: bool) -> list[str]:
+    if pad and q > 1:
+        s = "\x02" * (q - 1) + s + "\x03" * (q - 1)
+    return [s[i : i + q] for i in range(len(s) - q + 1)]
+
+
+def set_metrics(a: str, b: str, q: int, pad: bool, multiset: bool) -> dict:
+    ga, gb = Counter(qgrams(a, q, pad)), Counter(qgrams(b, q, pad))
+    if not ga and not gb:
+        same = 1.0 if a == b else 0.0
+        return {"jaccard": same, "dice": same, "overlap": same, "tanimoto": same}
+    if multiset:
+        size_a, size_b = sum(ga.values()), sum(gb.values())
+        common = sum(min(ga[k], gb[k]) for k in ga if k in gb)
+    else:
+        size_a, size_b = len(ga), len(gb)
+        common = len(ga.keys() & gb.keys())
+    dot = sum(ga[k] * gb[k] for k in ga if k in gb)
+    sq_a, sq_b = sum(v * v for v in ga.values()), sum(v * v for v in gb.values())
+    return {
+        "jaccard": common / (size_a + size_b - common),
+        "dice": 2 * common / (size_a + size_b),
+        "overlap": common / min(size_a, size_b) if min(size_a, size_b) else 0.0,
+        "tanimoto": dot / (sq_a + sq_b - dot),
+    }
+
+
 def four(module, a: str, b: str, **kw) -> dict:
     return {
         "d": module.distance(a, b, **kw),
@@ -186,6 +220,10 @@ def char_record(group: str, a: str, b: str) -> dict:
         "prefix": four(Prefix, a, b),
         "postfix": four(Postfix, a, b),
         "ratcliff_obershelp": difflib.SequenceMatcher(None, a, b, autojunk=False).ratio(),
+        "ratcliff_obershelp_autojunk": difflib.SequenceMatcher(None, a, b).ratio(),
+        "set_q2": set_metrics(a, b, q=2, pad=False, multiset=False),
+        "set_q2_multiset": set_metrics(a, b, q=2, pad=False, multiset=True),
+        "set_q3_pad": set_metrics(a, b, q=3, pad=True, multiset=False),
         "longest_common_substring": [lcs_block.a, lcs_block.b, lcs_block.size],
     }
 

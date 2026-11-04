@@ -183,6 +183,61 @@ public class OracleTests
         check.Verify();
     }
 
+    // ---- Set-based metrics (Phase 4) -------------------------------------------------
+
+    [Theory]
+    [InlineData("set_q2", 2, false, QGramMode.Set)]
+    [InlineData("set_q2_multiset", 2, false, QGramMode.Multiset)]
+    [InlineData("set_q3_pad", 3, true, QGramMode.Set)]
+    public void Oracle_SetMetrics(string metric, int q, bool pad, QGramMode mode)
+    {
+        var options = new QGramOptions(q, pad, mode);
+        var check = new OracleAssert(metric);
+        foreach (var row in OracleData.CharPairs)
+        {
+            check.Equal(row, "Jaccard", row.Nested(metric, "jaccard"), Jaccard.Similarity(row.A, row.B, options), OracleAssert.Normalized);
+            check.Equal(row, "SorensenDice", row.Nested(metric, "dice"), SorensenDice.Similarity(row.A, row.B, options), OracleAssert.Normalized);
+            check.Equal(row, "Overlap", row.Nested(metric, "overlap"), Overlap.Similarity(row.A, row.B, options), OracleAssert.Normalized);
+            check.Equal(row, "Tanimoto", row.Nested(metric, "tanimoto"), Tanimoto.Similarity(row.A, row.B, options), OracleAssert.Normalized);
+        }
+
+        check.Verify();
+    }
+
+    [Theory]
+    [InlineData("ratcliff_obershelp", false)]
+    [InlineData("ratcliff_obershelp_autojunk", true)]
+    public void Oracle_RatcliffObershelp(string metric, bool autoJunk)
+    {
+        var check = new OracleAssert(metric);
+        foreach (var row in OracleData.CharPairs)
+        {
+            check.Equal(row, "Similarity", row.Number(metric), RatcliffObershelp.Similarity(row.A, row.B, autoJunk), OracleAssert.Normalized);
+        }
+
+        check.Verify();
+    }
+
+    [Fact]
+    public void Oracle_LongestCommonSubstring()
+    {
+        var check = new OracleAssert("longest_common_substring");
+        foreach (var row in OracleData.CharPairs)
+        {
+            var expected = row.Numbers("longest_common_substring");
+            var actual = LongestCommonSubstring.Find(row.A, row.B);
+            check.Equal(row, "Length", expected[2], actual.Length, OracleAssert.Exact);
+            if (expected[2] > 0)
+            {
+                // difflib reports (0, 0, 0) when there is no match, so positions are only compared for real matches.
+                check.Equal(row, "SourceStart", expected[0], actual.SourceStart, OracleAssert.Exact);
+                check.Equal(row, "TargetStart", expected[1], actual.TargetStart, OracleAssert.Exact);
+            }
+        }
+
+        check.Verify();
+    }
+
     // ---- Fuzz scorers -----------------------------------------------------------------
 
     [Theory]

@@ -83,6 +83,9 @@ public sealed class OracleRow(JsonElement element)
 
     public double Number(string metric) => element.GetProperty(metric).GetDouble();
 
+    /// <summary>A value inside a nested object, for example <c>Nested("set_q2", "jaccard")</c>.</summary>
+    public double Nested(string metric, string field) => element.GetProperty(metric).GetProperty(field).GetDouble();
+
     public double[] Numbers(string metric) =>
         element.GetProperty(metric).EnumerateArray().Select(x => x.GetDouble()).ToArray();
 
