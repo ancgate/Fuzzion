@@ -19,7 +19,7 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 0 - Rebrand | Done |
 | 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two inherited differences, now changed to match RapidFuzz (D8, D9) |
 | 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
-| 3 - Fuzz scorer parity | #17-#20 and #23 done. #21 and #22 open (see the note under #21) |
+| 3 - Fuzz scorer parity | Done |
 | 4-9 | Not started |
 
 ---
@@ -1142,8 +1142,8 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #18 TokenRatio
 - [x] #19 PartialTokenRatio
 - [x] #20 PartialRatioAlignment
-- [ ] #21 Score cutoff on scorers
-- [ ] #22 `ReadOnlySpan<char>` overloads
+- [x] #21 Score cutoff on scorers
+- [x] #22 `ReadOnlySpan<char>` overloads
 - [x] #23 Missing cached scorers
 
 ### Phase 4 - Set-based metrics

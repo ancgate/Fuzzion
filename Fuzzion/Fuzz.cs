@@ -6,7 +6,7 @@ using Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
 namespace Fuzzion;
 
-public static class Fuzz
+public static partial class Fuzz
 {
     #region Ratio
     /// <summary>

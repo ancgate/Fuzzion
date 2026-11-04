@@ -198,6 +198,25 @@ Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the qu
 
 `WeightedRatio` gives the same results as RapidFuzz's `WRatio`. When one string is at least 1.5 times longer than the other, it compares the shorter one with parts of the longer one using the partial token scores. Because `PartialTokenSetRatio` is 100 whenever two strings share a word, short choices that share one common word with the query can score 85.5 (for example `"braves vs mets"` for any query containing "vs"). If that is too generous for your data, use `TokenSortRatio`, `TokenSetRatio` or `Ratio` as the scorer.
 
+### Minimum Score and Spans
+
+Every `Fuzz` scorer has an overload that takes a minimum score. Scores below it
+return 0, and `Ratio`/`QRatio` skip pairs whose lengths already rule the cutoff out:
+
+```csharp
+Fuzz.Ratio("kitten", "sitting");                   // 61.54
+Fuzz.Ratio("kitten", "sitting", scoreCutoff: 80);  // 0
+```
+
+`Ratio`, `QRatio`, `PartialRatio` and `ApproximateSubstringRatio` also accept
+`ReadOnlySpan<char>`, so you can score slices of a larger buffer without creating
+substrings:
+
+```csharp
+ReadOnlySpan<char> line = "id=42;name=new york mets;city=queens";
+double score = Fuzz.Ratio(line.Slice(11, 13), "new york mets".AsSpan()); // 100
+```
+
 ### Partial Ratio Alignment
 
 `PartialRatioAlignment` returns the partial ratio together with where the best match is

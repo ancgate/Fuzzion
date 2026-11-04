@@ -4,10 +4,11 @@ namespace Fuzzion.SimilarityRatio.Strategy;
 
 internal static class ApproximateSubstringRatioStrategy
 {
-    public static double Calculate(string input1, string input2)
+    public static double Calculate(string input1, string input2) =>
+        Calculate(input1.AsSpan(), input2.AsSpan());
+
+    public static double Calculate(ReadOnlySpan<char> a, ReadOnlySpan<char> b)
     {
-        var a = input1.AsSpan();
-        var b = input2.AsSpan();
 
         if (a.IsEmpty || b.IsEmpty)
         {
