@@ -84,7 +84,7 @@ public static partial class StringPreprocessor
                 {
                     // .NET's invariant casing leaves U+0130 (İ) unchanged; Unicode's simple
                     // lowercase mapping, which RapidFuzz uses, gives "i".
-                    result.Append(input[i] == '\u0130' ? 'i' : char.ToLowerInvariant(input[i]));
+                    result.Append(LowerInvariant(input[i]));
                 }
             }
             else
@@ -99,6 +99,41 @@ public static partial class StringPreprocessor
         }
 
         return result.ToString().Trim(' ');
+    }
+
+    /// <summary>
+    /// Unicode's simple lowercase mapping for one BMP character. .NET's invariant casing
+    /// leaves U+0130 (İ) unchanged, and some runtimes (for example Mono) leave the
+    /// title-case letters (category Lt) unchanged; RapidFuzz maps all of them.
+    /// </summary>
+    internal static char LowerInvariant(char c)
+    {
+        if (c == '\u0130')
+        {
+            return 'i';
+        }
+
+        if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.TitlecaseLetter)
+        {
+            switch (c)
+            {
+                case '\u01C5': return '\u01C6'; // ǅ → ǆ
+                case '\u01C8': return '\u01C9'; // ǈ → ǉ
+                case '\u01CB': return '\u01CC'; // ǋ → ǌ
+                case '\u01F2': return '\u01F3'; // ǲ → ǳ
+                case '\u1FBC': return '\u1FB3';
+                case '\u1FCC': return '\u1FC3';
+                case '\u1FFC': return '\u1FF3';
+            }
+
+            // Greek letters with prosgegrammeni: U+1F88-1F8F, 1F98-1F9F, 1FA8-1FAF map 8 lower.
+            if (c is >= '\u1F88' and <= '\u1F8F' or >= '\u1F98' and <= '\u1F9F' or >= '\u1FA8' and <= '\u1FAF')
+            {
+                return (char)(c - 8);
+            }
+        }
+
+        return char.ToLowerInvariant(c);
     }
 
     private static void AppendLowerPair(StringBuilder result, string input, int index)

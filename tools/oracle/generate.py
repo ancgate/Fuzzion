@@ -372,7 +372,6 @@ def main() -> int:
         "generator": "tools/oracle/generate.py",
         "seed": SEED,
         "rapidfuzz": rapidfuzz.__version__,
-        "python": sys.version.split()[0],
     }
     chars = [char_record(*p) for p in char_pairs(rng)]
     sentences = [sentence_record(*p) for p in sentence_pairs(rng)]

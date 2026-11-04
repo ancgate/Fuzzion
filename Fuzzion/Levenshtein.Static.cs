@@ -59,10 +59,10 @@ public sealed partial class Levenshtein
     /// <param name="insertCost">Cost of an insertion.</param>
     /// <param name="deleteCost">Cost of a deletion.</param>
     /// <param name="replaceCost">Cost of a replacement.</param>
-    /// <returns>The Levenshtein distance.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     /// <param name="scoreCutoff">Largest distance of interest; larger distances return <c>scoreCutoff + 1</c>.</param>
     /// <param name="scoreHint">Expected distance; speeds up the search, never changes the result.</param>
+    /// <returns>The Levenshtein distance.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int Distance<T>(
         ReadOnlySpan<T> source, ReadOnlySpan<T> target,
         int insertCost = 1, int deleteCost = 1, int replaceCost = 1,

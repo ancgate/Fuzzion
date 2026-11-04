@@ -4,7 +4,11 @@ Fuzzion is a high-performance .NET fuzzy string matching library inspired by Sea
 
 Fuzzion is based on [Raffinert.FuzzySharp](https://github.com/Raffinert/FuzzySharp) by Yevhen Cherkes, itself based on [FuzzySharp](https://github.com/JakeBayer/FuzzySharp) by Jacob Bayer. It keeps their bit-parallel distance algorithms, [partial_ratio fixes](https://github.com/rapidfuzz/RapidFuzz/blob/main/api_differences.md#partial_ratio-implementation), cached scorers, and extraction pipelines, and extends them toward full [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz) parity plus set-based similarity metrics. See the [implementation plan](docs/IMPLEMENTATION-PLAN.md) for the roadmap.
 
-> **Status:** preview (`0.x`). The public API may change between minor versions until 1.0.
+[![CI](https://github.com/ancgate/Fuzzion/actions/workflows/ci.yml/badge.svg)](https://github.com/ancgate/Fuzzion/actions/workflows/ci.yml)
+
+> **Status:** release candidate `1.0.0-rc.1`. The public API is frozen (see
+> [docs/api-review.md](docs/api-review.md)); changes before 1.0.0 will only fix problems
+> found in the candidate.
 
 ## Overview
 
@@ -324,7 +328,7 @@ Search with a distance (lower is better) by wrapping it with `Scorers.FromDistan
 Results come back closest first; `maxDistance` drops anything further away:
 
 ```csharp
-var scorer = Scorers.FromDistance((a, b) => Levenshtein.Distance(a, b), maxDistance: 2);
+var scorer = Scorers.Levenshtein(maxDistance: 2); // or Scorers.FromDistance(anyFunction, maxDistance)
 Process.ExtractSorted("appel", new[] { "bandana", "apple", "banana", "appel" }, s => s, scorer);
 // [(appel, 0), (apple, 2)]
 ```
@@ -569,7 +573,7 @@ repeated q-grams. `LongestCommonSubsequence.Of(a, b)` returns the subsequence it
 To combine several metrics into a yes/no answer:
 
 ```csharp
-bool same = "Jon Smith".ApproximatelyEquals("John Smith", Tolerance.Normal,
+bool same = "Jon Smith".ApproximatelyEquals("John Smith", SimilarityTolerance.Normal,
     SimilarityMetric.JaroWinkler, SimilarityMetric.Levenshtein); // true
 ```
 

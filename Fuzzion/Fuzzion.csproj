@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.0-preview.1</Version>
-    <PackageVersion>0.1.0-preview.1</PackageVersion>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Version>1.0.0-rc.1</Version>
+    <PackageVersion>1.0.0-rc.1</PackageVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
     <PackageId>Fuzzion</PackageId>
     <Authors>Jefferson Bien-Aime</Authors>
     <Company />
@@ -25,6 +25,14 @@
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>See https://github.com/ancgate/Fuzzion/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <!-- Ship XML docs so IntelliSense shows them. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- 247 inherited members (mostly scorer/strategy classes) have no XML docs yet; see
+         docs/api-review.md. Other XML doc problems (CS1570, CS1573, ...) still warn. -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Checks that the public API is the same on every target framework. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp3.1' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48'">

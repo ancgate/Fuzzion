@@ -55,7 +55,8 @@ public class RebrandTests
         var actual = new HashSet<string>(typeof(Fuzz).Assembly.GetExportedTypes().Select(t => t.FullName));
 
         Assert.Equal(70, expected.Length);
-        Assert.Empty(expected.Where(name => !actual.Contains(name)));
+        var missing = expected.Where(name => !actual.Contains(name)).ToArray();
+        Assert.True(missing.Length == 0, "Missing: " + string.Join(", ", missing));
     }
 
     [Fact]

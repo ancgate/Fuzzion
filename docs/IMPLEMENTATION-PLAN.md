@@ -24,8 +24,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 5 - Process | Done (see the implementation note under #26) |
 | 6 - Edit operations | Done |
 | 7 - Unicode | Done (see the implementation note under #31) |
-| 8 - Performance | Mostly done: #33 (Cdist Ratio/QRatio), P8.1, P8.2 (single-word), P8.3, #34. Open: multi-word Jaro, Jaro instance caching, SIMD for Extract*/distances, CI regression job. See docs/benchmarks.md |
-| 9 | Not started |
+| 8 - Performance | Done (see the status table under the Phase 2 follow-ups and docs/benchmarks.md) |
+| 9 - Release | Done up to publishing: CI, release workflow, API review and freeze, docs. Publishing needs the owner (RELEASING.md) |
 
 ---
 
@@ -1078,8 +1078,9 @@ Fuzzion has no SIMD; its only hardware-assisted operation is `PopCount`.
 (.NET Core 3.0+; other targets use the scalar path) with 8/16/32/64-bit lanes and the
 bit-parallel LCS step, for `Cdist` with `Ratio` or `QRatio`. The choices' bit tables are
 built once and reused for every query row. Results are bit-for-bit identical to the
-scalar path. Not done: `Extract*` (one query per call, so less to gain) and Levenshtein
-or other distance scorers (a distance scorer wraps an arbitrary function).
+scalar path. Also done: `Scorers.Levenshtein` (a built-in distance scorer) with SIMD in `Cdist` (13x). Measured and
+not shipped: SIMD for `Extract*`, which was 1.2-2x slower with a single query because the
+choices' bit tables cannot be reused (see docs/benchmarks.md).
 
 **Unit tests**
 
@@ -1116,9 +1117,9 @@ Each follow-up must keep every oracle and contract test passing.
 | # | Status |
 |---|---|
 | P8.1 | Done. `Osa` uses `osa_hyrroe2003_block` above 64 characters; the table fallback is gone. ~2x Levenshtein at 256 (was 38x). |
-| P8.2 | Partly done: the single-word bit-parallel path (both inputs ≤ 64 after trimming to the match window, plus the shared prefix shortcut). Longer inputs still use the scalar algorithm; the multi-word port (`flag_similar_characters_block`) is open. |
+| P8.2 | Done: plain algorithm up to 16 characters, single-word bit-parallel up to 64, multi-word above (lowest unmatched match in the window, word by word). 0.26-1.4x Levenshtein. |
 | P8.3 | Done for strings: array for characters below 256 (per-thread, no allocation) plus a dictionary for the rest; 1.7-2x faster. 16-bit rows were not needed. Generic `ReadOnlySpan<T>` keeps the dictionary. |
-| P8.4 | Partly done: the `Osa` instance reuses its bit pattern at every length, and the `DamerauLevenshtein` instance uses the fast string path. `Jaro` / `JaroWinkler` instances still call the static method (caching the pattern needs care because the match window trims the source per comparison). |
+| P8.4 | Done: `Osa`, `Jaro`, `JaroWinkler` and `JaroT<T>` instances build their bit pattern once (Jaro masks off the trimmed part instead of rebuilding); `DamerauLevenshtein` uses the fast string path. |
 
 ### #34 Benchmarks
 
@@ -1140,6 +1141,18 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 | API review before 1.0 | Check naming consistency, remove `[Obsolete]` members, decide #31's API shape, freeze |
 | Upstream sync | Every few weeks, `git fetch upstream` and cherry-pick Raffinert fixes; record each in the CHANGELOG |
 
+
+**Status (as built):**
+
+| Step | Status |
+|---|---|
+| Versioning | `1.0.0-rc.1` (release candidate); `AssemblyVersion` 1.0.0.0 for all 1.x. Rules in `RELEASING.md`. |
+| CI | `.github/workflows/ci.yml`: Linux and Windows (the .NET Framework 4.6.2 / 4.7.2 tests run on Windows), oracle fixtures regenerated and compared, pack, and NuGet publish on `v*` tags from the `nuget` environment's `NUGET_API_KEY` secret. **GitHub Actions are disabled on this fork until the owner enables them**, so CI has not run yet. The .NET Framework tests were run locally on Mono instead: all pass (this found and fixed one runtime difference, title-case lowercasing in `FullUnicode`). |
+| NuGet ID | Not claimed yet: publishing and the `Fuzzion.*` prefix reservation need the owner's NuGet account (steps in `RELEASING.md`). `Fuzzion` was still free on nuget.org when checked in Phase 0. |
+| Docs | README updated per feature; XML docs shipped in the package (247 inherited members still undocumented, listed in `docs/api-review.md`); `CONTRIBUTING.md`, `RELEASING.md`. DocFX site not added (optional). |
+| API review | `docs/api-review.md`: string overloads added to `Indel`/`LongestCommonSubsequence`, `Tolerance` renamed to `SimilarityTolerance`, no `[Obsolete]` members needed, inherited helper types kept public for compatibility. API frozen by `PublicApiTests` (782 lines), and package validation checks every target framework. |
+| Upstream sync | Documented in `CONTRIBUTING.md` (`upstream` remote, cherry-pick, rename, re-run the oracle). |
+| Benchmark regression | `.github/workflows/benchmarks.yml` (on demand): base and head measured on the same runner, fails on more than 20% slowdown. |
 ---
 
 ## Open decisions
@@ -1221,8 +1234,8 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 
 ### Phase 8 - Performance
 - [x] #33 SIMD batch scoring (`Cdist` with `Ratio`/`QRatio`)
-- [x] #34 Benchmarks (`docs/benchmarks.md`; CI regression job not added)
-- [ ] P8.1-P8.4 Phase 2 performance follow-ups (P8.1 and P8.3 done; P8.2 and P8.4 partly, see the status table)
+- [x] #34 Benchmarks (`docs/benchmarks.md`) and the on-demand regression workflow
+- [x] P8.1-P8.4 Phase 2 performance follow-ups
 
 ### Definition of done (every item)
 - [ ] Public API has XML docs

@@ -241,7 +241,7 @@ public class SetSimilarityTests
     public void IdenticalIsTrueForEveryTolerance()
     {
         var all = (SimilarityMetric[])Enum.GetValues(typeof(SimilarityMetric));
-        foreach (Tolerance tolerance in Enum.GetValues(typeof(Tolerance)))
+        foreach (SimilarityTolerance tolerance in Enum.GetValues(typeof(SimilarityTolerance)))
         {
             Assert.True("new york mets".ApproximatelyEquals("new york mets", tolerance, all));
         }
@@ -250,20 +250,20 @@ public class SetSimilarityTests
     [Fact]
     public void ApproximatelyEqualsExamples()
     {
-        Assert.True("MARTHA".ApproximatelyEquals("MARHTA", Tolerance.Strong, SimilarityMetric.JaroWinkler));
-        Assert.False("abc".ApproximatelyEquals("xyz", Tolerance.Weak, (SimilarityMetric[])Enum.GetValues(typeof(SimilarityMetric))));
+        Assert.True("MARTHA".ApproximatelyEquals("MARHTA", SimilarityTolerance.Strong, SimilarityMetric.JaroWinkler));
+        Assert.False("abc".ApproximatelyEquals("xyz", SimilarityTolerance.Weak, (SimilarityMetric[])Enum.GetValues(typeof(SimilarityMetric))));
     }
 
     [Fact]
     public void NoMetricsThrows()
     {
-        Assert.Throws<ArgumentException>(() => "a".ApproximatelyEquals("b", Tolerance.Normal));
+        Assert.Throws<ArgumentException>(() => "a".ApproximatelyEquals("b", SimilarityTolerance.Normal));
     }
 
     [Fact]
     public void CaseInsensitiveByDefault()
     {
-        Assert.True("NEW YORK".ApproximatelyEquals("new york", Tolerance.Strong, SimilarityMetric.Levenshtein));
+        Assert.True("NEW YORK".ApproximatelyEquals("new york", SimilarityTolerance.Strong, SimilarityMetric.Levenshtein));
         Assert.False("NEW YORK".ApproximatelyEquals("new york", 0.9, caseSensitive: true, SimilarityMetric.Levenshtein));
     }
 

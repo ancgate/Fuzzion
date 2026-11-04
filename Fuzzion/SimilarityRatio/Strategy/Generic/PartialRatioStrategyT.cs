@@ -115,7 +115,7 @@ internal static class PartialRatioStrategy<T> where T : IEquatable<T>
 
     /// <summary>
     /// C# equivalent of rapidfuzz.distance._partial_ratio_impl
-    /// Assumes s1.Length <= s2.Length.
+    /// Assumes s1.Length &lt;= s2.Length.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ScoreAlignment PartialRatioImpl(
@@ -134,7 +134,7 @@ internal static class PartialRatioStrategy<T> where T : IEquatable<T>
 
     /// <summary>
     /// C# equivalent of rapidfuzz.distance._partial_ratio_impl
-    /// Assumes s1.Length <= s2.Length.
+    /// Assumes s1.Length &lt;= s2.Length.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ScoreAlignment PartialRatioImpl(IPatternMatchVector<T> s1Vector,

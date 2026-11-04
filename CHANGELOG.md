@@ -1,8 +1,24 @@
 # Changelog
 
-## Unreleased (planned 0.2.0)
+## Fuzzion 1.0.0-rc.1
 
-*All RapidFuzz distance metrics (plan items #1-#7)*
+*Release candidate: every phase of the implementation plan. Not yet published.*
+
+### Release and API (Phase 9)
+
+- **Breaking (pre-release):** `Tolerance` was renamed to `SimilarityTolerance`.
+- Added `string` overloads to `Indel` and `LongestCommonSubsequence` (`Distance`, `Similarity`, `NormalizedDistance`, `NormalizedSimilarity`).
+- The public API is frozen by `PublicApiTests` against `Fuzzion.Tests/PublicApi/Fuzzion.api.txt`; see [docs/api-review.md](docs/api-review.md).
+- The package now ships XML documentation and is validated to have the same API on every target framework.
+- CI (`.github/workflows/ci.yml`): Linux and Windows (with the .NET Framework tests), a check that the oracle fixtures regenerate identically, packing, and publishing to NuGet on `v*` tags. An on-demand benchmark regression check (`benchmarks.yml`). See [RELEASING.md](RELEASING.md) and [CONTRIBUTING.md](CONTRIBUTING.md).
+- `FullUnicode` lowercases title-case letters (`ǅ` → `ǆ`) on every runtime, not only where the runtime does it.
+
+### Performance (rest of Phase 8)
+
+- `Jaro`/`JaroWinkler`: bit-parallel on several 64-bit words for long inputs, the plain algorithm for inputs of up to 16 characters, and real caching in the `Jaro`, `JaroWinkler` and `JaroT<T>` instance classes. Jaro is now 0.26-1.4x the cost of Levenshtein (was 1.1-7x).
+- `Scorers.Levenshtein(maxDistance)`: a built-in Levenshtein distance scorer; `Process.Cdist` scores it with SIMD (13x faster for 100 × 2,000 short strings).
+
+### All RapidFuzz distance metrics (plan items #1-#7)
 
 - Added `Hamming` (with `pad`), `Jaro`, `JaroWinkler` (with `prefixWeight`, 0 to 1), `Osa` (optimal string alignment), `DamerauLevenshtein` (unrestricted), `Prefix` and `Postfix`. Each has `Distance`, `Similarity`, `NormalizedDistance` and `NormalizedSimilarity` with `string` and generic span overloads, and all match Python RapidFuzz 3.14.6 on every oracle value.
 - Added instance classes `Hamming`, `Jaro`, `JaroWinkler`, `Osa`, `DamerauLevenshtein` and their generic `...T<T>` versions.
@@ -16,7 +32,7 @@
 - Added cached scorers `CachedQRatioScorer`, `CachedPartialRatioScorer` (reuses the query's bit pattern when the query is the shorter input), `CachedPartialTokenSortScorer`, `CachedTokenRatioScorer` and `CachedPartialTokenRatioScorer` (plan item #23).
 - Added set-based metrics `Jaccard`, `SorensenDice`, `Overlap` and `Tanimoto` on q-grams (`QGramOptions`: length, padding, set or multiset counting) and on any `IEnumerable<T>`, plus `QGrams.Of` (plan items #8-#12). Written from the definitions, not from kdjones/fuzzystring, whose versions count distinct characters and score `Dice("aaaa", "aaaa")` as 0.25.
 - Added `RatcliffObershelp` (matches Python's `difflib.SequenceMatcher.ratio()`, with optional `autoJunk`), `LongestCommonSubstring` (`Find`, `Of`, normalized similarity) and `LongestCommonSubsequence.Of` (plan items #13-#15).
-- Added `ApproximatelyEquals` extension methods with `Tolerance` and `SimilarityMetric` to combine metrics into a yes/no answer (plan item #16).
+- Added `ApproximatelyEquals` extension methods with `SimilarityTolerance` and `SimilarityMetric` to combine metrics into a yes/no answer (plan item #16).
 - Added distance scorers for searches: `Scorers.FromDistance(f, maxDistance)` returns an `IDistanceScorer`; `Process.Extract*` and pipelines then return the smallest distances first and keep only results within `maxDistance` (null = no limit, 0 = exact only). The `cutoff` argument stays a minimum similarity and is rejected for distance scorers. Also `Scorers.FromSimilarity` (plan item #26).
 - Added `Process.Cdist` and `Process.Cpdist` (as RapidFuzz's `cdist`/`cpdist`): matrix and pairwise scoring with optional multi-threading (`workers`), cancellation, a score cutoff, and built-in scorers prepared once per query (plan items #24, #25).
 - Added `Process.Dedupe` (as TheFuzz's `dedupe`), with results in order of first appearance (plan item #27).
@@ -31,9 +47,7 @@
   - `Jaro` / `JaroWinkler` use a bit-parallel algorithm when both inputs fit in 64 characters after trimming to the match window (P8.2).
   - `DamerauLevenshtein` on strings uses an array instead of a dictionary for characters below 256: 1.7-2x faster (P8.3).
 
-## Fuzzion 0.1.0-preview.1
-
-*Rebrand of Raffinert.FuzzySharp v6.0.1 as Fuzzion*
+### Rebrand of Raffinert.FuzzySharp v6.0.1 as Fuzzion (planned 0.1.0-preview.1, never published)
 
 - **Breaking:** Package ID is now `Fuzzion`; assembly name is `Fuzzion`.
 - **Breaking:** Root namespace `Raffinert.FuzzySharp` is now `Fuzzion` (sub-namespaces keep their names, for example `Fuzzion.PreProcess`).

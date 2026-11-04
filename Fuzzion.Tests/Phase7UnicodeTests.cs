@@ -178,6 +178,29 @@ public class Phase7UnicodeTests
         }
     }
 
+    [Fact]
+    public void FullUnicodeLowercasesEveryTitlecaseLetterAsPython()
+    {
+        // Python: ch.lower() for every Unicode character of category Lt (simple mapping).
+        var expected = new (char Title, char Lower)[]
+        {
+            ('\u01C5', '\u01C6'), ('\u01C8', '\u01C9'), ('\u01CB', '\u01CC'), ('\u01F2', '\u01F3'),
+            ('\u1FBC', '\u1FB3'), ('\u1FCC', '\u1FC3'), ('\u1FFC', '\u1FF3'),
+        };
+        foreach (var (title, lower) in expected)
+        {
+            Assert.Equal(lower.ToString(), StringPreprocessor.FullUnicode(title.ToString()));
+        }
+
+        for (var c = '\u1F88'; c <= '\u1FAF'; c++)
+        {
+            if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c) == System.Globalization.UnicodeCategory.TitlecaseLetter)
+            {
+                Assert.Equal(((char)(c - 8)).ToString(), StringPreprocessor.FullUnicode(c.ToString()));
+            }
+        }
+    }
+
     // ---- #32 RemoveDiacritics and Compose --------------------------------------------
 
     [Fact]

@@ -1,0 +1,782 @@
+Fuzzion.CachedProcessBuilder::Fuzzion.CachedProcessBuilder Parallel(System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.CachedProcessBuilder::Fuzzion.CachedProcessBuilder WithParallelOptions(System.Threading.Tasks.ParallelOptions parallelOptions)
+Fuzzion.CachedProcessBuilder::Fuzzion.ProcessPipeline Build()
+Fuzzion.CachedScorer::.ctor(System.Object object, System.IntPtr method)
+Fuzzion.CachedScorer::virtual System.Double EndInvoke(System.IAsyncResult result)
+Fuzzion.CachedScorer::virtual System.Double Invoke(System.String input2)
+Fuzzion.CachedScorer::virtual System.IAsyncResult BeginInvoke(System.String input2, System.AsyncCallback callback, System.Object object)
+Fuzzion.CachedScorerProcessBuilder::Fuzzion.CachedScorerProcessBuilder Parallel(System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.CachedScorerProcessBuilder::Fuzzion.CachedScorerProcessBuilder WithParallelOptions(System.Threading.Tasks.ParallelOptions parallelOptions)
+Fuzzion.CachedScorerProcessBuilder::Fuzzion.CachedScorerProcessPipeline Build()
+Fuzzion.CachedScorerProcessPipeline::Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(params System.String[] choices)
+Fuzzion.CachedScorerProcessPipeline::Fuzzion.Extractor.ExtractedResult<T> ExtractOneBy<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractAll(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractAllBy<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSortedBy<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.CachedScorerProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTopBy<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.CodePoints::static Fuzzion.IDistanceScorer Scorer(Fuzzion.IDistanceScorer inner)
+Fuzzion.CodePoints::static Fuzzion.SimilarityRatio.Scorer.IRatioScorer Scorer(Fuzzion.SimilarityRatio.Scorer.IRatioScorer inner)
+Fuzzion.CodePoints::static System.Int32 Count(System.String s)
+Fuzzion.CodePoints::static System.Int32[] Of(System.String s)
+Fuzzion.CodePoints::static TResult Compare<TResult>(System.String a, System.String b, System.Func<System.String, System.String, TResult> metric)
+Fuzzion.CommonSubstring::.ctor(System.Int32 sourceStart, System.Int32 targetStart, System.Int32 length)
+Fuzzion.CommonSubstring::System.Boolean Equals(Fuzzion.CommonSubstring other)
+Fuzzion.CommonSubstring::System.Int32 Length { get; }
+Fuzzion.CommonSubstring::System.Int32 SourceStart { get; }
+Fuzzion.CommonSubstring::System.Int32 TargetStart { get; }
+Fuzzion.CommonSubstring::override System.Boolean Equals(System.Object obj)
+Fuzzion.CommonSubstring::override System.Int32 GetHashCode()
+Fuzzion.CommonSubstring::override System.String ToString()
+Fuzzion.CommonSubstring::static System.Boolean op_Equality(Fuzzion.CommonSubstring left, Fuzzion.CommonSubstring right)
+Fuzzion.CommonSubstring::static System.Boolean op_Inequality(Fuzzion.CommonSubstring left, Fuzzion.CommonSubstring right)
+Fuzzion.DamerauLevenshtein::.ctor(System.String source)
+Fuzzion.DamerauLevenshtein::System.Double NormalizedDistanceFrom(System.String value)
+Fuzzion.DamerauLevenshtein::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.DamerauLevenshtein::System.Int32 DistanceFrom(System.String value)
+Fuzzion.DamerauLevenshtein::System.Int32 SimilarityWith(System.String value)
+Fuzzion.DamerauLevenshtein::System.Void Dispose()
+Fuzzion.DamerauLevenshtein::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.DamerauLevenshtein::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.DamerauLevenshtein::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.DamerauLevenshtein::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.DamerauLevenshtein::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.DamerauLevenshtein::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.DamerauLevenshtein::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.DamerauLevenshtein::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.DamerauLevenshteinT<T>::.ctor(T[] source)
+Fuzzion.DamerauLevenshteinT<T>::System.Double NormalizedDistanceFrom(T[] value)
+Fuzzion.DamerauLevenshteinT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.DamerauLevenshteinT<T>::System.Int32 DistanceFrom(T[] value)
+Fuzzion.DamerauLevenshteinT<T>::System.Int32 SimilarityWith(T[] value)
+Fuzzion.DamerauLevenshteinT<T>::System.Void Dispose()
+Fuzzion.Edits.EditOp::.ctor()
+Fuzzion.Edits.EditOp::Fuzzion.Edits.EditType EditType { get; set; }
+Fuzzion.Edits.EditOp::System.Int32 DestPos { get; set; }
+Fuzzion.Edits.EditOp::System.Int32 SourcePos { get; set; }
+Fuzzion.Edits.EditOp::override System.String ToString()
+Fuzzion.Edits.EditOps::.ctor(System.Collections.Generic.IEnumerable<Fuzzion.Edits.EditOp> ops, System.Int32 sourceLength, System.Int32 destLength)
+Fuzzion.Edits.EditOps::Fuzzion.Edits.EditOp Item[System.Int32] { get; }
+Fuzzion.Edits.EditOps::Fuzzion.Edits.EditOps Inverse()
+Fuzzion.Edits.EditOps::Fuzzion.Edits.EditOps RemoveSubsequence(Fuzzion.Edits.EditOps subsequence)
+Fuzzion.Edits.EditOps::Fuzzion.Edits.OpCodes AsOpCodes()
+Fuzzion.Edits.EditOps::System.Boolean Equals(Fuzzion.Edits.EditOps other)
+Fuzzion.Edits.EditOps::System.Collections.Generic.IEnumerator<Fuzzion.Edits.EditOp> GetEnumerator()
+Fuzzion.Edits.EditOps::System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> AsMatchingBlocks()
+Fuzzion.Edits.EditOps::System.Int32 Count { get; }
+Fuzzion.Edits.EditOps::System.Int32 DestLength { get; }
+Fuzzion.Edits.EditOps::System.Int32 Length { get; }
+Fuzzion.Edits.EditOps::System.Int32 SourceLength { get; }
+Fuzzion.Edits.EditOps::System.String Apply(System.String source, System.String dest)
+Fuzzion.Edits.EditOps::override System.Boolean Equals(System.Object obj)
+Fuzzion.Edits.EditOps::override System.Int32 GetHashCode()
+Fuzzion.Edits.EditOps::override System.String ToString()
+Fuzzion.Edits.EditOps::static Fuzzion.Edits.EditOp[] op_Implicit(Fuzzion.Edits.EditOps ops)
+Fuzzion.Edits.EditOps::static Fuzzion.Edits.EditOps FromOpCodes(Fuzzion.Edits.OpCodes opCodes)
+Fuzzion.Edits.EditType.DELETE = 0
+Fuzzion.Edits.EditType.EQUAL = 1
+Fuzzion.Edits.EditType.INSERT = 2
+Fuzzion.Edits.EditType.KEEP = 4
+Fuzzion.Edits.EditType.REPLACE = 3
+Fuzzion.Edits.MatchingBlock::.ctor()
+Fuzzion.Edits.MatchingBlock::System.Int32 DestPos { get; set; }
+Fuzzion.Edits.MatchingBlock::System.Int32 Length { get; set; }
+Fuzzion.Edits.MatchingBlock::System.Int32 SourcePos { get; set; }
+Fuzzion.Edits.MatchingBlock::override System.String ToString()
+Fuzzion.Edits.OpCode::.ctor()
+Fuzzion.Edits.OpCode::Fuzzion.Edits.EditType EditType { get; set; }
+Fuzzion.Edits.OpCode::System.Int32 DestBegin { get; set; }
+Fuzzion.Edits.OpCode::System.Int32 DestEnd { get; set; }
+Fuzzion.Edits.OpCode::System.Int32 SourceBegin { get; set; }
+Fuzzion.Edits.OpCode::System.Int32 SourceEnd { get; set; }
+Fuzzion.Edits.OpCode::override System.String ToString()
+Fuzzion.Edits.OpCodes::.ctor(System.Collections.Generic.IEnumerable<Fuzzion.Edits.OpCode> codes, System.Int32 sourceLength, System.Int32 destLength)
+Fuzzion.Edits.OpCodes::Fuzzion.Edits.EditOps AsEditOps()
+Fuzzion.Edits.OpCodes::Fuzzion.Edits.OpCode Item[System.Int32] { get; }
+Fuzzion.Edits.OpCodes::Fuzzion.Edits.OpCodes Inverse()
+Fuzzion.Edits.OpCodes::System.Boolean Equals(Fuzzion.Edits.OpCodes other)
+Fuzzion.Edits.OpCodes::System.Collections.Generic.IEnumerator<Fuzzion.Edits.OpCode> GetEnumerator()
+Fuzzion.Edits.OpCodes::System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> AsMatchingBlocks()
+Fuzzion.Edits.OpCodes::System.Int32 Count { get; }
+Fuzzion.Edits.OpCodes::System.Int32 DestLength { get; }
+Fuzzion.Edits.OpCodes::System.Int32 SourceLength { get; }
+Fuzzion.Edits.OpCodes::System.String Apply(System.String source, System.String dest)
+Fuzzion.Edits.OpCodes::override System.Boolean Equals(System.Object obj)
+Fuzzion.Edits.OpCodes::override System.Int32 GetHashCode()
+Fuzzion.Edits.OpCodes::override System.String ToString()
+Fuzzion.Edits.OpCodes::static Fuzzion.Edits.OpCodes FromEditOps(Fuzzion.Edits.EditOps editOps)
+Fuzzion.Edits.OpCodes::static System.Collections.Generic.List<Fuzzion.Edits.OpCode> op_Implicit(Fuzzion.Edits.OpCodes codes)
+Fuzzion.Extensions.EditOpsExtensions::static System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> AsMatchingBlocks(System.Collections.Generic.IEnumerable<Fuzzion.Edits.EditOp> ops, System.Int32 srcLen, System.Int32 destLen)
+Fuzzion.Extensions.EditOpsExtensions::static System.Collections.Generic.List<Fuzzion.Edits.OpCode> AsOpCodes(System.Collections.Generic.IEnumerable<Fuzzion.Edits.EditOp> editOps, System.Int32 srcLen, System.Int32 destLen)
+Fuzzion.Extensions.EnumerableExtensions::static System.Collections.Generic.IEnumerable<T> MaxN<T>(System.Collections.Generic.IEnumerable<T> source, System.Int32 n)
+Fuzzion.Extensions.EnumerableExtensions::static System.Collections.Generic.IEnumerable<T> MaxNBy<T, TVal>(System.Collections.Generic.IEnumerable<T> source, System.Int32 n, System.Func<T, TVal> selector)
+Fuzzion.Extractor.ExtractedResult<T>::.ctor(T value, System.Double score)
+Fuzzion.Extractor.ExtractedResult<T>::.ctor(T value, System.Double score, System.Int32 index)
+Fuzzion.Extractor.ExtractedResult<T>::System.Int32 CompareTo(Fuzzion.Extractor.ExtractedResult<T> other)
+Fuzzion.Extractor.ExtractedResult<T>::override System.String ToString()
+Fuzzion.Extractor.ExtractedResult<T>::readonly System.Double Score
+Fuzzion.Extractor.ExtractedResult<T>::readonly System.Int32 Index
+Fuzzion.Extractor.ExtractedResult<T>::readonly T Value
+Fuzzion.Extractor.ResultExtractor.Cached::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Int32 limit, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractWithoutOrder(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Int32 limit, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Int32 limit, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractWithoutOrder(System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer calculator, System.Int32 limit, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel.Cached::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Int32 limit, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractWithoutOrder(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Int32 limit, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer calculator, System.Int32 limit, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor.Parallel::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0, System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.Extractor.ResultExtractor::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static Fuzzion.Extractor.ExtractedResult<T> ExtractOne<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Int32 limit, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractWithoutOrder(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSorted<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Int32 limit, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTop<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Int32 limit, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Extractor.ResultExtractor::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractWithoutOrder<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer, System.Double cutoff = 0)
+Fuzzion.Fuzz::static Fuzzion.ScoreAlignment PartialRatioAlignment(System.String input1, System.String input2)
+Fuzzion.Fuzz::static Fuzzion.ScoreAlignment PartialRatioAlignment(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double ApproximateSubstringRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenAbbreviationRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenAbbreviationRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenAbbreviationRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenAbbreviationRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenDifferenceRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenDifferenceRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenDifferenceRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenDifferenceRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenInitialismRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenInitialismRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenInitialismRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenInitialismRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenSetRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenSetRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenSetRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenSetRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenSortRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double PartialTokenSortRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double PartialTokenSortRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double PartialTokenSortRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double QRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2)
+Fuzzion.Fuzz::static System.Double QRatio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double QRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double QRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double QRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double QRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double Ratio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2)
+Fuzzion.Fuzz::static System.Double Ratio(System.ReadOnlySpan<System.Char> input1, System.ReadOnlySpan<System.Char> input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double Ratio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double Ratio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double Ratio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double Ratio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenAbbreviationRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenAbbreviationRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenAbbreviationRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenAbbreviationRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenDifferenceRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenDifferenceRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenDifferenceRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenDifferenceRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenInitialismRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenInitialismRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenInitialismRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenInitialismRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenSetRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenSetRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenSetRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenSetRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenSortRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double TokenSortRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double TokenSortRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double TokenSortRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double WeightedRatio(System.String input1, System.String input2)
+Fuzzion.Fuzz::static System.Double WeightedRatio(System.String input1, System.String input2, System.Double scoreCutoff)
+Fuzzion.Fuzz::static System.Double WeightedRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.Fuzz::static System.Double WeightedRatio(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor, System.Double scoreCutoff)
+Fuzzion.Hamming::.ctor(System.String source, System.Boolean pad = True)
+Fuzzion.Hamming::System.Double NormalizedDistanceFrom(System.String value)
+Fuzzion.Hamming::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.Hamming::System.Int32 DistanceFrom(System.String value)
+Fuzzion.Hamming::System.Int32 SimilarityWith(System.String value)
+Fuzzion.Hamming::System.Void Dispose()
+Fuzzion.Hamming::static System.Double NormalizedDistance(System.String s1, System.String s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Double NormalizedSimilarity(System.String s1, System.String s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Int32 Distance(System.String s1, System.String s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Int32 Similarity(System.String s1, System.String s2, System.Boolean pad = True)
+Fuzzion.Hamming::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Boolean pad = True)
+Fuzzion.HammingT<T>::.ctor(T[] source, System.Boolean pad = True)
+Fuzzion.HammingT<T>::System.Double NormalizedDistanceFrom(T[] value)
+Fuzzion.HammingT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.HammingT<T>::System.Int32 DistanceFrom(T[] value)
+Fuzzion.HammingT<T>::System.Int32 SimilarityWith(T[] value)
+Fuzzion.HammingT<T>::System.Void Dispose()
+Fuzzion.IDistanceScorer::abstract System.Nullable<System.Int32> MaxDistance { get; }
+Fuzzion.Indel::.ctor(System.String source)
+Fuzzion.Indel::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.Indel::System.Int32 DistanceFrom(System.String value)
+Fuzzion.Indel::System.Void Dispose()
+Fuzzion.Indel::static Fuzzion.Edits.EditOps GetEditOps(System.String s1, System.String s2)
+Fuzzion.Indel::static Fuzzion.Edits.EditOps GetEditOps<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Indel::static Fuzzion.Edits.OpCodes GetOpCodes(System.String s1, System.String s2)
+Fuzzion.Indel::static Fuzzion.Edits.OpCodes GetOpCodes<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Indel::static Fuzzion.IndelSubstringMatch BestSubstringMatch(System.ReadOnlySpan<System.Char> pattern, System.ReadOnlySpan<System.Char> text)
+Fuzzion.Indel::static Fuzzion.IndelSubstringMatch BestSubstringMatch<T>(System.ReadOnlySpan<T> pattern, System.ReadOnlySpan<T> text)
+Fuzzion.Indel::static System.Double BlockNormalizedDistance<T>(Fuzzion.Utils.IPatternMatchVector<T> s1Vector, System.ReadOnlySpan<T> s2)
+Fuzzion.Indel::static System.Double BlockNormalizedSimilarity<T>(Fuzzion.Utils.IPatternMatchVector<T> s1Vector, System.ReadOnlySpan<T> s2)
+Fuzzion.Indel::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.Indel::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Indel::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.Indel::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Indel::static System.Int32 BlockDistance<T>(Fuzzion.Utils.IPatternMatchVector<T> s1Vector, System.ReadOnlySpan<T> s2)
+Fuzzion.Indel::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.Indel::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Indel::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.Indel::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.IndelSubstringMatch::.ctor(System.Int32 distance, System.Int32 firstBestEndIndex)
+Fuzzion.IndelSubstringMatch::System.Boolean Equals(Fuzzion.IndelSubstringMatch other)
+Fuzzion.IndelSubstringMatch::System.Boolean ImprovedOverEmptyMatch { get; }
+Fuzzion.IndelSubstringMatch::System.Int32 Distance { get; }
+Fuzzion.IndelSubstringMatch::System.Int32 FirstBestEndIndex { get; }
+Fuzzion.IndelSubstringMatch::override System.Boolean Equals(System.Object obj)
+Fuzzion.IndelSubstringMatch::override System.Int32 GetHashCode()
+Fuzzion.IndelSubstringMatch::override System.String ToString()
+Fuzzion.IndelSubstringMatch::static System.Boolean op_Equality(Fuzzion.IndelSubstringMatch left, Fuzzion.IndelSubstringMatch right)
+Fuzzion.IndelSubstringMatch::static System.Boolean op_Inequality(Fuzzion.IndelSubstringMatch left, Fuzzion.IndelSubstringMatch right)
+Fuzzion.IndelT<T>::.ctor(T[] source)
+Fuzzion.IndelT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.IndelT<T>::System.Int32 DistanceFrom(T[] value)
+Fuzzion.IndelT<T>::System.Void Dispose()
+Fuzzion.Jaccard::static System.Double Distance(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Jaccard::static System.Double Distance<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.Jaccard::static System.Double Similarity(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Jaccard::static System.Double Similarity<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.Jaro::.ctor(System.String source)
+Fuzzion.Jaro::System.Double DistanceFrom(System.String value)
+Fuzzion.Jaro::System.Double NormalizedDistanceFrom(System.String value)
+Fuzzion.Jaro::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.Jaro::System.Double SimilarityWith(System.String value)
+Fuzzion.Jaro::System.Void Dispose()
+Fuzzion.Jaro::static System.Double Distance(System.String s1, System.String s2)
+Fuzzion.Jaro::static System.Double Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Jaro::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.Jaro::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Jaro::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.Jaro::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Jaro::static System.Double Similarity(System.String s1, System.String s2)
+Fuzzion.Jaro::static System.Double Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.JaroT<T>::.ctor(T[] source)
+Fuzzion.JaroT<T>::System.Double DistanceFrom(T[] value)
+Fuzzion.JaroT<T>::System.Double NormalizedDistanceFrom(T[] value)
+Fuzzion.JaroT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.JaroT<T>::System.Double SimilarityWith(T[] value)
+Fuzzion.JaroT<T>::System.Void Dispose()
+Fuzzion.JaroWinkler::.ctor(System.String source, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::System.Double DistanceFrom(System.String value)
+Fuzzion.JaroWinkler::System.Double NormalizedDistanceFrom(System.String value)
+Fuzzion.JaroWinkler::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.JaroWinkler::System.Double SimilarityWith(System.String value)
+Fuzzion.JaroWinkler::System.Void Dispose()
+Fuzzion.JaroWinkler::static System.Double Distance(System.String s1, System.String s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double NormalizedDistance(System.String s1, System.String s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double NormalizedSimilarity(System.String s1, System.String s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double Similarity(System.String s1, System.String s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static System.Double Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinkler::static const System.Double DefaultPrefixWeight
+Fuzzion.JaroWinklerT<T>::.ctor(T[] source, System.Double prefixWeight = 0.1)
+Fuzzion.JaroWinklerT<T>::System.Double DistanceFrom(T[] value)
+Fuzzion.JaroWinklerT<T>::System.Double NormalizedDistanceFrom(T[] value)
+Fuzzion.JaroWinklerT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.JaroWinklerT<T>::System.Double SimilarityWith(T[] value)
+Fuzzion.JaroWinklerT<T>::System.Void Dispose()
+Fuzzion.Levenshtein::.ctor(System.String source)
+Fuzzion.Levenshtein::System.Int32 DistanceFrom(System.String value)
+Fuzzion.Levenshtein::System.Void Dispose()
+Fuzzion.Levenshtein::static Fuzzion.Edits.EditOps GetEditOps(System.String s1, System.String s2, System.Func<System.String, System.String> processor = null, System.Nullable<System.Int32> scoreHint = null)
+Fuzzion.Levenshtein::static Fuzzion.Edits.EditOps GetEditOps<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null, System.Nullable<System.Int32> scoreHint = null)
+Fuzzion.Levenshtein::static Fuzzion.Edits.OpCodes GetOpCodes(System.String s1, System.String s2, System.Func<System.String, System.String> processor = null)
+Fuzzion.Levenshtein::static Fuzzion.Edits.OpCodes GetOpCodes<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.Levenshtein::static System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> GetMatchingBlocks(System.ReadOnlySpan<System.Char> s1, System.ReadOnlySpan<System.Char> s2)
+Fuzzion.Levenshtein::static System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> GetMatchingBlocks<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Levenshtein::static System.Double NormalizedDistance(System.ReadOnlySpan<System.Char> source, System.ReadOnlySpan<System.Char> target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.Double NormalizedDistance(System.String source, System.String target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.Double NormalizedSimilarity(System.ReadOnlySpan<System.Char> source, System.ReadOnlySpan<System.Char> target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.Double NormalizedSimilarity(System.String source, System.String target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.Int32 Distance(System.String source, System.String target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1, System.Nullable<System.Int32> scoreCutoff = null, System.Nullable<System.Int32> scoreHint = null)
+Fuzzion.Levenshtein::static System.Int32 Distance<T>(System.ReadOnlySpan<T> source, System.ReadOnlySpan<T> target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1, System.Nullable<System.Int32> scoreCutoff = null, System.Nullable<System.Int32> scoreHint = null)
+Fuzzion.Levenshtein::static System.Int32 LevenshteinMaximum(System.Int32 len1, System.Int32 len2, System.Int32 insertCost, System.Int32 deleteCost, System.Int32 replaceCost)
+Fuzzion.Levenshtein::static System.Int32 Similarity(System.ReadOnlySpan<System.Char> source, System.ReadOnlySpan<System.Char> target, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.Int32 Similarity(System.String source, System.String s2, System.Int32 insertCost = 1, System.Int32 deleteCost = 1, System.Int32 replaceCost = 1)
+Fuzzion.Levenshtein::static System.ValueTuple<System.Int32, System.Collections.Generic.List<System.UInt64[]>, System.Collections.Generic.List<System.UInt64[]>> MatrixMultipleULongs<T>(System.ReadOnlySpan<T> pattern, System.ReadOnlySpan<T> text)
+Fuzzion.Levenshtein::static System.ValueTuple<System.Int32, System.Collections.Generic.List<System.UInt64[]>, System.Collections.Generic.List<System.UInt64[]>> MatrixSingleULong<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.LongestCommonSubsequence::.ctor(System.String source)
+Fuzzion.LongestCommonSubsequence::System.Int32 DistanceFrom(System.String value)
+Fuzzion.LongestCommonSubsequence::System.Void Dispose()
+Fuzzion.LongestCommonSubsequence::static Fuzzion.Edits.EditOps GetEditOps<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> MatchingBlocks<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Collections.Generic.List<Fuzzion.Edits.OpCode> Opcodes<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.LongestCommonSubsequence::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.LongestCommonSubsequence::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.LongestCommonSubsequence::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.LongestCommonSubsequence::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2, Fuzzion.Processor<T> processor = null)
+Fuzzion.LongestCommonSubsequence::static System.String Of(System.String s1, System.String s2)
+Fuzzion.LongestCommonSubsequence::static System.ValueTuple<System.Int32, System.Collections.Generic.List<System.UInt64[]>> Matrix<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.LongestCommonSubstring::static Fuzzion.CommonSubstring Find(System.String a, System.String b)
+Fuzzion.LongestCommonSubstring::static System.Double NormalizedDistance(System.String a, System.String b)
+Fuzzion.LongestCommonSubstring::static System.Double NormalizedSimilarity(System.String a, System.String b)
+Fuzzion.LongestCommonSubstring::static System.Int32 Similarity(System.String a, System.String b)
+Fuzzion.LongestCommonSubstring::static System.String Of(System.String a, System.String b)
+Fuzzion.Osa::.ctor(System.String source)
+Fuzzion.Osa::System.Double NormalizedDistanceFrom(System.String value)
+Fuzzion.Osa::System.Double NormalizedSimilarityWith(System.String value)
+Fuzzion.Osa::System.Int32 DistanceFrom(System.String value)
+Fuzzion.Osa::System.Int32 SimilarityWith(System.String value)
+Fuzzion.Osa::System.Void Dispose()
+Fuzzion.Osa::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.Osa::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Osa::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.Osa::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Osa::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.Osa::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Osa::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.Osa::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.OsaT<T>::.ctor(T[] source)
+Fuzzion.OsaT<T>::System.Double NormalizedDistanceFrom(T[] value)
+Fuzzion.OsaT<T>::System.Double NormalizedSimilarityWith(T[] value)
+Fuzzion.OsaT<T>::System.Int32 DistanceFrom(T[] value)
+Fuzzion.OsaT<T>::System.Int32 SimilarityWith(T[] value)
+Fuzzion.OsaT<T>::System.Void Dispose()
+Fuzzion.Overlap::static System.Double Distance(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Overlap::static System.Double Distance<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.Overlap::static System.Double Similarity(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Overlap::static System.Double Similarity<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.Postfix::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.Postfix::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Postfix::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.Postfix::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Postfix::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.Postfix::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Postfix::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.Postfix::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.PreProcess.StringPreprocessor::static System.Func<System.String, System.String> Compose(params System.Func<System.String, System.String>[] steps)
+Fuzzion.PreProcess.StringPreprocessor::static System.Func<System.String, System.String> Full { get; }
+Fuzzion.PreProcess.StringPreprocessor::static System.Func<System.String, System.String> FullUnicode { get; }
+Fuzzion.PreProcess.StringPreprocessor::static System.Func<System.String, System.String> None { get; }
+Fuzzion.PreProcess.StringPreprocessor::static System.Func<System.String, System.String> RemoveDiacritics { get; }
+Fuzzion.Prefix::static System.Double NormalizedDistance(System.String s1, System.String s2)
+Fuzzion.Prefix::static System.Double NormalizedDistance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Prefix::static System.Double NormalizedSimilarity(System.String s1, System.String s2)
+Fuzzion.Prefix::static System.Double NormalizedSimilarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Prefix::static System.Int32 Distance(System.String s1, System.String s2)
+Fuzzion.Prefix::static System.Int32 Distance<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Prefix::static System.Int32 Similarity(System.String s1, System.String s2)
+Fuzzion.Prefix::static System.Int32 Similarity<T>(System.ReadOnlySpan<T> s1, System.ReadOnlySpan<T> s2)
+Fuzzion.Process::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, params System.String[] choices)
+Fuzzion.Process::static Fuzzion.Extractor.ExtractedResult<T> ExtractOneBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static Fuzzion.Extractor.ExtractedResult<T> ExtractOneBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static Fuzzion.ProcessBuilder Configure()
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractAll(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractAllBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractAllBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSortedBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSortedBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTopBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTopBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.Process::static System.Collections.Generic.IReadOnlyList<System.String> Dedupe(System.Collections.Generic.IEnumerable<System.String> items, System.Double threshold = 70, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Func<System.String, System.String> processor = null)
+Fuzzion.Process::static System.Double[,] Cdist(System.Collections.Generic.IReadOnlyList<System.String> queries, System.Collections.Generic.IReadOnlyList<System.String> choices, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Func<System.String, System.String> processor = null, System.Double scoreCutoff = 0, System.Int32 workers = 1, System.Threading.CancellationToken cancellationToken = null)
+Fuzzion.Process::static System.Double[] Cpdist(System.Collections.Generic.IReadOnlyList<System.String> first, System.Collections.Generic.IReadOnlyList<System.String> second, Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer = null, System.Func<System.String, System.String> processor = null, System.Double scoreCutoff = 0, System.Int32 workers = 1, System.Threading.CancellationToken cancellationToken = null)
+Fuzzion.ProcessBuilder::.ctor()
+Fuzzion.ProcessBuilder::Fuzzion.CachedProcessBuilder Cached()
+Fuzzion.ProcessBuilder::Fuzzion.CachedScorerProcessBuilder Cached(Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer scorer)
+Fuzzion.ProcessBuilder::Fuzzion.ProcessBuilder Parallel(System.Threading.Tasks.ParallelOptions parallelOptions = null)
+Fuzzion.ProcessBuilder::Fuzzion.ProcessBuilder WithParallelOptions(System.Threading.Tasks.ParallelOptions parallelOptions)
+Fuzzion.ProcessBuilder::Fuzzion.ProcessBuilder WithScorer(Fuzzion.SimilarityRatio.Scorer.IRatioScorer scorer)
+Fuzzion.ProcessBuilder::Fuzzion.ProcessPipeline Build()
+Fuzzion.ProcessPipeline::Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::Fuzzion.Extractor.ExtractedResult<System.String> ExtractOne(System.String query, params System.String[] choices)
+Fuzzion.ProcessPipeline::Fuzzion.Extractor.ExtractedResult<T> ExtractOneBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::Fuzzion.Extractor.ExtractedResult<T> ExtractOneBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractAll(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractSorted(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<System.String>> ExtractTop(System.String query, System.Collections.Generic.IEnumerable<System.String> choices, System.Func<System.String, System.String> processor = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractAllBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractAllBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSortedBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractSortedBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTopBy<T>(System.String query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.ProcessPipeline::System.Collections.Generic.IEnumerable<Fuzzion.Extractor.ExtractedResult<T>> ExtractTopBy<T>(T query, System.Collections.Generic.IEnumerable<T> choices, System.Func<T, System.String> extractor, System.Func<System.String, System.String> processor = null, System.Int32 limit = 5, System.Double cutoff = 0)
+Fuzzion.Processor<T>::.ctor(System.Object object, System.IntPtr method)
+Fuzzion.Processor<T>::virtual System.IAsyncResult BeginInvoke(ref System.ReadOnlySpan<T> str, System.AsyncCallback callback, System.Object object)
+Fuzzion.Processor<T>::virtual System.Void EndInvoke(ref System.ReadOnlySpan<T> str, System.IAsyncResult result)
+Fuzzion.Processor<T>::virtual System.Void Invoke(ref System.ReadOnlySpan<T> str)
+Fuzzion.QGramMode.Multiset = 1
+Fuzzion.QGramMode.Set = 0
+Fuzzion.QGramOptions::.ctor(System.Int32 q = 2, System.Boolean pad = False, Fuzzion.QGramMode mode = Set)
+Fuzzion.QGramOptions::Fuzzion.QGramMode Mode { get; }
+Fuzzion.QGramOptions::System.Boolean Pad { get; }
+Fuzzion.QGramOptions::System.Int32 Q { get; }
+Fuzzion.QGramOptions::static Fuzzion.QGramOptions Default { get; }
+Fuzzion.QGrams::static System.Collections.Generic.IReadOnlyList<System.String> Of(System.String s, System.Int32 q = 2, System.Boolean pad = False)
+Fuzzion.RatcliffObershelp::static System.Collections.Generic.List<Fuzzion.Edits.MatchingBlock> MatchingBlocks(System.String a, System.String b, System.Boolean autoJunk = False)
+Fuzzion.RatcliffObershelp::static System.Double Distance(System.String a, System.String b, System.Boolean autoJunk = False)
+Fuzzion.RatcliffObershelp::static System.Double Similarity(System.String a, System.String b, System.Boolean autoJunk = False)
+Fuzzion.RatcliffObershelp::static const System.Int32 AutoJunkMinLength
+Fuzzion.ScoreAlignment::.ctor(System.Double score, System.Int32 sourceStart, System.Int32 sourceEnd, System.Int32 destStart, System.Int32 destEnd)
+Fuzzion.ScoreAlignment::System.Boolean Equals(Fuzzion.ScoreAlignment other)
+Fuzzion.ScoreAlignment::System.Double Score { get; }
+Fuzzion.ScoreAlignment::System.Int32 DestEnd { get; }
+Fuzzion.ScoreAlignment::System.Int32 DestStart { get; }
+Fuzzion.ScoreAlignment::System.Int32 SourceEnd { get; }
+Fuzzion.ScoreAlignment::System.Int32 SourceStart { get; }
+Fuzzion.ScoreAlignment::System.Void Deconstruct(out System.Double score, out System.Int32 sourceStart, out System.Int32 sourceEnd, out System.Int32 destStart, out System.Int32 destEnd)
+Fuzzion.ScoreAlignment::override System.Boolean Equals(System.Object obj)
+Fuzzion.ScoreAlignment::override System.Int32 GetHashCode()
+Fuzzion.ScoreAlignment::override System.String ToString()
+Fuzzion.ScoreAlignment::static System.Boolean op_Equality(Fuzzion.ScoreAlignment left, Fuzzion.ScoreAlignment right)
+Fuzzion.ScoreAlignment::static System.Boolean op_Inequality(Fuzzion.ScoreAlignment left, Fuzzion.ScoreAlignment right)
+Fuzzion.Scorer::.ctor(System.Object object, System.IntPtr method)
+Fuzzion.Scorer::virtual System.Double EndInvoke(System.IAsyncResult result)
+Fuzzion.Scorer::virtual System.Double Invoke(System.String input1, System.String input2)
+Fuzzion.Scorer::virtual System.IAsyncResult BeginInvoke(System.String input1, System.String input2, System.AsyncCallback callback, System.Object object)
+Fuzzion.Scorers::static Fuzzion.IDistanceScorer FromDistance(System.Func<System.String, System.String, System.Int32> distance, System.Nullable<System.Int32> maxDistance = null)
+Fuzzion.Scorers::static Fuzzion.IDistanceScorer Levenshtein(System.Nullable<System.Int32> maxDistance = null)
+Fuzzion.Scorers::static Fuzzion.SimilarityRatio.Scorer.IRatioScorer FromSimilarity(System.Func<System.String, System.String, System.Double> similarity)
+Fuzzion.SimilarityMetric.DamerauLevenshtein = 1
+Fuzzion.SimilarityMetric.Hamming = 4
+Fuzzion.SimilarityMetric.Indel = 3
+Fuzzion.SimilarityMetric.Jaccard = 9
+Fuzzion.SimilarityMetric.Jaro = 5
+Fuzzion.SimilarityMetric.JaroWinkler = 6
+Fuzzion.SimilarityMetric.Levenshtein = 0
+Fuzzion.SimilarityMetric.LongestCommonSubsequence = 7
+Fuzzion.SimilarityMetric.LongestCommonSubstring = 8
+Fuzzion.SimilarityMetric.Osa = 2
+Fuzzion.SimilarityMetric.Overlap = 11
+Fuzzion.SimilarityMetric.RatcliffObershelp = 13
+Fuzzion.SimilarityMetric.SorensenDice = 10
+Fuzzion.SimilarityMetric.Tanimoto = 12
+Fuzzion.SimilarityRatio.Scorer.Composite.CachedWeightedRatioScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.Composite.CachedWeightedRatioScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.Composite.CachedWeightedRatioScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.Composite.WeightedRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.Composite.WeightedRatioScorer::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.Generic.CachedScorerBase<T>::.ctor()
+Fuzzion.SimilarityRatio.Scorer.Generic.CachedScorerBase<T>::abstract System.Double Score(T[] input2)
+Fuzzion.SimilarityRatio.Scorer.Generic.ICachedRatioScorer<T>::abstract System.Double Score(T[] input2)
+Fuzzion.SimilarityRatio.Scorer.Generic.IRatioScorer<T>::abstract System.Double Score(T[] input1, T[] input2)
+Fuzzion.SimilarityRatio.Scorer.Generic.ScorerBase<T>::.ctor()
+Fuzzion.SimilarityRatio.Scorer.Generic.ScorerBase<T>::abstract System.Double Score(T[] input1, T[] input2)
+Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer::abstract System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.IRatioScorer::abstract System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.IRatioScorer::abstract System.Double Score(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.SimilarityRatio.Scorer.ScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.ScorerBase::System.Double Score(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.SimilarityRatio.Scorer.ScorerBase::abstract System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.ApproximateSubstringRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.ApproximateSubstringRatioScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedApproximateSubstringRatioScorer::.ctor(System.String input1, System.Func<System.String, System.String> preprocessor = null)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedApproximateSubstringRatioScorer::override System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedApproximateSubstringRatioScorer::protected override Fuzzion.CachedScorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedDefaultRatioScorer::.ctor(Fuzzion.SimilarityRatio.Strategy.ICachedStrategy strategy, System.Boolean isStrategyOwner = False)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedDefaultRatioScorer::.ctor(System.String input1, System.Func<System.String, System.String> preprocessor = null)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedDefaultRatioScorer::override System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedDefaultRatioScorer::protected override Fuzzion.CachedScorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialRatioScorer::.ctor(System.String input1, System.Func<System.String, System.String> preprocessor = null)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialRatioScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialRatioScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenRatioScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenRatioScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenRatioScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSetScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSetScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSortScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSortScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSortScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedQRatioScorer::.ctor(System.String input1, System.Func<System.String, System.String> preprocessor = null)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedQRatioScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedQRatioScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase::abstract System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase::protected abstract Fuzzion.CachedScorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenDifferenceScorer::.ctor(System.String input1, System.Func<System.String, System.String> preprocessor = null)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenDifferenceScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenDifferenceScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenRatioScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenRatioScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenRatioScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase::protected abstract Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSortScorer::.ctor(Fuzzion.SimilarityRatio.Strategy.ICachedStrategy strategy, System.Boolean isStrategyOwner = False)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSortScorer::.ctor(System.String input1)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSortScorer::System.Double Score(System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSortScorer::System.Void Dispose()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.DefaultRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.DefaultRatioScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.Generic.StrategySensitiveScorerBase<T>::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.Generic.StrategySensitiveScorerBase<T>::protected abstract System.Func<T[], T[], System.Double> Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialRatioScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenAbbreviationScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenAbbreviationScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenDifferenceScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenDifferenceScorer::protected override System.Func<System.String[], System.String[], System.Double> Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenInitialismScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenInitialismScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenRatioScorer::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSetScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSetScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSortScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSortScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.QRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.QRatioScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase::protected abstract Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorerBase::override System.Double Score(System.String shorter, System.String longer)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorer::protected override System.Func<System.String[], System.String[], System.Double> Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase::System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase::System.Double Score(System.String input1, System.String input2, System.Func<System.String, System.String> preprocessor)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase::override System.Double Score(System.String[] input1, System.String[] input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorerBase::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenRatioScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenRatioScorer::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorerBase::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorer::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorer::protected override Fuzzion.Scorer Scorer { get; }
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorerBase::.ctor()
+Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorerBase::override System.Double Score(System.String input1, System.String input2)
+Fuzzion.SimilarityRatio.ScorerCache::static Fuzzion.SimilarityRatio.Scorer.IRatioScorer Get<T>()
+Fuzzion.SimilarityRatio.Strategy.ICachedStrategy::abstract System.Double Calculate(System.String input2)
+Fuzzion.SimilarityTolerance.Normal = 1
+Fuzzion.SimilarityTolerance.Strong = 0
+Fuzzion.SimilarityTolerance.Weak = 2
+Fuzzion.SorensenDice::static System.Double Distance(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.SorensenDice::static System.Double Distance<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.SorensenDice::static System.Double Similarity(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.SorensenDice::static System.Double Similarity<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b, Fuzzion.QGramMode mode = Set)
+Fuzzion.StringSimilarity::static System.Boolean ApproximatelyEquals(System.String a, System.String b, Fuzzion.SimilarityTolerance tolerance, params Fuzzion.SimilarityMetric[] metrics)
+Fuzzion.StringSimilarity::static System.Boolean ApproximatelyEquals(System.String a, System.String b, System.Double threshold, System.Boolean caseSensitive, params Fuzzion.SimilarityMetric[] metrics)
+Fuzzion.StringSimilarity::static System.Boolean ApproximatelyEquals(System.String a, System.String b, System.Double threshold, params Fuzzion.SimilarityMetric[] metrics)
+Fuzzion.StringSimilarity::static System.Double AverageSimilarity(System.String a, System.String b, System.Boolean caseSensitive, params Fuzzion.SimilarityMetric[] metrics)
+Fuzzion.StringSimilarity::static System.Double NormalizedSimilarity(System.String a, System.String b, Fuzzion.SimilarityMetric metric)
+Fuzzion.StringSimilarity::static System.Double Threshold(Fuzzion.SimilarityTolerance tolerance)
+Fuzzion.Tanimoto::static System.Double Distance(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Tanimoto::static System.Double Distance<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b)
+Fuzzion.Tanimoto::static System.Double Similarity(System.String a, System.String b, Fuzzion.QGramOptions options = null)
+Fuzzion.Tanimoto::static System.Double Similarity<T>(System.Collections.Generic.IEnumerable<T> a, System.Collections.Generic.IEnumerable<T> b)
+Fuzzion.Utils.Heap<T>::.ctor()
+Fuzzion.Utils.Heap<T>::.ctor(System.Collections.Generic.Comparer<T> comparer)
+Fuzzion.Utils.Heap<T>::.ctor(System.Collections.Generic.IEnumerable<T> collection)
+Fuzzion.Utils.Heap<T>::.ctor(System.Collections.Generic.IEnumerable<T> collection, System.Collections.Generic.Comparer<T> comparer)
+Fuzzion.Utils.Heap<T>::System.Collections.Generic.IEnumerator<T> GetEnumerator()
+Fuzzion.Utils.Heap<T>::System.Int32 Capacity { get; }
+Fuzzion.Utils.Heap<T>::System.Int32 Count { get; }
+Fuzzion.Utils.Heap<T>::System.Void Add(T item)
+Fuzzion.Utils.Heap<T>::T ExtractDominating()
+Fuzzion.Utils.Heap<T>::T GetMin()
+Fuzzion.Utils.Heap<T>::protected System.Collections.Generic.Comparer<T> Comparer { get; }
+Fuzzion.Utils.Heap<T>::protected abstract System.Boolean Dominates(T x, T y)
+Fuzzion.Utils.IPatternMatchVector<TKey>::abstract System.Boolean ContainsKey(TKey key)
+Fuzzion.Utils.IPatternMatchVector<TKey>::abstract System.Int32 Blocks { get; }
+Fuzzion.Utils.IPatternMatchVector<TKey>::abstract System.Int32 Length { get; }
+Fuzzion.Utils.IPatternMatchVector<TKey>::abstract System.ReadOnlySpan<System.UInt64> GetOrZero(TKey key)
+Fuzzion.Utils.MinHeap<T>::.ctor()
+Fuzzion.Utils.MinHeap<T>::.ctor(System.Collections.Generic.Comparer<T> comparer)
+Fuzzion.Utils.MinHeap<T>::.ctor(System.Collections.Generic.IEnumerable<T> collection)
+Fuzzion.Utils.MinHeap<T>::.ctor(System.Collections.Generic.IEnumerable<T> collection, System.Collections.Generic.Comparer<T> comparer)
+Fuzzion.Utils.MinHeap<T>::protected override System.Boolean Dominates(T x, T y)
+Fuzzion.Utils.PatternMatchVector::.ctor()
+Fuzzion.Utils.PatternMatchVector::static Fuzzion.Utils.IPatternMatchVector<T> Create<T>(System.ReadOnlySpan<T> source)
+Fuzzion.Utils.Permutation::static System.Boolean IsPermutationOf<T>(System.Collections.Generic.IEnumerable<T> set, System.Collections.Generic.IEnumerable<T> other)
+Fuzzion.Utils.Permutation::static System.Collections.Generic.IEnumerable<System.Collections.Generic.List<T>> Cycles<T>(System.Collections.Generic.IEnumerable<T> seed)
+Fuzzion.Utils.Permutation::static System.Collections.Generic.IEnumerable<System.Collections.Generic.List<T>> PermutationsOfSize<T>(System.Collections.Generic.List<T> seed, System.Int32 size)
+Fuzzion.Utils.Permutor<T>::.ctor(System.Collections.Generic.IEnumerable<T> set)
+Fuzzion.Utils.Permutor<T>::System.Boolean NextPermutation(System.Collections.Generic.List<T> set)
+Fuzzion.Utils.Permutor<T>::System.Collections.Generic.List<T> NextPermutation()
+Fuzzion.Utils.Permutor<T>::System.Collections.Generic.List<T> PermutationAt(System.Int64 i)
+abstract class Fuzzion.SimilarityRatio.Scorer.Generic.CachedScorerBase<T> : Fuzzion.SimilarityRatio.Scorer.Generic.ICachedRatioScorer<T>
+abstract class Fuzzion.SimilarityRatio.Scorer.Generic.ScorerBase<T> : Fuzzion.SimilarityRatio.Scorer.Generic.IRatioScorer<T>
+abstract class Fuzzion.SimilarityRatio.Scorer.ScorerBase : Fuzzion.SimilarityRatio.Scorer.IRatioScorer
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.Generic.StrategySensitiveScorerBase<T> : Fuzzion.SimilarityRatio.Scorer.Generic.ScorerBase<T>
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase : Fuzzion.SimilarityRatio.Scorer.ScorerBase
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.Generic.StrategySensitiveScorerBase<System.String>, Fuzzion.SimilarityRatio.Scorer.IRatioScorer
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase
+abstract class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorerBase : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.StrategySensitiveScorerBase
+abstract class Fuzzion.Utils.Heap<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.IEnumerable
+class Fuzzion.Edits.EditOp : System.IEquatable<Fuzzion.Edits.EditOp>
+class Fuzzion.Edits.MatchingBlock : System.IEquatable<Fuzzion.Edits.MatchingBlock>
+class Fuzzion.Edits.OpCode
+class Fuzzion.Extractor.ExtractedResult<T> : System.IComparable<Fuzzion.Extractor.ExtractedResult<T>>
+class Fuzzion.SimilarityRatio.Scorer.Composite.WeightedRatioScorer : Fuzzion.SimilarityRatio.Scorer.ScorerBase
+class Fuzzion.Utils.MinHeap<T> : Fuzzion.Utils.Heap<T>
+class Fuzzion.Utils.Permutor<T>
+delegate Fuzzion.CachedScorer
+delegate Fuzzion.Processor<T>
+delegate Fuzzion.Scorer
+enum Fuzzion.Edits.EditType
+enum Fuzzion.QGramMode
+enum Fuzzion.SimilarityMetric
+enum Fuzzion.SimilarityTolerance
+interface Fuzzion.IDistanceScorer : Fuzzion.SimilarityRatio.Scorer.IRatioScorer
+interface Fuzzion.SimilarityRatio.Scorer.Generic.ICachedRatioScorer<T>
+interface Fuzzion.SimilarityRatio.Scorer.Generic.IRatioScorer<T>
+interface Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer : System.IDisposable
+interface Fuzzion.SimilarityRatio.Scorer.IRatioScorer
+interface Fuzzion.SimilarityRatio.Strategy.ICachedStrategy : System.IDisposable
+interface Fuzzion.Utils.IPatternMatchVector<TKey> : System.IDisposable
+readonly struct Fuzzion.CachedScorerProcessPipeline
+readonly struct Fuzzion.CommonSubstring : System.IEquatable<Fuzzion.CommonSubstring>
+readonly struct Fuzzion.IndelSubstringMatch : System.IEquatable<Fuzzion.IndelSubstringMatch>
+readonly struct Fuzzion.ProcessPipeline
+readonly struct Fuzzion.ScoreAlignment : System.IEquatable<Fuzzion.ScoreAlignment>
+sealed class Fuzzion.CachedProcessBuilder
+sealed class Fuzzion.CachedScorerProcessBuilder
+sealed class Fuzzion.DamerauLevenshtein : System.IDisposable
+sealed class Fuzzion.DamerauLevenshteinT<T> : System.IDisposable
+sealed class Fuzzion.Edits.EditOps : System.Collections.Generic.IEnumerable<Fuzzion.Edits.EditOp>, System.Collections.Generic.IReadOnlyCollection<Fuzzion.Edits.EditOp>, System.Collections.Generic.IReadOnlyList<Fuzzion.Edits.EditOp>, System.Collections.IEnumerable, System.IEquatable<Fuzzion.Edits.EditOps>
+sealed class Fuzzion.Edits.OpCodes : System.Collections.Generic.IEnumerable<Fuzzion.Edits.OpCode>, System.Collections.Generic.IReadOnlyCollection<Fuzzion.Edits.OpCode>, System.Collections.Generic.IReadOnlyList<Fuzzion.Edits.OpCode>, System.Collections.IEnumerable, System.IEquatable<Fuzzion.Edits.OpCodes>
+sealed class Fuzzion.Hamming : System.IDisposable
+sealed class Fuzzion.HammingT<T> : System.IDisposable
+sealed class Fuzzion.Indel : System.IDisposable
+sealed class Fuzzion.IndelT<T> : System.IDisposable
+sealed class Fuzzion.Jaro : System.IDisposable
+sealed class Fuzzion.JaroT<T> : System.IDisposable
+sealed class Fuzzion.JaroWinkler : System.IDisposable
+sealed class Fuzzion.JaroWinklerT<T> : System.IDisposable
+sealed class Fuzzion.Levenshtein : System.IDisposable
+sealed class Fuzzion.LongestCommonSubsequence : System.IDisposable
+sealed class Fuzzion.Osa : System.IDisposable
+sealed class Fuzzion.OsaT<T> : System.IDisposable
+sealed class Fuzzion.ProcessBuilder
+sealed class Fuzzion.QGramOptions
+sealed class Fuzzion.SimilarityRatio.Scorer.Composite.CachedWeightedRatioScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.ApproximateSubstringRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedApproximateSubstringRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedDefaultRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedSimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialRatioScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenRatioScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSetScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedPartialTokenSortScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedQRatioScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenDifferenceScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenRatioScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSetScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.CachedTokenSortScorer : Fuzzion.SimilarityRatio.Scorer.ICachedRatioScorer, System.IDisposable
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.DefaultRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenAbbreviationScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenDifferenceScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenInitialismScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenRatioScorer : Fuzzion.SimilarityRatio.Scorer.ScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSetScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.PartialTokenSortScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.QRatioScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.SimpleRatioScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenAbbreviationScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenDifferenceScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenInitialismScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenRatioScorer : Fuzzion.SimilarityRatio.Scorer.ScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSetScorerBase
+sealed class Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorer : Fuzzion.SimilarityRatio.Scorer.StrategySensitive.TokenSortScorerBase
+sealed class Fuzzion.Utils.PatternMatchVector
+static class Fuzzion.CodePoints
+static class Fuzzion.Extensions.EditOpsExtensions
+static class Fuzzion.Extensions.EnumerableExtensions
+static class Fuzzion.Extractor.ResultExtractor
+static class Fuzzion.Extractor.ResultExtractor.Cached
+static class Fuzzion.Extractor.ResultExtractor.Parallel
+static class Fuzzion.Extractor.ResultExtractor.Parallel.Cached
+static class Fuzzion.Fuzz
+static class Fuzzion.Jaccard
+static class Fuzzion.LongestCommonSubstring
+static class Fuzzion.Overlap
+static class Fuzzion.Postfix
+static class Fuzzion.PreProcess.StringPreprocessor
+static class Fuzzion.Prefix
+static class Fuzzion.Process
+static class Fuzzion.QGrams
+static class Fuzzion.RatcliffObershelp
+static class Fuzzion.Scorers
+static class Fuzzion.SimilarityRatio.ScorerCache
+static class Fuzzion.SorensenDice
+static class Fuzzion.StringSimilarity
+static class Fuzzion.Tanimoto
+static class Fuzzion.Utils.Permutation

@@ -2,8 +2,8 @@ using System;
 
 namespace Fuzzion;
 
-/// <summary>How similar two strings must be for <see cref="StringSimilarity.ApproximatelyEquals(string, string, Tolerance, SimilarityMetric[])"/>.</summary>
-public enum Tolerance
+/// <summary>How similar two strings must be for <see cref="StringSimilarity.ApproximatelyEquals(string, string, SimilarityTolerance, SimilarityMetric[])"/>.</summary>
+public enum SimilarityTolerance
 {
     /// <summary>Average normalized similarity of at least 0.90.</summary>
     Strong,
@@ -15,7 +15,7 @@ public enum Tolerance
     Weak,
 }
 
-/// <summary>A metric that <see cref="StringSimilarity.ApproximatelyEquals(string, string, Tolerance, SimilarityMetric[])"/> can combine.</summary>
+/// <summary>A metric that <see cref="StringSimilarity.ApproximatelyEquals(string, string, SimilarityTolerance, SimilarityMetric[])"/> can combine.</summary>
 public enum SimilarityMetric
 {
     /// <summary><see cref="Fuzzion.Levenshtein"/>.</summary>
@@ -51,12 +51,12 @@ public enum SimilarityMetric
 /// <summary>Combines several normalized similarities into a yes/no answer (plan item #16).</summary>
 public static class StringSimilarity
 {
-    /// <summary>The minimum average similarity for each <see cref="Tolerance"/>.</summary>
-    public static double Threshold(Tolerance tolerance) => tolerance switch
+    /// <summary>The minimum average similarity for each <see cref="SimilarityTolerance"/>.</summary>
+    public static double Threshold(SimilarityTolerance tolerance) => tolerance switch
     {
-        Tolerance.Strong => 0.90,
-        Tolerance.Normal => 0.75,
-        Tolerance.Weak => 0.60,
+        SimilarityTolerance.Strong => 0.90,
+        SimilarityTolerance.Normal => 0.75,
+        SimilarityTolerance.Weak => 0.60,
         _ => throw new ArgumentOutOfRangeException(nameof(tolerance), tolerance, null),
     };
 
@@ -65,7 +65,7 @@ public static class StringSimilarity
     /// the <paramref name="tolerance"/> threshold. Case is ignored.
     /// </summary>
     /// <exception cref="ArgumentException">No metric was given.</exception>
-    public static bool ApproximatelyEquals(this string a, string b, Tolerance tolerance, params SimilarityMetric[] metrics) =>
+    public static bool ApproximatelyEquals(this string a, string b, SimilarityTolerance tolerance, params SimilarityMetric[] metrics) =>
         ApproximatelyEquals(a, b, Threshold(tolerance), caseSensitive: false, metrics);
 
     /// <summary>
