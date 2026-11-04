@@ -19,7 +19,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 0 - Rebrand | Done |
 | 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two inherited differences, now changed to match RapidFuzz (D8, D9) |
 | 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
-| 3-9 | Not started |
+| 3 - Fuzz scorer parity | #17-#20 and #23 done. #21 and #22 open (see the note under #21) |
+| 4-9 | Not started |
 
 ---
 
@@ -605,6 +606,16 @@ that defaults to 0**, so no existing call changes. A score below the cutoff retu
 Implementations should use the cutoff to stop early (for example, skip `TokenSet` work
 in `WRatio` when the length ratio already rules out the cutoff).
 
+**Implementation note (found while doing Phase 3):** adding an *optional* parameter
+to the existing `Fuzz` methods would break method-group conversions such as
+`Func<string, string, double> f = Fuzz.Ratio;`, which callers (and Fuzzion's own tests)
+use. So add `scoreCutoff` as **separate overloads** —
+`Ratio(string, string, double scoreCutoff)` and
+`Ratio(string, string, Func<string, string> preprocessor, double scoreCutoff)` — and
+use it for early exits where it pays off (for example the length bound
+`200 * min(len) / (len1 + len2)` for `Ratio`). `Process.Extract*` already accepts
+`cutoff`, so this matters mainly for direct `Fuzz` calls.
+
 **Unit tests** (oracle values)
 
 | Test | Expected |
@@ -1127,13 +1138,13 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #7 `Indel.Similarity`
 
 ### Phase 3 - Fuzz scorers
-- [ ] #17 QRatio
-- [ ] #18 TokenRatio
-- [ ] #19 PartialTokenRatio
-- [ ] #20 PartialRatioAlignment
+- [x] #17 QRatio
+- [x] #18 TokenRatio
+- [x] #19 PartialTokenRatio
+- [x] #20 PartialRatioAlignment
 - [ ] #21 Score cutoff on scorers
 - [ ] #22 `ReadOnlySpan<char>` overloads
-- [ ] #23 Missing cached scorers
+- [x] #23 Missing cached scorers
 
 ### Phase 4 - Set-based metrics
 - [ ] #8 Q-gram helper

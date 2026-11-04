@@ -193,6 +193,9 @@ public class OracleTests
     [InlineData("partial_token_sort_ratio")]
     [InlineData("partial_token_set_ratio")]
     [InlineData("wratio")]
+    [InlineData("qratio")]
+    [InlineData("token_ratio")]
+    [InlineData("partial_token_ratio")]
     public void Oracle_Fuzz(string metric)
     {
         Func<string, string, Func<string, string>, double> scorer = metric switch
@@ -204,6 +207,9 @@ public class OracleTests
             "partial_token_sort_ratio" => Fuzz.PartialTokenSortRatio,
             "partial_token_set_ratio" => Fuzz.PartialTokenSetRatio,
             "wratio" => Fuzz.WeightedRatio,
+            "qratio" => Fuzz.QRatio,
+            "token_ratio" => Fuzz.TokenRatio,
+            "partial_token_ratio" => Fuzz.PartialTokenRatio,
             _ => throw new ArgumentOutOfRangeException(nameof(metric)),
         };
 
@@ -223,6 +229,24 @@ public class OracleTests
             {
                 check.Throws(row, metric, ex);
             }
+        }
+
+        check.Verify();
+    }
+
+    [Fact]
+    public void Oracle_PartialRatioAlignment()
+    {
+        var check = new OracleAssert("partial_ratio_alignment");
+        foreach (var row in OracleData.SentencePairs)
+        {
+            var expected = row.Numbers("partial_ratio_alignment");
+            var actual = Fuzz.PartialRatioAlignment(row.A, row.B, NoCleanup);
+            check.Equal(row, "Score", expected[0], actual.Score, OracleAssert.Score);
+            check.Equal(row, "SourceStart", expected[1], actual.SourceStart, OracleAssert.Exact);
+            check.Equal(row, "SourceEnd", expected[2], actual.SourceEnd, OracleAssert.Exact);
+            check.Equal(row, "DestStart", expected[3], actual.DestStart, OracleAssert.Exact);
+            check.Equal(row, "DestEnd", expected[4], actual.DestEnd, OracleAssert.Exact);
         }
 
         check.Verify();

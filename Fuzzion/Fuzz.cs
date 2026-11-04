@@ -1,5 +1,6 @@
 ﻿using System;
 using Fuzzion.SimilarityRatio;
+using Fuzzion.SimilarityRatio.Strategy;
 using Fuzzion.SimilarityRatio.Scorer.Composite;
 using Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
@@ -399,6 +400,88 @@ public static class Fuzz
     public static double WeightedRatio(string input1, string input2, Func<string, string> preprocessor)
     {
         return ScorerCache.Get<WeightedRatioScorer>().Score(input1, input2, preprocessor);
+    }
+    #endregion
+
+    #region QRatio
+    /// <summary>
+    /// Quick ratio: the same as <see cref="Ratio(string, string)"/>, but 0 when either
+    /// input is empty (including both). Same as RapidFuzz's <c>QRatio</c>.
+    /// </summary>
+    public static double QRatio(string input1, string input2)
+    {
+        return ScorerCache.Get<QRatioScorer>().Score(input1, input2);
+    }
+
+    /// <inheritdoc cref="QRatio(string, string)"/>
+    /// <param name="input1">The first input.</param>
+    /// <param name="input2">The second input.</param>
+    /// <param name="preprocessor">Applied to both inputs first (<see cref="PreProcess.StringPreprocessor.Full"/> when null).</param>
+    public static double QRatio(string input1, string input2, Func<string, string> preprocessor)
+    {
+        return ScorerCache.Get<QRatioScorer>().Score(input1, input2, preprocessor);
+    }
+    #endregion
+
+    #region TokenRatio
+    /// <summary>
+    /// The higher of <see cref="TokenSortRatio(string, string)"/> and
+    /// <see cref="TokenSetRatio(string, string)"/>. Same as RapidFuzz's <c>token_ratio</c>.
+    /// </summary>
+    public static double TokenRatio(string input1, string input2)
+    {
+        return ScorerCache.Get<TokenRatioScorer>().Score(input1, input2);
+    }
+
+    /// <inheritdoc cref="TokenRatio(string, string)"/>
+    /// <param name="input1">The first input.</param>
+    /// <param name="input2">The second input.</param>
+    /// <param name="preprocessor">Applied to both inputs first (<see cref="PreProcess.StringPreprocessor.Full"/> when null).</param>
+    public static double TokenRatio(string input1, string input2, Func<string, string> preprocessor)
+    {
+        return ScorerCache.Get<TokenRatioScorer>().Score(input1, input2, preprocessor);
+    }
+
+    /// <summary>
+    /// The higher of <see cref="PartialTokenSortRatio(string, string)"/> and
+    /// <see cref="PartialTokenSetRatio(string, string)"/>. Same as RapidFuzz's
+    /// <c>partial_token_ratio</c>. It is 100 whenever the inputs share a word.
+    /// </summary>
+    public static double PartialTokenRatio(string input1, string input2)
+    {
+        return ScorerCache.Get<PartialTokenRatioScorer>().Score(input1, input2);
+    }
+
+    /// <inheritdoc cref="PartialTokenRatio(string, string)"/>
+    /// <param name="input1">The first input.</param>
+    /// <param name="input2">The second input.</param>
+    /// <param name="preprocessor">Applied to both inputs first (<see cref="PreProcess.StringPreprocessor.Full"/> when null).</param>
+    public static double PartialTokenRatio(string input1, string input2, Func<string, string> preprocessor)
+    {
+        return ScorerCache.Get<PartialTokenRatioScorer>().Score(input1, input2, preprocessor);
+    }
+    #endregion
+
+    #region PartialRatioAlignment
+    /// <summary>
+    /// <see cref="PartialRatio(string, string)"/> together with where the best match was
+    /// found in each input. Same as RapidFuzz's <c>partial_ratio_alignment</c>.
+    /// Two empty inputs give <c>(100, 0, 0, 0, 0)</c>.
+    /// </summary>
+    public static ScoreAlignment PartialRatioAlignment(string input1, string input2)
+    {
+        return PartialRatioStrategy.Alignment(input1, input2);
+    }
+
+    /// <inheritdoc cref="PartialRatioAlignment(string, string)"/>
+    /// <param name="input1">The first input.</param>
+    /// <param name="input2">The second input.</param>
+    /// <param name="preprocessor">Applied to both inputs first (<see cref="PreProcess.StringPreprocessor.Full"/> when null).
+    /// Positions refer to the preprocessed strings.</param>
+    public static ScoreAlignment PartialRatioAlignment(string input1, string input2, Func<string, string> preprocessor)
+    {
+        preprocessor ??= PreProcess.StringPreprocessor.Full;
+        return PartialRatioStrategy.Alignment(preprocessor(input1), preprocessor(input2));
     }
     #endregion
 }

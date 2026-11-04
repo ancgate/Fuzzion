@@ -10,6 +10,8 @@
 - **Behavior change:** `Fuzz.Ratio` and `Fuzz.TokenSortRatio` (and the cached and generic ratio scorers) now return 100 for two empty strings, as RapidFuzz and TheFuzz do. One empty string still scores 0.
 - **Behavior change:** `Fuzz.WeightedRatio` and `CachedWeightedRatioScorer` now use `PartialTokenSortRatio` and `PartialTokenSetRatio` when one string is at least 1.5 times longer than the other, as RapidFuzz's `WRatio` does. Scores in that case are often higher, which can change `Process.Extract*` results (the default scorer). All 410 oracle sentence pairs now match RapidFuzz.
 - Fixed `CachedWeightedRatioScorer.Dispose` not disposing its token-set scorer.
+- Added `Fuzz.QRatio`, `Fuzz.TokenRatio`, `Fuzz.PartialTokenRatio` and `Fuzz.PartialRatioAlignment` (returns the new `ScoreAlignment` struct), with scorers `QRatioScorer`, `TokenRatioScorer` and `PartialTokenRatioScorer`. All match RapidFuzz on every oracle sentence pair, including alignment positions (plan items #17-#20).
+- Added cached scorers `CachedQRatioScorer`, `CachedPartialRatioScorer` (reuses the query's bit pattern when the query is the shorter input), `CachedPartialTokenSortScorer`, `CachedTokenRatioScorer` and `CachedPartialTokenRatioScorer` (plan item #23).
 - Performance: `Osa` is bit-parallel for inputs up to 64 characters (as fast as `Levenshtein`); longer inputs, `Jaro` and `DamerauLevenshtein` use straightforward algorithms for now. See the performance follow-ups in the implementation plan.
 
 ## Fuzzion 0.1.0-preview.1

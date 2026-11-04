@@ -84,6 +84,36 @@ internal static class PartialRatioStrategy<T> where T : IEquatable<T>
     }
 
     /// <summary>
+    /// Same result as <see cref="Calculate"/> for (<paramref name="query"/>, <paramref name="other"/>),
+    /// reusing the pattern vector of <paramref name="query"/> whenever the query is the
+    /// shorter (or equal-length) input.
+    /// </summary>
+    internal static double CalculateWithQueryVector(
+        IPatternMatchVector<T> queryVector,
+        ReadOnlySpan<T> query,
+        ReadOnlySpan<T> other)
+    {
+        if (query.IsEmpty || other.IsEmpty)
+        {
+            return query.IsEmpty && other.IsEmpty ? 100.0 : 0.0;
+        }
+
+        if (query.Length > other.Length)
+        {
+            return PartialRatioImpl(other, query).Score;
+        }
+
+        var res = PartialRatioImpl(queryVector, other);
+        if (res.Score < 100.0 && query.Length == other.Length)
+        {
+            var res2 = PartialRatioImpl(other, query, res.Score / 100.0);
+            return Math.Max(res.Score, res2.Score);
+        }
+
+        return res.Score;
+    }
+
+    /// <summary>
     /// C# equivalent of rapidfuzz.distance._partial_ratio_impl
     /// Assumes s1.Length <= s2.Length.
     /// </summary>

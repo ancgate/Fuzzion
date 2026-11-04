@@ -87,10 +87,13 @@ By default, `Fuzz` methods compare strings as-is. `Process` extraction methods u
 | Scorer | Use when |
 |--------|----------|
 | `Fuzz.Ratio` | You need direct similarity between two strings. |
+| `Fuzz.QRatio` | Like `Ratio`, but an empty input always scores 0 (even two empty inputs). |
 | `Fuzz.PartialRatio` | One string may be a substring or close substring of the other. |
 | `Fuzz.ApproximateSubstringRatio` | You need the best Indel-distance match of the shorter input within the longer input. |
 | `Fuzz.TokenSortRatio` | Word order should not matter. |
 | `Fuzz.TokenSetRatio` | Duplicate words or extra common words should have less impact. |
+| `Fuzz.TokenRatio` | You want the better of `TokenSortRatio` and `TokenSetRatio`. |
+| `Fuzz.PartialTokenRatio` | You want the better of the partial token scores (100 when any word is shared). |
 | `Fuzz.TokenInitialismRatio` | You need to compare an initialism with its expanded phrase. |
 | `Fuzz.TokenAbbreviationRatio` | You need abbreviation-aware matching. |
 | `Fuzz.WeightedRatio` | You want a general-purpose scorer that combines several strategies. |
@@ -194,6 +197,17 @@ Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the qu
 ```
 
 `WeightedRatio` gives the same results as RapidFuzz's `WRatio`. When one string is at least 1.5 times longer than the other, it compares the shorter one with parts of the longer one using the partial token scores. Because `PartialTokenSetRatio` is 100 whenever two strings share a word, short choices that share one common word with the query can score 85.5 (for example `"braves vs mets"` for any query containing "vs"). If that is too generous for your data, use `TokenSortRatio`, `TokenSetRatio` or `Ratio` as the scorer.
+
+### Partial Ratio Alignment
+
+`PartialRatioAlignment` returns the partial ratio together with where the best match is
+in each string:
+
+```csharp
+ScoreAlignment a = Fuzz.PartialRatioAlignment("this is a test", "yes this is a test!");
+// Score = 100, SourceStart = 0, SourceEnd = 14, DestStart = 4, DestEnd = 18
+// so "yes this is a test!".Substring(4, 14) == "this is a test"
+```
 
 ## Process Extraction
 
@@ -410,6 +424,7 @@ double score = scorer.Score("candidate string");
 
 Available cached scorers:
 - `CachedWeightedRatioScorer` -- weighted combination (default for `.Cached()`)
+- `CachedQRatioScorer`, `CachedPartialRatioScorer`, `CachedPartialTokenSortScorer`, `CachedTokenRatioScorer`, `CachedPartialTokenRatioScorer`
 - `CachedDefaultRatioScorer` -- simple Levenshtein ratio
 - `CachedApproximateSubstringRatioScorer` -- approximate substring Indel ratio
 - `CachedTokenSortScorer` -- token sort ratio

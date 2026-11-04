@@ -13,4 +13,11 @@ internal static class PartialRatioStrategy
     {
         return PartialRatioStrategy<char>.Calculate(input1.AsSpan(), input2.AsSpan());
     }
+
+    /// <summary>The best partial alignment of the two inputs, with its score.</summary>
+    public static ScoreAlignment Alignment(string input1, string input2)
+    {
+        var a = PartialRatioStrategy<char>.PartialRatioAlignment(input1.AsSpan(), input2.AsSpan());
+        return new ScoreAlignment(a.Score, a.SrcStart, a.SrcEnd, a.DestStart, a.DestEnd);
+    }
 }
