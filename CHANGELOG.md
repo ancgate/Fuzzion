@@ -25,7 +25,11 @@
 - **Fixed:** token scorers (`TokenSortRatio`, `TokenSetRatio`, their partial and cached versions, and `WeightedRatio`) sorted words with the current culture, so results differed from RapidFuzz for mixed-case or accented words and could change with the machine's culture (`TokenSortRatio("Zoo apple", "apple zoo")` was 88.9, now 55.6 as in RapidFuzz). Words are now sorted ordinally. Inherited from Raffinert.FuzzySharp.
 - Added `StringPreprocessor.RemoveDiacritics`, `StringPreprocessor.Compose` and `StringPreprocessor.FullUnicode` (matches RapidFuzz's `default_process`, including numbers like `²`/`½`, `İ`→`i`, and characters outside the BMP) (plan items #31, #32).
 - Added `CodePoints` (`Compare`, `Scorer`, `Count`, `Of`): compares whole Unicode characters with any metric, so emoji and other characters outside the BMP count once, as in RapidFuzz (plan item #31).
-- Performance: `Osa` is bit-parallel for inputs up to 64 characters (as fast as `Levenshtein`); longer inputs, `Jaro` and `DamerauLevenshtein` use straightforward algorithms for now. See the performance follow-ups in the implementation plan.
+- Performance (Phase 8, see [docs/benchmarks.md](docs/benchmarks.md)):
+  - `Process.Cdist` with `Ratio` or `QRatio` scores choices of up to 64 characters many at a time with SIMD (`System.Numerics.Vector<T>`, .NET Core 3.0+), with results identical to the scalar path: 3-4x faster and 2.5-6.5x less memory for 100 × 2,000 strings (plan item #33).
+  - `Osa` is bit-parallel at every length (multi-word above 64 characters): about 2x the cost of `Levenshtein` instead of 38-67x (P8.1).
+  - `Jaro` / `JaroWinkler` use a bit-parallel algorithm when both inputs fit in 64 characters after trimming to the match window (P8.2).
+  - `DamerauLevenshtein` on strings uses an array instead of a dictionary for characters below 256: 1.7-2x faster (P8.3).
 
 ## Fuzzion 0.1.0-preview.1
 

@@ -24,7 +24,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 5 - Process | Done (see the implementation note under #26) |
 | 6 - Edit operations | Done |
 | 7 - Unicode | Done (see the implementation note under #31) |
-| 8-9 | Not started |
+| 8 - Performance | Mostly done: #33 (Cdist Ratio/QRatio), P8.1, P8.2 (single-word), P8.3, #34. Open: multi-word Jaro, Jaro instance caching, SIMD for Extract*/distances, CI regression job. See docs/benchmarks.md |
+| 9 | Not started |
 
 ---
 
@@ -1073,6 +1074,13 @@ Fuzzion has no SIMD; its only hardware-assisted operation is `PopCount`.
 
 **Size:** L
 
+**Implementation note (as built):** `Utils/BatchRatio.cs` uses `System.Numerics.Vector<T>`
+(.NET Core 3.0+; other targets use the scalar path) with 8/16/32/64-bit lanes and the
+bit-parallel LCS step, for `Cdist` with `Ratio` or `QRatio`. The choices' bit tables are
+built once and reused for every query row. Results are bit-for-bit identical to the
+scalar path. Not done: `Extract*` (one query per call, so less to gain) and Levenshtein
+or other distance scorers (a distance scorer wraps an arbitrary function).
+
 **Unit tests**
 
 | Test | Assertion |
@@ -1102,6 +1110,15 @@ random strings (time relative to `Levenshtein.Distance` on the same input):
 | P8.4 | Real caching in the `Jaro`, `JaroWinkler` and `DamerauLevenshtein` instance classes (today they store the source and call the static method) | `CachedJaro`, `CachedJaroWinkler` in rapidfuzz-cpp | M |
 
 Each follow-up must keep every oracle and contract test passing.
+
+**Status (as built):**
+
+| # | Status |
+|---|---|
+| P8.1 | Done. `Osa` uses `osa_hyrroe2003_block` above 64 characters; the table fallback is gone. ~2x Levenshtein at 256 (was 38x). |
+| P8.2 | Partly done: the single-word bit-parallel path (both inputs ≤ 64 after trimming to the match window, plus the shared prefix shortcut). Longer inputs still use the scalar algorithm; the multi-word port (`flag_similar_characters_block`) is open. |
+| P8.3 | Done for strings: array for characters below 256 (per-thread, no allocation) plus a dictionary for the rest; 1.7-2x faster. 16-bit rows were not needed. Generic `ReadOnlySpan<T>` keeps the dictionary. |
+| P8.4 | Partly done: the `Osa` instance reuses its bit pattern at every length, and the `DamerauLevenshtein` instance uses the fast string path. `Jaro` / `JaroWinkler` instances still call the static method (caching the pattern needs care because the match window trims the source per comparison). |
 
 ### #34 Benchmarks
 
@@ -1203,9 +1220,9 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #32 `RemoveDiacritics` and `Compose`
 
 ### Phase 8 - Performance
-- [ ] #33 SIMD batch scoring
-- [ ] #34 Benchmarks for everything (Phase 2 metrics done: `DistanceMetricsBenchmarks`)
-- [ ] P8.1-P8.4 Phase 2 performance follow-ups
+- [x] #33 SIMD batch scoring (`Cdist` with `Ratio`/`QRatio`)
+- [x] #34 Benchmarks (`docs/benchmarks.md`; CI regression job not added)
+- [ ] P8.1-P8.4 Phase 2 performance follow-ups (P8.1 and P8.3 done; P8.2 and P8.4 partly, see the status table)
 
 ### Definition of done (every item)
 - [ ] Public API has XML docs

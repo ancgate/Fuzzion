@@ -5,8 +5,7 @@ namespace Fuzzion;
 
 /// <summary>
 /// OSA distance against one fixed source string. Create it once and compare it with
-/// many values: when the source has at most 64 characters its bit pattern is built
-/// once and reused. Results equal the static methods. Dispose it when done.
+/// many values: its bit pattern is built once and reused. Results equal the static methods. Dispose it when done.
 /// </summary>
 public sealed partial class Osa : IDisposable
 {
@@ -17,7 +16,7 @@ public sealed partial class Osa : IDisposable
     public Osa(string source)
     {
         _source = source ?? throw new ArgumentNullException(nameof(source));
-        if (source.Length is > 0 and <= 64)
+        if (source.Length > 0)
         {
             _pattern = PatternMatchVector.Create(source.AsSpan());
         }
@@ -28,11 +27,13 @@ public sealed partial class Osa : IDisposable
     {
         if (_pattern == null || value.Length < _source.Length)
         {
-            // Empty or long source, or a shorter value (which should be the pattern).
+            // Empty source, or a shorter value (which should be the pattern).
             return Distance(_source.AsSpan(), value.AsSpan());
         }
 
-        return DistanceHyrroe2003(_pattern, value.AsSpan());
+        return _source.Length <= 64
+            ? DistanceHyrroe2003(_pattern, value.AsSpan())
+            : DistanceHyrroe2003Block(_pattern, value.AsSpan());
     }
 
     /// <summary>Similarity of the source and <paramref name="value"/>.</summary>

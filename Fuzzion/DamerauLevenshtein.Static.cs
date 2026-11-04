@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Fuzzion.Utils;
 
 namespace Fuzzion;
@@ -15,7 +16,19 @@ namespace Fuzzion;
 public sealed partial class DamerauLevenshtein
 {
     /// <summary>Minimum number of Damerau-Levenshtein edits.</summary>
-    public static int Distance(string s1, string s2) => Distance(s1.AsSpan(), s2.AsSpan());
+    public static int Distance(string s1, string s2)
+    {
+        var a = s1.AsSpan();
+        var b = s2.AsSpan();
+        SequenceUtils.TrimCommonAffix(ref a, ref b);
+
+        if (a.IsEmpty) return b.Length;
+        if (b.IsEmpty) return a.Length;
+
+        // Strings use an array for characters below 256 instead of a dictionary lookup per cell.
+        var lastRow = new CharLastRow();
+        return DistanceZhao(a, b, ref lastRow);
+    }
 
     /// <inheritdoc cref="Distance(string, string)"/>
     public static int Distance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T>
@@ -33,37 +46,88 @@ public sealed partial class DamerauLevenshtein
             return s1.Length;
         }
 
-        return DistanceZhao(s1, s2);
+        var lastRow = new GenericLastRow<T>();
+        return DistanceZhao(s1, s2, ref lastRow);
     }
 
     /// <summary><c>max(len1, len2) - Distance</c>.</summary>
-    public static int Similarity(string s1, string s2) => Similarity(s1.AsSpan(), s2.AsSpan());
+    public static int Similarity(string s1, string s2) => Math.Max(s1.Length, s2.Length) - Distance(s1, s2);
 
     /// <inheritdoc cref="Similarity(string, string)"/>
     public static int Similarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         Math.Max(s1.Length, s2.Length) - Distance(s1, s2);
 
     /// <summary>Distance divided by the longer length, from 0 (equal) to 1.</summary>
-    public static double NormalizedDistance(string s1, string s2) => NormalizedDistance(s1.AsSpan(), s2.AsSpan());
+    public static double NormalizedDistance(string s1, string s2) => DistanceMath.Normalize(Distance(s1, s2), Math.Max(s1.Length, s2.Length));
 
     /// <inheritdoc cref="NormalizedDistance(string, string)"/>
     public static double NormalizedDistance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         DistanceMath.Normalize(Distance(s1, s2), Math.Max(s1.Length, s2.Length));
 
     /// <summary><c>1 - NormalizedDistance</c>, from 0 to 1 (equal).</summary>
-    public static double NormalizedSimilarity(string s1, string s2) => NormalizedSimilarity(s1.AsSpan(), s2.AsSpan());
+    public static double NormalizedSimilarity(string s1, string s2) => 1.0 - NormalizedDistance(s1, s2);
 
     /// <inheritdoc cref="NormalizedSimilarity(string, string)"/>
     public static double NormalizedSimilarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         1.0 - NormalizedDistance(s1, s2);
 
-    private static int DistanceZhao<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T>
+    /// <summary>Row of the last occurrence of each element of s1 seen so far (-1 when none).</summary>
+    private interface ILastRow<in T>
+    {
+        int Get(T key);
+        void Set(T key, int row);
+    }
+
+    private struct GenericLastRow<T> : ILastRow<T> where T : notnull
+    {
+        private readonly Dictionary<T, int> _rows;
+
+        public GenericLastRow() => _rows = new Dictionary<T, int>();
+
+        public int Get(T key) => _rows.TryGetValue(key, out var row) ? row : -1;
+
+        public void Set(T key, int row) => _rows[key] = row;
+    }
+
+    private struct CharLastRow : ILastRow<char>
+    {
+        // One table per thread, reset on each use, so no allocation per call.
+        [ThreadStatic] private static int[] _sharedLatin1;
+
+        private readonly int[] _latin1;
+        private Dictionary<char, int> _other;
+
+        public CharLastRow()
+        {
+            _latin1 = _sharedLatin1 ??= new int[256];
+            _latin1.AsSpan().Fill(-1);
+            _other = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Get(char key) =>
+            key < 256 ? _latin1[key] : _other != null && _other.TryGetValue(key, out var row) ? row : -1;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(char key, int row)
+        {
+            if (key < 256)
+            {
+                _latin1[key] = row;
+            }
+            else
+            {
+                (_other ??= new Dictionary<char, int>())[key] = row;
+            }
+        }
+    }
+
+    private static int DistanceZhao<T, TLastRow>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, ref TLastRow lastRowId)
+        where T : notnull, IEquatable<T>
+        where TLastRow : struct, ILastRow<T>
     {
         var maxValue = Math.Max(s1.Length, s2.Length) + 1;
         var size = s2.Length + 2;
-
-        // Row of the last occurrence of each element of s1 seen so far.
-        var lastRowId = new Dictionary<T, int>();
 
         var rented = ArrayPool<int>.Shared.Rent(size * 3);
         try
@@ -92,10 +156,11 @@ public sealed partial class DamerauLevenshtein
                 var lastI2L1 = r[0];
                 r[0] = i;
                 var t = maxValue;
+                var current = s1[i - 1];
 
                 for (var j = 1; j <= s2.Length; j++)
                 {
-                    var equal = s1[i - 1].Equals(s2[j - 1]);
+                    var equal = current.Equals(s2[j - 1]);
                     var diag = r1[j - 1] + (equal ? 0 : 1);
                     var left = r[j - 1] + 1;
                     var up = r1[j] + 1;
@@ -109,7 +174,7 @@ public sealed partial class DamerauLevenshtein
                     }
                     else
                     {
-                        var k = lastRowId.TryGetValue(s2[j - 1], out var row) ? row : -1;
+                        var k = lastRowId.Get(s2[j - 1]);
                         var l = lastColId;
 
                         if (j - l == 1)
@@ -126,7 +191,7 @@ public sealed partial class DamerauLevenshtein
                     r[j] = temp;
                 }
 
-                lastRowId[s1[i - 1]] = i;
+                lastRowId.Set(current, i);
             }
 
             return r[s2.Length];

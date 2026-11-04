@@ -694,6 +694,9 @@ Random words of 3 to 1024 random chars (`LevenshteinLarge.cs`):
 
 Benchmark sources are in [Fuzzion.Benchmarks](Fuzzion.Benchmarks).
 
+For Fuzzion's own Phase 8 measurements (SIMD `Cdist`, OSA, Jaro, Damerau-Levenshtein,
+Levenshtein cutoffs), see [docs/benchmarks.md](docs/benchmarks.md).
+
 ## Migration Notes
 
 ### From Raffinert.FuzzySharp v6

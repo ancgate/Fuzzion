@@ -50,6 +50,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="Fuzzion.Tests" />
+        <InternalsVisibleTo Include="Fuzzion.Benchmarks" />
     </ItemGroup>
 
 </Project>

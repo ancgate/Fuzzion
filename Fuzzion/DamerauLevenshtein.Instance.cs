@@ -11,16 +11,16 @@ public sealed partial class DamerauLevenshtein(string source) : IDisposable
     private readonly string _source = source ?? throw new ArgumentNullException(nameof(source));
 
     /// <summary>Distance from the source to <paramref name="value"/>.</summary>
-    public int DistanceFrom(string value) => DamerauLevenshtein.Distance(_source.AsSpan(), value.AsSpan());
+    public int DistanceFrom(string value) => DamerauLevenshtein.Distance(_source, value);
 
     /// <summary>Similarity of the source and <paramref name="value"/>.</summary>
-    public int SimilarityWith(string value) => DamerauLevenshtein.Similarity(_source.AsSpan(), value.AsSpan());
+    public int SimilarityWith(string value) => DamerauLevenshtein.Similarity(_source, value);
 
     /// <summary>Normalized distance from the source to <paramref name="value"/>, from 0 to 1.</summary>
-    public double NormalizedDistanceFrom(string value) => DamerauLevenshtein.NormalizedDistance(_source.AsSpan(), value.AsSpan());
+    public double NormalizedDistanceFrom(string value) => DamerauLevenshtein.NormalizedDistance(_source, value);
 
     /// <summary>Normalized similarity of the source and <paramref name="value"/>, from 0 to 1.</summary>
-    public double NormalizedSimilarityWith(string value) => DamerauLevenshtein.NormalizedSimilarity(_source.AsSpan(), value.AsSpan());
+    public double NormalizedSimilarityWith(string value) => DamerauLevenshtein.NormalizedSimilarity(_source, value);
 
     /// <inheritdoc/>
     public void Dispose()

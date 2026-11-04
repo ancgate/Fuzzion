@@ -26,7 +26,7 @@ public sealed partial class JaroWinkler
 
     /// <inheritdoc cref="Similarity(string, string, double)"/>
     public static double Similarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, double prefixWeight = DefaultPrefixWeight)
-        where T : IEquatable<T>
+        where T : notnull, IEquatable<T>
     {
         ValidatePrefixWeight(prefixWeight);
 
@@ -53,7 +53,7 @@ public sealed partial class JaroWinkler
 
     /// <inheritdoc cref="Distance(string, string, double)"/>
     public static double Distance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, double prefixWeight = DefaultPrefixWeight)
-        where T : IEquatable<T> =>
+        where T : notnull, IEquatable<T> =>
         1.0 - Similarity(s1, s2, prefixWeight);
 
     /// <summary>Same as <see cref="Similarity(string, string, double)"/> (already normalized).</summary>
@@ -62,7 +62,7 @@ public sealed partial class JaroWinkler
 
     /// <inheritdoc cref="NormalizedSimilarity(string, string, double)"/>
     public static double NormalizedSimilarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, double prefixWeight = DefaultPrefixWeight)
-        where T : IEquatable<T> =>
+        where T : notnull, IEquatable<T> =>
         Similarity(s1, s2, prefixWeight);
 
     /// <summary>Same as <see cref="Distance(string, string, double)"/> (already normalized).</summary>
@@ -71,7 +71,7 @@ public sealed partial class JaroWinkler
 
     /// <inheritdoc cref="NormalizedDistance(string, string, double)"/>
     public static double NormalizedDistance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, double prefixWeight = DefaultPrefixWeight)
-        where T : IEquatable<T> =>
+        where T : notnull, IEquatable<T> =>
         Distance(s1, s2, prefixWeight);
 
     internal static void ValidatePrefixWeight(double prefixWeight)

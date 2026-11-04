@@ -1,5 +1,6 @@
 using System;
 using System.Buffers;
+using Fuzzion.Utils;
 
 namespace Fuzzion;
 
@@ -19,7 +20,7 @@ public sealed partial class Jaro
     public static double Similarity(string s1, string s2) => Similarity(s1.AsSpan(), s2.AsSpan());
 
     /// <inheritdoc cref="Similarity(string, string)"/>
-    public static double Similarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : IEquatable<T>
+    public static double Similarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T>
     {
         if (s1.IsEmpty && s2.IsEmpty)
         {
@@ -56,6 +57,23 @@ public sealed partial class Jaro
             {
                 s1 = s1.Slice(0, textLength + bound);
             }
+        }
+
+        // Shared start: every character matches its partner and none is out of order.
+        var prefix = 0;
+        while (prefix < s1.Length && prefix < s2.Length && s1[prefix].Equals(s2[prefix]))
+        {
+            prefix++;
+        }
+
+        if (prefix == s1.Length || prefix == s2.Length)
+        {
+            return Calculate(patternLength, textLength, prefix, 0);
+        }
+
+        if (s1.Length - prefix <= 64 && s2.Length - prefix <= 64)
+        {
+            return SimilarityWord(s1.Slice(prefix), s2.Slice(prefix), bound, patternLength, textLength, prefix);
         }
 
         bool[] rented1 = null, rented2 = null;
@@ -123,22 +141,79 @@ public sealed partial class Jaro
     public static double Distance(string s1, string s2) => 1.0 - Similarity(s1, s2);
 
     /// <inheritdoc cref="Distance(string, string)"/>
-    public static double Distance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : IEquatable<T> =>
+    public static double Distance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         1.0 - Similarity(s1, s2);
 
     /// <summary>Same as <see cref="Similarity(string, string)"/> (Jaro is already normalized).</summary>
     public static double NormalizedSimilarity(string s1, string s2) => Similarity(s1, s2);
 
     /// <inheritdoc cref="NormalizedSimilarity(string, string)"/>
-    public static double NormalizedSimilarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : IEquatable<T> =>
+    public static double NormalizedSimilarity<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         Similarity(s1, s2);
 
     /// <summary>Same as <see cref="Distance(string, string)"/> (Jaro is already normalized).</summary>
     public static double NormalizedDistance(string s1, string s2) => Distance(s1, s2);
 
     /// <inheritdoc cref="NormalizedDistance(string, string)"/>
-    public static double NormalizedDistance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : IEquatable<T> =>
+    public static double NormalizedDistance<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : notnull, IEquatable<T> =>
         Distance(s1, s2);
+
+    /// <summary>
+    /// Bit-parallel Jaro for inputs of at most 64 elements (rapidfuzz-cpp
+    /// <c>flag_similar_characters_word</c> and <c>count_transpositions_word</c>): for each
+    /// character of <paramref name="t"/>, the lowest unmatched equal character of
+    /// <paramref name="p"/> inside the window is found with bit masks.
+    /// </summary>
+    private static double SimilarityWord<T>(ReadOnlySpan<T> p, ReadOnlySpan<T> t, int bound, int patternLength, int textLength, int commonChars)
+        where T : notnull, IEquatable<T>
+    {
+        using var pm = PatternMatchVector.Create(p);
+        ulong pFlag = 0, tFlag = 0;
+        var boundMask = LowBits(bound + 1);
+
+        var j = 0;
+        for (; j < Math.Min(bound, t.Length); j++)
+        {
+            var pmj = pm.GetOrZero(t[j])[0] & boundMask & ~pFlag;
+            pFlag |= LowestBit(pmj);
+            tFlag |= (pmj != 0 ? 1UL : 0UL) << j;
+            boundMask = (boundMask << 1) | 1;
+        }
+
+        for (; j < t.Length; j++)
+        {
+            var pmj = pm.GetOrZero(t[j])[0] & boundMask & ~pFlag;
+            pFlag |= LowestBit(pmj);
+            tFlag |= (pmj != 0 ? 1UL : 0UL) << j;
+            boundMask <<= 1;
+        }
+
+        var flagged = Utils.Polyfill.PopCount(pFlag);
+        if (commonChars + flagged == 0)
+        {
+            return 0.0;
+        }
+
+        // Matched characters of t, in order, against matched characters of p, in order.
+        var transpositions = 0;
+        while (tFlag != 0)
+        {
+            var patternFlagMask = LowestBit(pFlag);
+            if ((pm.GetOrZero(t[Utils.Polyfill.TrailingZeroCount(tFlag)])[0] & patternFlagMask) == 0)
+            {
+                transpositions++;
+            }
+
+            tFlag &= tFlag - 1;
+            pFlag ^= patternFlagMask;
+        }
+
+        return Calculate(patternLength, textLength, commonChars + flagged, transpositions);
+    }
+
+    private static ulong LowBits(int n) => n >= 64 ? ulong.MaxValue : (1UL << n) - 1;
+
+    private static ulong LowestBit(ulong x) => x & (0UL - x);
 
     private static double Calculate(int patternLength, int textLength, int commonChars, int transpositions)
     {

@@ -9,9 +9,8 @@ namespace Fuzzion;
 /// the minimum number of insertions, deletions, substitutions and swaps of two adjacent
 /// elements, where no part of the input is edited more than once. So <c>("CA", "ABC")</c>
 /// is 3 here but 2 for <see cref="DamerauLevenshtein"/>.
-/// Ported from RapidFuzz (MIT, Max Bachmann). Inputs whose shorter side fits in 64
-/// elements use the bit-parallel algorithm of Hyyrö (2003); longer ones use a three-row
-/// table (the multi-block bit-parallel version is a planned optimization).
+/// Ported from RapidFuzz (MIT, Max Bachmann): the bit-parallel algorithm of Hyyrö (2003),
+/// on one 64-bit word when the shorter input fits, otherwise on several words with carries.
 /// </summary>
 public sealed partial class Osa
 {
@@ -30,13 +29,8 @@ public sealed partial class Osa
             return s2.Length;
         }
 
-        if (s1.Length <= 64)
-        {
-            using var pattern = PatternMatchVector.Create(s1);
-            return DistanceHyrroe2003(pattern, s2);
-        }
-
-        return DistanceTable(s1, s2);
+        using var pattern = PatternMatchVector.Create(s1);
+        return s1.Length <= 64 ? DistanceHyrroe2003(pattern, s2) : DistanceHyrroe2003Block(pattern, s2);
     }
 
     /// <summary><c>max(len1, len2) - Distance</c>.</summary>
@@ -99,49 +93,99 @@ public sealed partial class Osa
         return distance;
     }
 
-    /// <summary>Classic O(n·m) OSA table with three rolling rows.</summary>
-    private static int DistanceTable<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2) where T : IEquatable<T>
+    /// <summary>
+    /// Multi-word version of <see cref="DistanceHyrroe2003{T}"/> for patterns longer than 64
+    /// elements: the same bit operations per 64-bit word, with the horizontal carries and
+    /// the transposition bit passed from one word to the next (rapidfuzz-cpp
+    /// <c>osa_hyrroe2003_block</c>).
+    /// </summary>
+    internal static int DistanceHyrroe2003Block<T>(IPatternMatchVector<T> pattern, ReadOnlySpan<T> text)
+        where T : notnull, IEquatable<T>
     {
-        var columns = s2.Length + 1;
-        var rented = ArrayPool<int>.Shared.Rent(columns * 3);
+        var words = pattern.Blocks;
+        var last = 1UL << ((pattern.Length - 1) % 64);
+        var distance = pattern.Length;
+
+        // Index 0 is a fixed zero row standing in for "the word before word 0".
+        var rented = ArrayPool<ulong>.Shared.Rent(8 * (words + 1));
         try
         {
-            var twoBack = rented.AsSpan(0, columns);
-            var previous = rented.AsSpan(columns, columns);
-            var current = rented.AsSpan(columns * 2, columns);
+            var buffer = rented.AsSpan(0, 8 * (words + 1));
+            buffer.Clear();
+            var oldVp = buffer.Slice(0, words + 1);
+            var oldVn = buffer.Slice(words + 1, words + 1);
+            var oldD0 = buffer.Slice(2 * (words + 1), words + 1);
+            var oldPm = buffer.Slice(3 * (words + 1), words + 1);
+            var newVp = buffer.Slice(4 * (words + 1), words + 1);
+            var newVn = buffer.Slice(5 * (words + 1), words + 1);
+            var newD0 = buffer.Slice(6 * (words + 1), words + 1);
+            var newPm = buffer.Slice(7 * (words + 1), words + 1);
+            oldVp.Fill(ulong.MaxValue);
+            newVp.Fill(ulong.MaxValue);
 
-            for (var j = 0; j < columns; j++)
+            foreach (var ch in text)
             {
-                previous[j] = j;
-            }
+                var masks = pattern.GetOrZero(ch);
+                var hpCarry = 1UL;
+                var hnCarry = 0UL;
 
-            for (var i = 1; i <= s1.Length; i++)
-            {
-                current[0] = i;
-                for (var j = 1; j < columns; j++)
+                for (var word = 0; word < words; word++)
                 {
-                    var cost = s1[i - 1].Equals(s2[j - 1]) ? 0 : 1;
-                    var value = Math.Min(Math.Min(previous[j] + 1, current[j - 1] + 1), previous[j - 1] + cost);
-                    if (i > 1 && j > 1 && s1[i - 1].Equals(s2[j - 2]) && s1[i - 2].Equals(s2[j - 1]))
+                    var vn = oldVn[word + 1];
+                    var vp = oldVp[word + 1];
+                    var d0 = oldD0[word + 1];
+                    var d0Last = oldD0[word];
+                    var pmOld = oldPm[word + 1];
+                    var pmLast = newPm[word];
+
+                    var pm = masks[word];
+                    var x = pm;
+                    var tr = ((((~d0) & x) << 1) | (((~d0Last) & pmLast) >> 63)) & pmOld;
+
+                    x |= hnCarry;
+                    d0 = (((x & vp) + vp) ^ vp) | x | vn | tr;
+
+                    var hp = vn | ~(d0 | vp);
+                    var hn = d0 & vp;
+
+                    if (word == words - 1)
                     {
-                        value = Math.Min(value, twoBack[j - 2] + 1);
+                        if ((hp & last) != 0) distance++;
+                        if ((hn & last) != 0) distance--;
                     }
 
-                    current[j] = value;
+                    var hpCarryIn = hpCarry;
+                    hpCarry = hp >> 63;
+                    hp = (hp << 1) | hpCarryIn;
+                    var hnCarryIn = hnCarry;
+                    hnCarry = hn >> 63;
+                    hn = (hn << 1) | hnCarryIn;
+
+                    newVp[word + 1] = hn | ~(d0 | hp);
+                    newVn[word + 1] = hp & d0;
+                    newD0[word + 1] = d0;
+                    newPm[word + 1] = pm;
                 }
 
-                // Rotate rows: twoBack <- previous <- current.
-                var spare = twoBack;
-                twoBack = previous;
-                previous = current;
-                current = spare;
+                // Swap old and new rows.
+                Swap(ref oldVp, ref newVp);
+                Swap(ref oldVn, ref newVn);
+                Swap(ref oldD0, ref newD0);
+                Swap(ref oldPm, ref newPm);
             }
 
-            return previous[columns - 1];
+            return distance;
         }
         finally
         {
-            ArrayPool<int>.Shared.Return(rented);
+            ArrayPool<ulong>.Shared.Return(rented);
         }
+    }
+
+    private static void Swap(ref Span<ulong> a, ref Span<ulong> b)
+    {
+        var t = a;
+        a = b;
+        b = t;
     }
 }

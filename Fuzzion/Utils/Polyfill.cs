@@ -19,6 +19,18 @@ internal static class Polyfill
 #endif
     }
 
+    /// <summary>Number of zero bits below the lowest set bit (64 for 0).</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int TrailingZeroCount(ulong value)
+    {
+#if NETCOREAPP3_0_OR_GREATER
+        return System.Numerics.BitOperations.TrailingZeroCount(value);
+#else
+        if (value == 0) return 64;
+        return PopCount((value & (0UL - value)) - 1);
+#endif
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ArrayFill<T>(T[] array, T value, int startIndex, int count)
     {

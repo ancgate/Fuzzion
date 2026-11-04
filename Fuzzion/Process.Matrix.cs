@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Fuzzion.SimilarityRatio;
 using Fuzzion.SimilarityRatio.Scorer;
 using Fuzzion.SimilarityRatio.Scorer.Composite;
 using Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
+using Fuzzion.Utils;
 
 namespace Fuzzion;
 
@@ -47,14 +49,42 @@ public static partial class Process
         var processedChoices = MatrixScoring.Process(choices, processor);
         var result = new double[processedQueries.Length, processedChoices.Length];
 
+        // Plain Ratio and QRatio score short choices many at a time with SIMD (plan item #33).
+        var isQRatio = scoring.Scorer is QRatioScorer;
+        var batch = scoring.Scorer is DefaultRatioScorer || isQRatio ? BatchRatio.TryCreate(processedChoices) : null;
+
         MatrixScoring.ForEachRow(processedQueries.Length, workers, cancellationToken, row =>
         {
             var query = processedQueries[row];
-            using var cached = MatrixScoring.TryCreateCached(scoring.Scorer, query);
-            for (var column = 0; column < processedChoices.Length; column++)
+            double[] batchRow = null;
+            if (batch != null)
             {
-                var raw = cached != null ? cached.Score(processedChoices[column]) : scoring.Scorer.Score(query, processedChoices[column]);
-                result[row, column] = scoring.Apply(raw);
+                batchRow = ArrayPool<double>.Shared.Rent(processedChoices.Length);
+                batch.ScoreRow(query, batchRow);
+            }
+
+            try
+            {
+                using var cached = MatrixScoring.TryCreateCached(scoring.Scorer, query);
+                for (var column = 0; column < processedChoices.Length; column++)
+                {
+                    double raw;
+                    if (batchRow != null && batch.Handled[column])
+                    {
+                        // Batched choices are never empty; QRatio is 0 for an empty query.
+                        raw = isQRatio && query.Length == 0 ? 0 : batchRow[column];
+                    }
+                    else
+                    {
+                        raw = cached != null ? cached.Score(processedChoices[column]) : scoring.Scorer.Score(query, processedChoices[column]);
+                    }
+
+                    result[row, column] = scoring.Apply(raw);
+                }
+            }
+            finally
+            {
+                if (batchRow != null) ArrayPool<double>.Shared.Return(batchRow);
             }
         });
 
