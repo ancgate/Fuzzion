@@ -1,0 +1,80 @@
+using Fuzzion.SimilarityRatio.Scorer;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Fuzzion.Extractor;
+
+public static partial class ResultExtractor
+{
+    public static class Cached
+    {
+        public static IEnumerable<ExtractedResult<T>> ExtractWithoutOrder<T>(IEnumerable<T> choices, Func<T, string> extractor, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            int index = 0;
+
+            foreach (var choice in choices)
+            {
+                double score = scorer.Score(processor(extractor(choice)));
+                if (score >= cutoff)
+                {
+                    yield return new ExtractedResult<T>(choice, score, index);
+                }
+                index++;
+            }
+        }
+
+        public static IEnumerable<ExtractedResult<string>> ExtractWithoutOrder(IEnumerable<string> choices, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            int index = 0;
+
+            foreach (var choice in choices)
+            {
+                double score = scorer.Score(processor(choice));
+                if (score >= cutoff)
+                {
+                    yield return new ExtractedResult<string>(choice, score, index);
+                }
+                index++;
+            }
+        }
+
+        public static ExtractedResult<T> ExtractOne<T>(IEnumerable<T> choices, Func<T, string> extractor, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            return ExtractOneCore(choices, choice => scorer.Score(processor(extractor(choice))), cutoff);
+        }
+
+        public static ExtractedResult<string> ExtractOne(IEnumerable<string> choices, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            return ExtractOneCore(choices, choice => scorer.Score(processor(choice)), cutoff);
+        }
+
+        public static IEnumerable<ExtractedResult<T>> ExtractSorted<T>(IEnumerable<T> choices, Func<T, string> extractor, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            return ExtractWithoutOrder(choices, extractor, processor, scorer, cutoff).OrderByDescending(r => r.Score);
+        }
+
+        public static IEnumerable<ExtractedResult<string>> ExtractSorted(IEnumerable<string> choices, Func<string, string> processor, ICachedRatioScorer scorer, double cutoff = 0)
+        {
+            return ExtractWithoutOrder(choices, processor, scorer, cutoff).OrderByDescending(r => r.Score);
+        }
+
+        public static IEnumerable<ExtractedResult<T>> ExtractTop<T>(IEnumerable<T> choices, Func<T, string> extractor, Func<string, string> processor, ICachedRatioScorer scorer, int limit, double cutoff = 0)
+        {
+            ValidateLimit(limit);
+            if (limit == 0)
+                return Enumerable.Empty<ExtractedResult<T>>();
+
+            return ExtractTopCore(choices, choice => scorer.Score(processor(extractor(choice))), limit, cutoff);
+        }
+
+        public static IEnumerable<ExtractedResult<string>> ExtractTop(IEnumerable<string> choices, Func<string, string> processor, ICachedRatioScorer scorer, int limit, double cutoff = 0)
+        {
+            ValidateLimit(limit);
+            if (limit == 0)
+                return Enumerable.Empty<ExtractedResult<string>>();
+
+            return ExtractTopCore(choices, choice => scorer.Score(processor(choice)), limit, cutoff);
+        }
+    }
+}

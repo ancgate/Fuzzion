@@ -1,5 +1,16 @@
 # Changelog
 
+## Fuzzion 0.1.0-preview.1
+
+*Rebrand of Raffinert.FuzzySharp v6.0.1 as Fuzzion*
+
+- **Breaking:** Package ID is now `Fuzzion`; assembly name is `Fuzzion`.
+- **Breaking:** Root namespace `Raffinert.FuzzySharp` is now `Fuzzion` (sub-namespaces keep their names, for example `Fuzzion.PreProcess`).
+- No behavior changes: the public API and all scores match Raffinert.FuzzySharp v6.0.1.
+- Added `THIRD-PARTY-NOTICES.md` (shipped inside the NuGet package) and the [implementation plan](docs/IMPLEMENTATION-PLAN.md).
+
+## History inherited from Raffinert.FuzzySharp
+
 ## v6.0.1
 
 - Fixed `PartialRatio` false exact matches for near-perfect long strings.

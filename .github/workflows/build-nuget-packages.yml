@@ -23,16 +23,16 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore FuzzySharp.slnx
+        run: dotnet restore Fuzzion.slnx
 
       - name: Build
-        run: dotnet build FuzzySharp.slnx --configuration Release --no-restore -p:GeneratePackageOnBuild=false
+        run: dotnet build Fuzzion.slnx --configuration Release --no-restore -p:GeneratePackageOnBuild=false
 
       - name: Test
-        run: dotnet test FuzzySharp.Test/FuzzySharp.Test.csproj --configuration Release --no-restore --no-build
+        run: dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-restore --no-build
 
       - name: Pack
-        run: dotnet pack FuzzySharp/FuzzySharp.csproj --configuration Release --no-restore --no-build --output artifacts -p:GeneratePackageOnBuild=false -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+        run: dotnet pack Fuzzion/Fuzzion.csproj --configuration Release --no-restore --no-build --output artifacts -p:GeneratePackageOnBuild=false -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
 
       - name: Upload NuGet packages
         uses: actions/upload-artifact@v4

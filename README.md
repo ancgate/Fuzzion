@@ -1,28 +1,14 @@
-﻿[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
+# Fuzzion
 
-## Terms of use<sup>[?](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
+Fuzzion is a high-performance .NET fuzzy string matching library inspired by SeatGeek's FuzzyWuzzy and RapidFuzz.
 
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
+Fuzzion is based on [Raffinert.FuzzySharp](https://github.com/Raffinert/FuzzySharp) by Yevhen Cherkes, itself based on [FuzzySharp](https://github.com/JakeBayer/FuzzySharp) by Jacob Bayer. It keeps their bit-parallel distance algorithms, [partial_ratio fixes](https://github.com/rapidfuzz/RapidFuzz/blob/main/api_differences.md#partial_ratio-implementation), cached scorers, and extraction pipelines, and extends them toward full [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz) parity plus set-based similarity metrics. See the [implementation plan](docs/IMPLEMENTATION-PLAN.md) for the roadmap.
 
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
-
-To learn more about the war and how you can help, [click here](https://stand-with-ukraine.pp.ua). Glory to Ukraine! 🇺🇦
-
-# Raffinert.FuzzySharp
-
-[![nuget version](https://img.shields.io/nuget/v/Raffinert.FuzzySharp.svg?style=flat-square)](https://www.nuget.org/packages/Raffinert.FuzzySharp)
-[![nuget downloads](https://img.shields.io/nuget/dt/Raffinert.FuzzySharp?label=Downloads)](https://www.nuget.org/packages/Raffinert.FuzzySharp)
-
-Raffinert.FuzzySharp is a high-performance .NET fuzzy string matching library inspired by SeatGeek's FuzzyWuzzy and RapidFuzz.
-
-It is a bit-parallel accelerated version of the original [FuzzySharp](https://github.com/JakeBayer/FuzzySharp), with multiple fixes to the [partial_ratio implementation](https://github.com/rapidfuzz/RapidFuzz/blob/main/api_differences.md#partial_ratio-implementation), lower-level distance APIs, cached scorers, and reusable extraction pipelines.
+> **Status:** preview (`0.x`). The public API may change between minor versions until 1.0.
 
 ## Overview
 
-Use Raffinert.FuzzySharp when you need to:
+Use Fuzzion when you need to:
 
 - Score two strings for similarity.
 - Find the best match in a list of choices.
@@ -51,18 +37,18 @@ Use Raffinert.FuzzySharp when you need to:
 ## Installation
 
 ```powershell
-Install-Package Raffinert.FuzzySharp
+Install-Package Fuzzion -Prerelease
 ```
 
 or
 
 ```bash
-dotnet add package Raffinert.FuzzySharp
+dotnet add package Fuzzion --prerelease
 ```
 
 ## Compatibility
 
-Raffinert.FuzzySharp targets:
+Fuzzion targets:
 
 - .NET Standard 2.0 and 2.1
 - .NET Framework 4.5, 4.6, 4.6.2, 4.7.2, and 4.8
@@ -502,7 +488,7 @@ Fuzz.Ratio("new york mets", "NEW YORK METS", StringPreprocessor.Full);
 
 ## Performance
 
-The distance implementations use bit-parallel algorithms designed to reduce both execution time and allocations. The table below compares naive DP Levenshtein distance calculation (baseline), original FuzzySharp, Fastenshtein, Quickenshtein, and Raffinert.FuzzySharp.
+The distance implementations use bit-parallel algorithms designed to reduce both execution time and allocations. The table below compares naive DP Levenshtein distance calculation (baseline), original FuzzySharp, Fastenshtein, Quickenshtein, and Raffinert.FuzzySharp (the code Fuzzion is based on; these results were measured upstream).
 
 Random words of 3 to 1024 random chars (`LevenshteinLarge.cs`):
 
@@ -514,13 +500,20 @@ Random words of 3 to 1024 random chars (`LevenshteinLarge.cs`):
 | [Quickenshtein](https://github.com/Turnerj/Quickenshtein)       |  12.918 ms | 12.8046 ms | 0.7019 ms |  0.06 |    0.00 |          - |          - |        12 B |       0.000 |
 | [Raffinert.FuzzySharp](https://github.com/Raffinert/FuzzySharp) |   4.970 ms |  0.3311 ms | 0.0181 ms |  0.02 |    0.00 |          - |          - |      3051 B |       0.000 |
 
-Benchmark sources are in [FuzzySharp.Benchmarks](FuzzySharp.Benchmarks).
+Benchmark sources are in [Fuzzion.Benchmarks](Fuzzion.Benchmarks).
 
 ## Migration Notes
 
+### From Raffinert.FuzzySharp v6
+
+Fuzzion 0.1 has the same API as Raffinert.FuzzySharp v6.0.1. Change the package and namespaces:
+
+- Package: `Raffinert.FuzzySharp` → `Fuzzion`
+- Namespaces: `Raffinert.FuzzySharp` → `Fuzzion` (for example `Raffinert.FuzzySharp.PreProcess` → `Fuzzion.PreProcess`)
+
 ### From original FuzzySharp
 
-The package name is `Raffinert.FuzzySharp`, and the default namespace is `Raffinert.FuzzySharp`. This package keeps the familiar FuzzyWuzzy-style API while adding faster distance implementations, fixed partial-ratio behavior, cached scorers, and the fluent process pipeline.
+The package name is `Fuzzion`, and the default namespace is `Fuzzion`. It keeps the familiar FuzzyWuzzy-style API while adding faster distance implementations, fixed partial-ratio behavior, cached scorers, and the fluent process pipeline. Also apply the v4-to-v5 and v5-to-v6 notes below.
 
 ### From Raffinert.FuzzySharp v4 to v5
 
@@ -594,12 +587,13 @@ This does not remove extraction filtering: `Process` and `ResultExtractor` still
 - [Antti Haapala (python-Levenshtein)](https://github.com/ztane)
 - [David Necas (python-Levenshtein)](http://publications.physics.muni.cz/author/yeti)
 - [Jacob Bayer (original FuzzySharp library)](https://github.com/JakeBayer/FuzzySharp)
+- [Yevhen Cherkes (Raffinert.FuzzySharp, the code base Fuzzion starts from)](https://github.com/Raffinert/FuzzySharp)
 - [Max Bachmann (RapidFuzz)](https://github.com/rapidfuzz/RapidFuzz)
 - [Mikko Ohtamaa (python-Levenshtein)](https://github.com/miohtama/python-Levenshtein)
 - [Panayiotis (Java implementation)](https://github.com/xdrop)
 
 ## Support
 
-Support the project through [GitHub Sponsors](https://github.com/sponsors/ycherkes) or via [PayPal](https://www.paypal.com/donate/?business=KXGF7CMW8Y8WJ).
+Fuzzion builds on the work of Yevhen Cherkes. You can support the upstream author through [GitHub Sponsors](https://github.com/sponsors/ycherkes).
 
-See [CHANGELOG.md](CHANGELOG.md) for release history.
+See [CHANGELOG.md](CHANGELOG.md) for release history and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) for licenses of the code Fuzzion is based on.

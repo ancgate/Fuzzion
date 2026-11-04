@@ -1,15 +1,15 @@
-# FuzzySharp Technical Context (AI oriented)
+# Fuzzion Technical Context (AI oriented)
 
 This document is derived from the code bundle at `codefetch/codebase.md`. It is intended to give an AI agent enough context to work in this repo without deep reverse engineering.
 
 ## Scope and purpose
-- Library: `Raffinert.FuzzySharp` provides fast fuzzy string matching and similarity scoring.
+- Library: `Fuzzion` provides fast fuzzy string matching and similarity scoring.
 - Entry points: `Fuzz` (single comparisons), `Process` (matching against choice sets), and `Process.Configure()` (fluent builder for pipelines).
 - Core algorithms: Indel, Levenshtein, LCS (LongestCommonSubsequence), and Partial Ratio, with bit-parallel optimizations.
 - Performance: extensive use of pooled buffers, precomputed pattern vectors, cached scorers, and optional parallel execution.
 
 ## Repository map (high signal)
-- `FuzzySharp/` core library
+- `Fuzzion/` core library
   - `Fuzz.cs` public scoring API
   - `Process.cs` extract/best-match static API + `Configure()` builder entry point
   - `ProcessBuilder.cs` fluent builders: `ProcessBuilder`, `CachedProcessBuilder`, `CachedScorerProcessBuilder`
@@ -26,21 +26,21 @@ This document is derived from the code bundle at `codefetch/codebase.md`. It is 
     - `ResultExtractor.Parallel.Cached.cs` parallel cached extraction
   - `Edits/` edit operations and matching blocks
   - `Utils/` low-level data structures and performance helpers
-- `FuzzySharp.Test/` NUnit tests
-- `FuzzySharp.Benchmarks/` BenchmarkDotNet benchmarks
+- `Fuzzion.Tests/` xUnit tests
+- `Fuzzion.Benchmarks/` BenchmarkDotNet benchmarks
 - `Directory.Build.props` imports SourceLink props
 
 ## Key namespaces
-- `Raffinert.FuzzySharp` (public API, distance classes, builder, and pipeline types)
-- `Raffinert.FuzzySharp.SimilarityRatio.*` (scorers and strategies)
-- `Raffinert.FuzzySharp.Extractor` (ResultExtractor, ExtractedResult)
-- `Raffinert.FuzzySharp.PreProcess` (PreprocessMode, StringPreprocessorFactory)
-- `Raffinert.FuzzySharp.Utils` (PatternMatchVector, Polyfill, pooled dictionary, heap, etc.)
+- `Fuzzion` (public API, distance classes, builder, and pipeline types)
+- `Fuzzion.SimilarityRatio.*` (scorers and strategies)
+- `Fuzzion.Extractor` (ResultExtractor, ExtractedResult)
+- `Fuzzion.PreProcess` (PreprocessMode, StringPreprocessorFactory)
+- `Fuzzion.Utils` (PatternMatchVector, Polyfill, pooled dictionary, heap, etc.)
 
 ## Public API entry points
 
 ### `Fuzz` (static)
-Location: `FuzzySharp/Fuzz.cs`
+Location: `Fuzzion/Fuzz.cs`
 
 Purpose: one-off similarity scores for two strings. Each method has an overload that accepts `PreprocessMode`.
 
@@ -57,7 +57,7 @@ Algorithms exposed:
 Implementation pattern: `Fuzz.*` methods fetch scorer singletons from `ScorerCache` and call `Score`.
 
 ### `Process` (static)
-Location: `FuzzySharp/Process.cs`
+Location: `Fuzzion/Process.cs`
 
 Purpose: match a query against a set of choices and return scored results.
 
@@ -80,7 +80,7 @@ Default behavior:
 - Default string processor = `PreprocessMode.Full`
 
 ### `Process.Configure()` — Fluent Builder / Pipeline API
-Location: `FuzzySharp/ProcessBuilder.cs`, `FuzzySharp/ProcessPipeline.cs`
+Location: `Fuzzion/ProcessBuilder.cs`, `Fuzzion/ProcessPipeline.cs`
 
 Purpose: build immutable, reusable pipelines with baked-in scorer, caching, and parallelism settings.
 
@@ -154,7 +154,7 @@ Process.Configure() → ProcessBuilder
 ```
 
 ### Distance APIs
-Location: `FuzzySharp/Indel.*.cs`, `FuzzySharp/Levenshtein.*.cs`, `FuzzySharp/LongestCommonSubsequence.*.cs`
+Location: `Fuzzion/Indel.*.cs`, `Fuzzion/Levenshtein.*.cs`, `Fuzzion/LongestCommonSubsequence.*.cs`
 
 Public types:
 - `Indel` (static distance/similarity + cached instance class `Indel(string)`).
@@ -194,14 +194,14 @@ Key implications:
 ## Preprocessing and tokenization
 
 ### `PreprocessMode` and `StringPreprocessorFactory`
-Location: `FuzzySharp/PreProcess/*`
+Location: `Fuzzion/PreProcess/*`
 
 Modes:
 - `Full`: lowercases, keeps only letters or digits, converts others to spaces, and trims.
 - `None`: no preprocessing.
 
 ### String token utilities
-Location: `FuzzySharp/Extensions/StringExtensions.cs`
+Location: `Fuzzion/Extensions/StringExtensions.cs`
 
 Notable helpers:
 - `ExtractTokens` splits on non-letter characters (letters only, not digits).
@@ -307,7 +307,7 @@ Disposal:
 
 ## Extractor pipeline
 
-Location: `FuzzySharp/Extractor/*`
+Location: `Fuzzion/Extractor/*`
 
 Key types:
 - `ExtractedResult<T>` contains `Value`, `Score`, and `Index` (original position).
@@ -334,7 +334,7 @@ Key types:
 ## Core distance algorithms
 
 ### Indel
-Location: `FuzzySharp/Indel.*.cs`
+Location: `Fuzzion/Indel.*.cs`
 
 Notes:
 - Indel distance = `len(s1) + len(s2) - 2 * LCS(s1, s2)`.
@@ -343,7 +343,7 @@ Notes:
 - `IndelT<T>` provides generic sequence support (`T[] where T : IEquatable<T>`).
 
 ### Levenshtein
-Location: `FuzzySharp/Levenshtein.*.cs`
+Location: `Fuzzion/Levenshtein.*.cs`
 
 Notes:
 - Uses Myers bit-parallel algorithm.
@@ -352,7 +352,7 @@ Notes:
 - Exposes edit ops and matching blocks (`GetEditOps`, `GetMatchingBlocks`).
 
 ### LongestCommonSubsequence (LCS)
-Location: `FuzzySharp/LongestCommonSubsequence.*.cs`
+Location: `Fuzzion/LongestCommonSubsequence.*.cs`
 
 Notes:
 - Bit-parallel LCS for speed.
@@ -378,38 +378,30 @@ Key primitives:
 ## Build, test, and benchmark
 
 Targets from project files:
-- Library (`FuzzySharp.csproj`): `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net45`, `net46`, `net462`, `net472`, `net48`, `NET60`, `NET80`, `NET90`, `NET10.0`
-- Tests (`FuzzySharp.Test.csproj`): `netframework4.6.2`, `netframework4.7.2`, `NET8.0`, `NET10.0`
-- Benchmarks (`FuzzySharp.Benchmarks.csproj`): `NET10.0`
+- Library (`Fuzzion/Fuzzion.csproj`): `netstandard2.0`, `netstandard2.1`, `netcoreapp3.1`, `net45`, `net46`, `net462`, `net472`, `net48`, `NET60`, `NET80`, `NET90`, `NET10.0`
+- Tests (`Fuzzion.Tests/Fuzzion.Tests.csproj`): `netframework4.6.2`, `netframework4.7.2`, `NET8.0`, `NET10.0`
+- Benchmarks (`Fuzzion.Benchmarks/Fuzzion.Benchmarks.csproj`): `NET10.0`
 
 Typical commands:
 ```
-dotnet build FuzzySharp.sln
-dotnet test FuzzySharp.Test/FuzzySharp.Test.csproj
-dotnet run --project FuzzySharp.Benchmarks/FuzzySharp.Benchmarks.csproj
+dotnet build Fuzzion.slnx
+dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj
+dotnet run --project Fuzzion.Benchmarks/Fuzzion.Benchmarks.csproj -c Release
 ```
 
 ## External dependencies (from csproj)
 
-Library (`FuzzySharp/FuzzySharp.csproj`):
-- `IndexRange` 1.0.3 (older frameworks)
-- `System.Memory` 4.5.5 (older frameworks)
-- `Meziantou.Polyfill` 1.0.49 (private assets, only for `CollectionExtensions.GetValueOrDefault`)
+Library (`Fuzzion/Fuzzion.csproj`):
+- `IndexRange`, `System.Memory` (older frameworks only)
+- `Meziantou.Polyfill` (private assets, only for `CollectionExtensions.GetValueOrDefault`)
 
-Tests (`FuzzySharp.Test/FuzzySharp.Test.csproj`):
-- `nunit` 3.14.0
-- `NUnit.Console` 3.20.1
-- `NUnit3TestAdapter` 5.0.0
-- `Microsoft.NET.Test.Sdk` 17.14.1
-- `Quickenshtein` 1.5.1
-- `FuzzySharp` 2.0.2 (package reference)
+Tests (`Fuzzion.Tests/Fuzzion.Tests.csproj`):
+- `xunit`, `xunit.runner.visualstudio`, `Microsoft.NET.Test.Sdk`
+- `Quickenshtein`
+- `FuzzySharp` 2.0.2 (the original package, used as a comparison baseline; its namespace is the bare `FuzzySharp`)
 
-Benchmarks (`FuzzySharp.Benchmarks/FuzzySharp.Benchmarks.csproj`):
-- `BenchmarkDotNet` 0.15.2
-- `Fastenshtein` 1.0.10
-- `Quickenshtein` 1.5.1
-- `FuzzySharp` 2.0.2 (package reference)
-- `Microsoft.VisualStudio.DiagnosticsHub.BenchmarkDotNetDiagnosers` 18.3.36812.1
+Benchmarks (`Fuzzion.Benchmarks/Fuzzion.Benchmarks.csproj`):
+- `BenchmarkDotNet`, `Fastenshtein`, `Quickenshtein`, `FuzzySharp` 2.0.2 (baseline)
 
 ## Notes and gotchas
 
@@ -426,11 +418,11 @@ Benchmarks (`FuzzySharp.Benchmarks/FuzzySharp.Benchmarks.csproj`):
 ## File-level starting points
 
 If you need to change behavior or add features, start here:
-- Public API: `FuzzySharp/Fuzz.cs`, `FuzzySharp/Process.cs`
-- Builder/Pipeline API: `FuzzySharp/ProcessBuilder.cs`, `FuzzySharp/ProcessPipeline.cs`
-- Internal dispatch: `FuzzySharp/ProcessExecutor.cs`, `FuzzySharp/CachedScorerProcessExecutor.cs`
+- Public API: `Fuzzion/Fuzz.cs`, `Fuzzion/Process.cs`
+- Builder/Pipeline API: `Fuzzion/ProcessBuilder.cs`, `Fuzzion/ProcessPipeline.cs`
+- Internal dispatch: `Fuzzion/ProcessExecutor.cs`, `Fuzzion/CachedScorerProcessExecutor.cs`
 - Composite behavior: `SimilarityRatio/Scorer/Composite/WeightedRatioScorer.cs`
-- Core algorithms: `FuzzySharp/Indel.*.cs`, `FuzzySharp/Levenshtein.*.cs`, `FuzzySharp/LongestCommonSubsequence.*.cs`
+- Core algorithms: `Fuzzion/Indel.*.cs`, `Fuzzion/Levenshtein.*.cs`, `Fuzzion/LongestCommonSubsequence.*.cs`
 - Token logic: `SimilarityRatio/Scorer/StrategySensitive/Token*/*`
-- Extraction pipeline: `FuzzySharp/Extractor/ResultExtractor*.cs`
-- Preprocessing: `FuzzySharp/PreProcess/StringPreprocessorFactory.cs`
+- Extraction pipeline: `Fuzzion/Extractor/ResultExtractor*.cs`
+- Preprocessing: `Fuzzion/PreProcess/StringPreprocessorFactory.cs`

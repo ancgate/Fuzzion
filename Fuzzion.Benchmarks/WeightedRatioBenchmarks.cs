@@ -1,0 +1,43 @@
+using BenchmarkDotNet.Attributes;
+using Fuzzion.SimilarityRatio.Scorer;
+using Fuzzion.SimilarityRatio.Scorer.Composite;
+using Classic = FuzzySharp;
+
+namespace Fuzzion.Benchmarks;
+
+[MemoryDiagnoser]
+[RankColumn]
+public class WeightedRatioBenchmarks
+{
+    private ICachedRatioScorer _cachedWeightedScorer = null!;
+
+    [GlobalSetup]
+    public void GlobalSetup()
+    {
+        _cachedWeightedScorer = new CachedWeightedRatioScorer("The quick brown fox jimps ofver the small lazy dog");
+    }
+
+    [Benchmark]
+    public double WeightedRatio()
+    {
+        return Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the quick brown fox jumps over the small lazy dog");
+    }
+
+    [Benchmark]
+    public double WeightedRatioClassic()
+    {
+        return Classic.Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the quick brown fox jumps over the small lazy dog");
+    }
+
+    [Benchmark]
+    public double WeightedRatioCached()
+    {
+        return new CachedWeightedRatioScorer("The quick brown fox jimps ofver the small lazy dog").Score("the quick brown fox jumps over the small lazy dog");
+    }
+
+    [Benchmark]
+    public double WeightedRatioAcrossRunsCached()
+    {
+        return _cachedWeightedScorer.Score("the quick brown fox jumps over the small lazy dog");
+    }
+}
