@@ -1,5 +1,6 @@
 ﻿using Fuzzion.Utils;
 using System;
+using Fuzzion.Edits;
 using System.Runtime.CompilerServices;
 
 namespace Fuzzion;
@@ -121,6 +122,26 @@ public sealed partial class Indel
         var dist = maximum - 2 * lcsSim;
         return dist;
     }
+
+    /// <summary>
+    /// The insertions and deletions that turn <paramref name="s1"/> into <paramref name="s2"/>
+    /// (Indel never replaces). Same as RapidFuzz's <c>Indel.editops</c>.
+    /// </summary>
+    public static EditOps GetEditOps(string s1, string s2) =>
+        LongestCommonSubsequence.GetEditOps(s1.AsSpan(), s2.AsSpan());
+
+    /// <inheritdoc cref="GetEditOps(string, string)"/>
+    public static EditOps GetEditOps<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, Processor<T> processor = null)
+        where T : IEquatable<T> =>
+        LongestCommonSubsequence.GetEditOps(s1, s2, processor);
+
+    /// <summary>The Indel edits as ranges (RapidFuzz's <c>Indel.opcodes</c>).</summary>
+    public static OpCodes GetOpCodes(string s1, string s2) => GetEditOps(s1, s2).AsOpCodes();
+
+    /// <inheritdoc cref="GetOpCodes(string, string)"/>
+    public static OpCodes GetOpCodes<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, Processor<T> processor = null)
+        where T : IEquatable<T> =>
+        GetEditOps(s1, s2, processor).AsOpCodes();
 
     /// <summary>
     /// Indel similarity: <c>len1 + len2 - Distance</c>, which is twice the length of the

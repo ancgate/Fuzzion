@@ -56,7 +56,21 @@ public sealed partial class LongestCommonSubsequence
     /// <param name="s2">Second sequence.</param>
     /// <param name="processor">Optional preprocessor for normalization.</param>
     /// <returns>Array of edit operations (EditOp).</returns>
-    public static EditOp[] GetEditOps<T>(
+    public static EditOps GetEditOps<T>(
+        ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        return new EditOps(GetEditOpsArray(s1, s2), s1.Length, s2.Length);
+    }
+
+    internal static EditOp[] GetEditOpsArray<T>(
         ReadOnlySpan<T> s1,
         ReadOnlySpan<T> s2,
         Processor<T> processor = null) where T : IEquatable<T>

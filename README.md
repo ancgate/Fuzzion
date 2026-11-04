@@ -550,6 +550,28 @@ bool same = "Jon Smith".ApproximatelyEquals("John Smith", Tolerance.Normal,
     SimilarityMetric.JaroWinkler, SimilarityMetric.Levenshtein); // true
 ```
 
+### Edit Operations
+
+`Levenshtein.GetEditOps` and `Indel.GetEditOps` return the edits that turn one string
+into the other (`EditOps`); `GetOpCodes` returns them as ranges (`OpCodes`). Both match
+RapidFuzz and can be applied, inverted and converted:
+
+```csharp
+EditOps ops = Levenshtein.GetEditOps("spam", "park");
+// DELETE(0, 0), INSERT(3, 2), REPLACE(3, 3)
+ops.Apply("spam", "park");            // "park"
+ops.Inverse().Apply("park", "spam");  // "spam"
+Levenshtein.GetOpCodes("spam", "park");
+// DELETE(0,1,0,0), EQUAL(1,3,0,2), INSERT(3,3,2,3), REPLACE(3,4,3,4)
+```
+
+`Levenshtein.Distance` also takes `scoreCutoff` (stop early and return `scoreCutoff + 1`
+when the strings are further apart) and `scoreHint` (expected distance; only affects speed):
+
+```csharp
+Levenshtein.Distance("kitten", "sitting", scoreCutoff: 2); // 3, i.e. "more than 2"
+```
+
 ### Instance Distance Classes
 
 The `Levenshtein`, `Indel`, and `LongestCommonSubsequence` classes also offer an **instance API** for one-to-many comparisons. The constructor pre-computes a bit-parallel pattern match vector from the source string, which is then reused across all subsequent calls. This avoids rebuilding the internal data structure on every comparison, giving a significant speedup when comparing one source against many targets.

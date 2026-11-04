@@ -23,9 +23,18 @@ public sealed partial class Levenshtein
     /// <param name="deleteCost">Cost of a deletion.</param>
     /// <param name="replaceCost">Cost of a replacement.</param>
     /// <returns>The Levenshtein distance.</returns>
+    /// <param name="scoreCutoff">
+    /// Largest distance of interest. When the distance is larger, the search stops early and
+    /// returns <c>scoreCutoff + 1</c> (RapidFuzz's convention). <c>null</c> = no limit.
+    /// </param>
+    /// <param name="scoreHint">
+    /// Expected distance. A good hint speeds up the search for close strings; it never
+    /// changes the result. <c>null</c> = no hint.
+    /// </param>
     public static int Distance(
         string source, string target,
-        int insertCost = 1, int deleteCost = 1, int replaceCost = 1)
+        int insertCost = 1, int deleteCost = 1, int replaceCost = 1,
+        int? scoreCutoff = null, int? scoreHint = null)
     {
         var sourceSpan = source.AsSpan();
         var targetSpan = target.AsSpan();
@@ -36,7 +45,9 @@ public sealed partial class Levenshtein
             SequenceUtils.SwapIfSourceIsLonger(ref sourceSpan, ref targetSpan);
         }
 
-        return DistanceTrimmed(sourceSpan, targetSpan, insertCost, deleteCost, replaceCost);
+        return scoreCutoff.HasValue || scoreHint.HasValue
+            ? DistanceBounded(sourceSpan, targetSpan, insertCost, deleteCost, replaceCost, scoreCutoff, scoreHint)
+            : DistanceTrimmed(sourceSpan, targetSpan, insertCost, deleteCost, replaceCost);
     }
 
     /// <summary>
@@ -50,9 +61,12 @@ public sealed partial class Levenshtein
     /// <param name="replaceCost">Cost of a replacement.</param>
     /// <returns>The Levenshtein distance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    /// <param name="scoreCutoff">Largest distance of interest; larger distances return <c>scoreCutoff + 1</c>.</param>
+    /// <param name="scoreHint">Expected distance; speeds up the search, never changes the result.</param>
     public static int Distance<T>(
         ReadOnlySpan<T> source, ReadOnlySpan<T> target,
-        int insertCost = 1, int deleteCost = 1, int replaceCost = 1) where T : IEquatable<T>
+        int insertCost = 1, int deleteCost = 1, int replaceCost = 1,
+        int? scoreCutoff = null, int? scoreHint = null) where T : IEquatable<T>
     {
         SequenceUtils.TrimCommonAffix(ref source, ref target);
 
@@ -61,7 +75,9 @@ public sealed partial class Levenshtein
             SequenceUtils.SwapIfSourceIsLonger(ref source, ref target);
         }
 
-        return DistanceTrimmed(source, target, insertCost, deleteCost, replaceCost);
+        return scoreCutoff.HasValue || scoreHint.HasValue
+            ? DistanceBounded(source, target, insertCost, deleteCost, replaceCost, scoreCutoff, scoreHint)
+            : DistanceTrimmed(source, target, insertCost, deleteCost, replaceCost);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,8 +146,8 @@ public sealed partial class Levenshtein
     /// <param name="s2">Target string.</param>
     /// <param name="processor">Optional preprocessor for normalization.</param>
     /// <param name="scoreHint">Optional score hint (ignored).</param>
-    /// <returns>Array of edit operations (EditOp).</returns>
-    public static EditOp[] GetEditOps(
+    /// <returns>The edit operations, with both lengths.</returns>
+    public static EditOps GetEditOps(
         string s1,
         string s2,
         Func<string, string> processor = null,
@@ -155,8 +171,36 @@ public sealed partial class Levenshtein
     /// <param name="s2">Target sequence.</param>
     /// <param name="processor">Optional preprocessor for normalization.</param>
     /// <param name="scoreHint">Optional score hint (ignored).</param>
-    /// <returns>Array of edit operations (EditOp).</returns>
-    public static EditOp[] GetEditOps<T>(
+    /// <returns>The edit operations, with both lengths.</returns>
+    public static EditOps GetEditOps<T>(
+        ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null,
+        int? scoreHint = null
+    ) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        return new EditOps(GetEditOpsArray(s1, s2, scoreHint: scoreHint), s1.Length, s2.Length);
+    }
+
+    /// <summary>
+    /// The edits as ranges, including the unchanged ranges in between (RapidFuzz's
+    /// <c>Levenshtein.opcodes</c>).
+    /// </summary>
+    public static OpCodes GetOpCodes(string s1, string s2, Func<string, string> processor = null) =>
+        GetEditOps(s1, s2, processor).AsOpCodes();
+
+    /// <inheritdoc cref="GetOpCodes(string, string, Func{string, string})"/>
+    public static OpCodes GetOpCodes<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, Processor<T> processor = null)
+        where T : IEquatable<T> =>
+        GetEditOps(s1, s2, processor).AsOpCodes();
+
+    internal static EditOp[] GetEditOpsArray<T>(
         ReadOnlySpan<T> s1,
         ReadOnlySpan<T> s2,
         Processor<T> processor = null,

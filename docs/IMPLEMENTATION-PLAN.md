@@ -22,7 +22,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 3 - Fuzz scorer parity | Done |
 | 4 - Set-based metrics | Done |
 | 5 - Process | Done (see the implementation note under #26) |
-| 6-9 | Not started |
+| 6 - Edit operations | Done |
+| 7-9 | Not started |
 
 ---
 
@@ -939,6 +940,12 @@ public sealed class OpCodes : IReadOnlyList<OpCode> { /* the same members, mirro
 Keep the current `EditOp[]`-returning methods for now and mark them `[Obsolete]`
 pointing to the new types; remove them before 1.0. **Size:** M
 
+**Implementation note (as built):** rather than keeping parallel `EditOp[]` methods,
+`GetEditOps` now returns `EditOps`, which has `Length` and converts implicitly to
+`EditOp[]`, so existing callers keep compiling. The old `AsOpCodes(this IEnumerable<EditOp>, ...)`
+extension is unchanged; note that it ignores `REPLACE` operations (it was written for
+Indel/LCS edits), so use `EditOps.AsOpCodes()` for Levenshtein edits.
+
 **Unit tests** (oracle: `Levenshtein.editops("spam", "park")`)
 
 | Test | Expected |
@@ -1177,9 +1184,9 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #27 `Dedupe`
 
 ### Phase 6 - Edit operations
-- [ ] #28 `EditOps` / `OpCodes` types
-- [ ] #29 Indel edit operations
-- [ ] #30 Levenshtein `scoreCutoff` / `scoreHint`
+- [x] #28 `EditOps` / `OpCodes` types
+- [x] #29 Indel edit operations
+- [x] #30 Levenshtein `scoreCutoff` / `scoreHint`
 
 ### Phase 7 - Unicode
 - [ ] #31 Code-point mode and `FullUnicode`
