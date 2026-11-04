@@ -109,6 +109,80 @@ public class OracleTests
         check.Verify();
     }
 
+    /// <summary>
+    /// Checks the four functions of a distance metric against an oracle entry.
+    /// Integer metrics are compared exactly; Jaro-style metrics within 1e-9.
+    /// </summary>
+    private static void CheckFour(
+        string metric,
+        Func<string, string, double> distance,
+        Func<string, string, double> similarity,
+        Func<string, string, double> normalizedDistance,
+        Func<string, string, double> normalizedSimilarity,
+        double distanceTolerance)
+    {
+        var check = new OracleAssert(metric);
+        foreach (var row in OracleData.CharPairs)
+        {
+            var expected = row.Four(metric);
+            check.Equal(row, "Distance", expected.Distance, distance(row.A, row.B), distanceTolerance);
+            check.Equal(row, "Similarity", expected.Similarity, similarity(row.A, row.B), distanceTolerance);
+            check.Equal(row, "NormalizedDistance", expected.NormalizedDistance, normalizedDistance(row.A, row.B), OracleAssert.Normalized);
+            check.Equal(row, "NormalizedSimilarity", expected.NormalizedSimilarity, normalizedSimilarity(row.A, row.B), OracleAssert.Normalized);
+        }
+
+        check.Verify();
+    }
+
+    [Fact]
+    public void Oracle_Hamming() => CheckFour("hamming",
+        (a, b) => Hamming.Distance(a, b), (a, b) => Hamming.Similarity(a, b),
+        (a, b) => Hamming.NormalizedDistance(a, b), (a, b) => Hamming.NormalizedSimilarity(a, b), OracleAssert.Exact);
+
+    [Fact]
+    public void Oracle_Jaro() => CheckFour("jaro",
+        Jaro.Distance, Jaro.Similarity, Jaro.NormalizedDistance, Jaro.NormalizedSimilarity, OracleAssert.Normalized);
+
+    [Theory]
+    [InlineData("jaro_winkler", 0.1)]
+    [InlineData("jaro_winkler_p02", 0.2)]
+    public void Oracle_JaroWinkler(string metric, double prefixWeight) => CheckFour(metric,
+        (a, b) => JaroWinkler.Distance(a, b, prefixWeight), (a, b) => JaroWinkler.Similarity(a, b, prefixWeight),
+        (a, b) => JaroWinkler.NormalizedDistance(a, b, prefixWeight), (a, b) => JaroWinkler.NormalizedSimilarity(a, b, prefixWeight),
+        OracleAssert.Normalized);
+
+    [Fact]
+    public void Oracle_Osa() => CheckFour("osa",
+        (a, b) => Osa.Distance(a, b), (a, b) => Osa.Similarity(a, b),
+        (a, b) => Osa.NormalizedDistance(a, b), (a, b) => Osa.NormalizedSimilarity(a, b), OracleAssert.Exact);
+
+    [Fact]
+    public void Oracle_DamerauLevenshtein() => CheckFour("damerau_levenshtein",
+        (a, b) => DamerauLevenshtein.Distance(a, b), (a, b) => DamerauLevenshtein.Similarity(a, b),
+        (a, b) => DamerauLevenshtein.NormalizedDistance(a, b), (a, b) => DamerauLevenshtein.NormalizedSimilarity(a, b), OracleAssert.Exact);
+
+    [Fact]
+    public void Oracle_Prefix() => CheckFour("prefix",
+        (a, b) => Prefix.Distance(a, b), (a, b) => Prefix.Similarity(a, b),
+        (a, b) => Prefix.NormalizedDistance(a, b), (a, b) => Prefix.NormalizedSimilarity(a, b), OracleAssert.Exact);
+
+    [Fact]
+    public void Oracle_Postfix() => CheckFour("postfix",
+        (a, b) => Postfix.Distance(a, b), (a, b) => Postfix.Similarity(a, b),
+        (a, b) => Postfix.NormalizedDistance(a, b), (a, b) => Postfix.NormalizedSimilarity(a, b), OracleAssert.Exact);
+
+    [Fact]
+    public void Oracle_IndelSimilarity()
+    {
+        var check = new OracleAssert("indel");
+        foreach (var row in OracleData.CharPairs)
+        {
+            check.Equal(row, "Similarity", row.Four("indel").Similarity, Indel.Similarity(row.A.AsSpan(), row.B.AsSpan()), OracleAssert.Exact);
+        }
+
+        check.Verify();
+    }
+
     // ---- Fuzz scorers -----------------------------------------------------------------
 
     [Theory]

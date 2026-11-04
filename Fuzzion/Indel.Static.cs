@@ -123,6 +123,23 @@ public sealed partial class Indel
     }
 
     /// <summary>
+    /// Indel similarity: <c>len1 + len2 - Distance</c>, which is twice the length of the
+    /// longest common subsequence.
+    /// </summary>
+    public static int Similarity<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        return s1.Length + s2.Length - Distance(s1, s2);
+    }
+
+    /// <summary>
     /// Computes the normalized Indel distance between two sequences, in the range [0, 1].
     /// </summary>
     /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>

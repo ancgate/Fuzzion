@@ -12,6 +12,15 @@ from, the unit tests to write, and when it counts as done. Expected test values 
 **(oracle)** were computed with Python `rapidfuzz==3.14.6`, `thefuzz==0.22.1` and the
 standard-library `difflib`. They are exact; copy them into tests as they are.
 
+## Progress
+
+| Phase | Status |
+|---|---|
+| 0 - Rebrand | Done |
+| 1 - Oracle and PR #31 | Done. The oracle found two inherited bugs (fixed) and two deliberate differences (see `docs/known-differences.md`, decision pending) |
+| 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
+| 3-9 | Not started |
+
 ---
 
 ## Contents
@@ -429,8 +438,9 @@ Plus T1-T13. T9 matters most here because the long-pattern path is separate code
 **Files:** `Fuzzion/JaroWinkler.Static.cs`, `Fuzzion/JaroWinkler.Instance.cs`, `Fuzzion.Tests/Distance/JaroWinklerTests.cs`
 
 **API:** like Jaro, with `double prefixWeight = 0.1`. The common prefix counts up to 4
-characters. Throw `ArgumentOutOfRangeException` if `prefixWeight` is outside `[0, 0.25]`
-(above 0.25 the score can exceed 1).
+characters, and the bonus applies only when the Jaro similarity is above 0.7. Throw
+`ArgumentOutOfRangeException` if `prefixWeight` is outside `[0, 1]`, the same range
+RapidFuzz accepts (the result is capped at 1).
 
 **Port from:** `JaroWinkler_impl.hpp` (92 lines, on top of Jaro). **Size:** S
 
@@ -443,11 +453,13 @@ characters. Throw `ArgumentOutOfRangeException` if `prefixWeight` is outside `[0
 | `"DIXON"`, `"DICKSONX"` | 0.813333 | 0.86 |
 | `"CRATE"`, `"TRACE"` (no common prefix) | 0.733333 (same as Jaro) | 0.733333 |
 
-Plus `PrefixWeightOutOfRangeThrows` (`0.3`), `NeverBelowJaro` (random pairs), and T1-T13.
+Plus `PrefixWeightOutOfRangeThrows` (`-0.1`, `1.5`, `NaN`), `NeverBelowJaro` (random pairs), and T1-T13.
 
 ### #4 OSA (Optimal String Alignment)
 
-**Files:** `Fuzzion/OSA.Static.cs`, `Fuzzion/OSA.Instance.cs`, `Fuzzion.Tests/Distance/OsaTests.cs`
+**Files:** `Fuzzion/Osa.Static.cs`, `Fuzzion/Osa.Instance.cs`, `Fuzzion.Tests/Distance/MetricTests.cs`
+
+The class is named `Osa`, not `OSA`: .NET naming guidelines capitalize only two-letter acronyms.
 
 Counts swapping two adjacent characters as one edit, but each part of the string can be
 edited only once.
@@ -1029,6 +1041,27 @@ Fuzzion has no SIMD; its only hardware-assisted operation is `PopCount`.
 | `MixedLengthsFallBack` | choices longer than the lane width are scored by the scalar path |
 | `ScalarForced` | an internal switch forces the scalar path, so tests cover both on any machine |
 
+### Performance follow-ups from Phase 2
+
+Phase 2 put correctness first. Rough BenchmarkDotNet short-run results on similar
+random strings (time relative to `Levenshtein.Distance` on the same input):
+
+| Metric | 8 chars | 64 | 256 | 1,024 |
+|---|---|---|---|---|
+| `Hamming` | 0.12x | 0.08x | 0.03x | 0.01x |
+| `Jaro` / `JaroWinkler` | 1.1x | 3.9x | 5.1x | 7.0x |
+| `Osa` | 1.0x | 1.0x | **38x** | **67x** |
+| `DamerauLevenshtein` | 1.2x | **45x** | **146x** | **184x** |
+
+| # | Follow-up | Port from | Size |
+|---|---|---|---|
+| P8.1 | Multi-block bit-parallel OSA for inputs over 64 characters (replaces the table fallback) | `OSA_impl.hpp`, `osa_hyrroe2003_block` | M |
+| P8.2 | Bit-parallel Jaro (single and multi-block) | `Jaro_impl.hpp` | L |
+| P8.3 | Damerau-Levenshtein: replace the `Dictionary` of last rows with an array for ASCII/Latin-1 plus a growing hash map, and use 16-bit rows when lengths allow | `DamerauLevenshtein_impl.hpp`, `GrowingHashmap.hpp` | S |
+| P8.4 | Real caching in the `Jaro`, `JaroWinkler` and `DamerauLevenshtein` instance classes (today they store the source and call the static method) | `CachedJaro`, `CachedJaroWinkler` in rapidfuzz-cpp | M |
+
+Each follow-up must keep every oracle and contract test passing.
+
 ### #34 Benchmarks
 
 One benchmark class for every new metric and API (#1-#33), comparing Fuzzion with
@@ -1068,28 +1101,28 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 ## Master checklist
 
 ### Phase 0 - Rebrand
-- [ ] P0.1 Rename folders, projects, solution
-- [ ] P0.2 Rename namespaces (`Raffinert.FuzzySharp` → `Fuzzion`, and the 14 `FuzzySharp.Scorer` references)
-- [ ] P0.3 Update project properties
-- [ ] P0.4 LICENSE and THIRD-PARTY-NOTICES.md
-- [ ] P0.5 README
-- [ ] P0.6 FUNDING.yml, workflow paths, `.ai/context.md`, CHANGELOG, upstream remote
-- [ ] P0.7 Rebrand unit tests
-- [ ] P0.8 Build, all tests pass, package builds
-- [ ] P0.9 Single rebrand commit
+- [x] P0.1 Rename folders, projects, solution
+- [x] P0.2 Rename namespaces (`Raffinert.FuzzySharp` → `Fuzzion`, and the 14 `FuzzySharp.Scorer` references)
+- [x] P0.3 Update project properties
+- [x] P0.4 LICENSE and THIRD-PARTY-NOTICES.md
+- [x] P0.5 README
+- [x] P0.6 FUNDING.yml, workflow paths, `.ai/context.md`, CHANGELOG, upstream remote
+- [x] P0.7 Rebrand unit tests
+- [x] P0.8 Build, all tests pass, package builds
+- [x] P0.9 Single rebrand commit
 
 ### Phase 1 - Oracle and PR #31
-- [ ] #35 Python oracle generator, fixtures, loader, oracle tests for existing metrics
-- [ ] #36 Merge PR #31, convert to `double`, apply review fixes, tests
+- [x] #35 Python oracle generator, fixtures, loader, oracle tests for existing metrics
+- [x] #36 Merge PR #31, convert to `double`, apply review fixes, tests
 
 ### Phase 2 - Distance metrics
-- [ ] #1 Hamming
-- [ ] #2 Jaro
-- [ ] #3 Jaro-Winkler
-- [ ] #4 OSA
-- [ ] #5 Damerau-Levenshtein
-- [ ] #6 Prefix and Postfix
-- [ ] #7 `Indel.Similarity`
+- [x] #1 Hamming
+- [x] #2 Jaro
+- [x] #3 Jaro-Winkler
+- [x] #4 OSA
+- [x] #5 Damerau-Levenshtein
+- [x] #6 Prefix and Postfix
+- [x] #7 `Indel.Similarity`
 
 ### Phase 3 - Fuzz scorers
 - [ ] #17 QRatio
@@ -1128,7 +1161,8 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 
 ### Phase 8 - Performance
 - [ ] #33 SIMD batch scoring
-- [ ] #34 Benchmarks for everything
+- [ ] #34 Benchmarks for everything (Phase 2 metrics done: `DistanceMetricsBenchmarks`)
+- [ ] P8.1-P8.4 Phase 2 performance follow-ups
 
 ### Definition of done (every item)
 - [ ] Public API has XML docs

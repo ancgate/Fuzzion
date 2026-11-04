@@ -439,6 +439,32 @@ EditOp[] ops = Levenshtein.GetEditOps("kitten", "sitting");
 // [REPLACE(0, 0), REPLACE(4, 4), INSERT(6, 6)]
 ```
 
+### More Distance Metrics
+
+Fuzzion also has the other RapidFuzz distance metrics. Each has `Distance`,
+`Similarity`, `NormalizedDistance` and `NormalizedSimilarity`, with `string` and
+generic `ReadOnlySpan<T>` overloads, and gives the same results as RapidFuzz.
+
+| Class | Measures | Example |
+|---|---|---|
+| `Hamming` | Positions that differ (`pad: false` requires equal lengths) | `Hamming.Distance("karolin", "kathrin")` → 3 |
+| `Jaro` | Matching characters within a window, and their order; 0 to 1 | `Jaro.Similarity("MARTHA", "MARHTA")` → 0.944 |
+| `JaroWinkler` | Jaro plus a bonus for a shared start (`prefixWeight`, default 0.1) | `JaroWinkler.Similarity("MARTHA", "MARHTA")` → 0.961 |
+| `Osa` | Edits plus swaps of two neighbours, each part edited once | `Osa.Distance("CA", "ABC")` → 3 |
+| `DamerauLevenshtein` | Edits plus swaps of two neighbours, no restriction | `DamerauLevenshtein.Distance("CA", "ABC")` → 2 |
+| `Prefix` / `Postfix` | Length of the shared start / end | `Prefix.Similarity("prefix", "preface")` → 4 |
+
+`Indel.Similarity` is also available (`len1 + len2 - Distance`).
+
+```csharp
+double nameScore = JaroWinkler.NormalizedSimilarity("Jonathon", "Jonathan"); // 0.95
+int typos = DamerauLevenshtein.Distance("recieve", "receive");               // 1
+```
+
+`Hamming`, `Jaro`, `JaroWinkler`, `Osa` and `DamerauLevenshtein` also have instance
+classes (for example `new JaroWinkler(query).SimilarityWith(candidate)`) and generic
+versions (`JaroWinklerT<T>`).
+
 ### Instance Distance Classes
 
 The `Levenshtein`, `Indel`, and `LongestCommonSubsequence` classes also offer an **instance API** for one-to-many comparisons. The constructor pre-computes a bit-parallel pattern match vector from the source string, which is then reused across all subsequent calls. This avoids rebuilding the internal data structure on every comparison, giving a significant speedup when comparing one source against many targets.

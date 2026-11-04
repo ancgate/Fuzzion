@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased (planned 0.2.0)
+
+*All RapidFuzz distance metrics (plan items #1-#7)*
+
+- Added `Hamming` (with `pad`), `Jaro`, `JaroWinkler` (with `prefixWeight`, 0 to 1), `Osa` (optimal string alignment), `DamerauLevenshtein` (unrestricted), `Prefix` and `Postfix`. Each has `Distance`, `Similarity`, `NormalizedDistance` and `NormalizedSimilarity` with `string` and generic span overloads, and all match Python RapidFuzz 3.14.6 on every oracle value.
+- Added instance classes `Hamming`, `Jaro`, `JaroWinkler`, `Osa`, `DamerauLevenshtein` and their generic `...T<T>` versions.
+- Added `Indel.Similarity`.
+- Performance: `Osa` is bit-parallel for inputs up to 64 characters (as fast as `Levenshtein`); longer inputs, `Jaro` and `DamerauLevenshtein` use straightforward algorithms for now. See the performance follow-ups in the implementation plan.
+
 ## Fuzzion 0.1.0-preview.1
 
 *Rebrand of Raffinert.FuzzySharp v6.0.1 as Fuzzion*
