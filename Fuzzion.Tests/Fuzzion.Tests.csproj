@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <None Include="Oracle\data\*.json;Oracle\data\*.json.gz" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Support\*.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

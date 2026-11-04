@@ -10,6 +10,8 @@
 - Added `THIRD-PARTY-NOTICES.md` (shipped inside the NuGet package) and the [implementation plan](docs/IMPLEMENTATION-PLAN.md).
 - Fixed `Indel.NormalizedDistance` dividing by the lengths left after trimming the shared prefix and suffix instead of the full lengths (for example `("abc", "abcd")` returned 1.0 instead of 1/7). Inherited from Raffinert.FuzzySharp v6.0.1.
 - Fixed `LongestCommonSubsequence.NormalizedSimilarity` returning 0 instead of 1 for two empty sequences.
+- Added `Fuzz.ApproximateSubstringRatio`: the best approximate occurrence of the shorter input inside the longer one, using bit-parallel Indel distance, with stateless and cached scorers. Faster than `PartialRatio` (3.5-9.8x in the upstream benchmarks) but not numerically equal to it. Merged from [Raffinert/FuzzySharp#31](https://github.com/Raffinert/FuzzySharp/pull/31) by Yevhen Cherkes, converted to `double` scores, and changed so the non-cached string path also uses the exact-match fast path (about 37x faster on an exact match in a 4,096-character text).
+- Added `Indel.BestSubstringMatch`, which returns the best raw Indel distance of a pattern inside a text and the first endpoint that strictly improves on deleting the whole pattern.
 - Added oracle tests that compare Fuzzion with Python RapidFuzz 3.14.6 (`tools/oracle`, `Fuzzion.Tests/Oracle`). Deliberate differences are listed in [docs/known-differences.md](docs/known-differences.md).
 
 ## History inherited from Raffinert.FuzzySharp

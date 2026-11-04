@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Xunit;
 
@@ -10,8 +12,10 @@ namespace Fuzzion.Tests;
 /// </summary>
 public class RebrandTests
 {
-    // Number of exported types in Raffinert.FuzzySharp v6.0.1, measured before the rename.
-    private const int ExportedTypeCountBeforeRename = 70;
+    // Full names of the 70 exported types of Raffinert.FuzzySharp v6.0.1, recorded before
+    // the rename, with the root namespace changed to Fuzzion.
+    private static readonly string PublicTypesFile =
+        Path.Combine(AppContext.BaseDirectory, "Support", "public-types-raffinert-v6.0.1.txt");
 
     [Fact]
     public void AssemblyNameIsFuzzion()
@@ -45,9 +49,13 @@ public class RebrandTests
     }
 
     [Fact]
-    public void PublicSurfaceUnchanged()
+    public void EveryOriginalPublicTypeStillExists()
     {
-        Assert.Equal(ExportedTypeCountBeforeRename, typeof(Fuzz).Assembly.GetExportedTypes().Length);
+        var expected = File.ReadAllLines(PublicTypesFile).Where(l => l.Length > 0).ToArray();
+        var actual = new HashSet<string>(typeof(Fuzz).Assembly.GetExportedTypes().Select(t => t.FullName));
+
+        Assert.Equal(70, expected.Length);
+        Assert.Empty(expected.Where(name => !actual.Contains(name)));
     }
 
     [Fact]
