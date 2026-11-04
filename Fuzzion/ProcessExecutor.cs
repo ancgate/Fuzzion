@@ -35,11 +35,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractWithoutOrder(
-                query, choices, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractWithoutOrder(
+                query, choices, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractWithoutOrder(query, choices, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, processor, s, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractAll<T>(
@@ -62,11 +62,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractWithoutOrder(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractWithoutOrder(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, s, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractAll<T>(
@@ -89,11 +89,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractWithoutOrder(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractWithoutOrder(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, s, c));
     }
 
     private static IEnumerable<ExtractedResult<T>> ExtractAllCached<T>(
@@ -160,11 +160,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractTop(
-                query, choices, processor, scorer, limit, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractTop(
+                query, choices, processor, s, limit, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractTop(query, choices, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(query, choices, processor, s, limit, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractTop<T>(
@@ -194,11 +194,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractTop(
-                extractedQuery, choices, extractor, processor, scorer, limit, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractTop(
+                extractedQuery, choices, extractor, processor, s, limit, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractTop(extractedQuery, choices, extractor, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(extractedQuery, choices, extractor, processor, s, limit, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractTop<T>(
@@ -226,11 +226,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractTop(
-                query, choices, extractor, processor, scorer, limit, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractTop(
+                query, choices, extractor, processor, s, limit, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractTop(query, choices, extractor, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(query, choices, extractor, processor, s, limit, c));
     }
 
     private static IEnumerable<ExtractedResult<T>> ExtractTopCached<T>(
@@ -294,11 +294,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractSorted(
-                query, choices, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractSorted(
+                query, choices, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractSorted(query, choices, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, processor, s, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractSorted<T>(
@@ -321,11 +321,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractSorted(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractSorted(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractSorted(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, extractor, processor, s, c));
     }
 
     public static IEnumerable<ExtractedResult<T>> ExtractSorted<T>(
@@ -348,11 +348,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractSorted(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractSorted(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractSorted(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, extractor, processor, s, c));
     }
 
     private static IEnumerable<ExtractedResult<T>> ExtractSortedCached<T>(
@@ -417,11 +417,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractOne(
-                query, choices, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractOne(
+                query, choices, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractOne(query, choices, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, processor, s, c));
     }
 
     public static ExtractedResult<T> ExtractOne<T>(
@@ -448,11 +448,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractOne(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractOne(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractOne(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, extractor, processor, s, c));
     }
 
     public static ExtractedResult<T> ExtractOne<T>(
@@ -478,11 +478,11 @@ internal static class ProcessExecutor
 
         if (options.UseParallel)
         {
-            return ResultExtractor.Parallel.ExtractOne(
-                query, choices, extractor, processor, scorer, cutoff, options.ParallelOptions);
+            return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.Parallel.ExtractOne(
+                query, choices, extractor, processor, s, c, options.ParallelOptions));
         }
 
-        return ResultExtractor.ExtractOne(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, extractor, processor, s, c));
     }
 
     #endregion

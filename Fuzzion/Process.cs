@@ -8,7 +8,7 @@ using Fuzzion.SimilarityRatio.Scorer.Composite;
 
 namespace Fuzzion;
 
-public static class Process
+public static partial class Process
 {
     internal static readonly WeightedRatioScorer DefaultScorer = (WeightedRatioScorer)ScorerCache.Get<WeightedRatioScorer>();
     internal static readonly Func<string, string> DefaultStringProcessor = StringPreprocessor.Full;
@@ -40,7 +40,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractWithoutOrder(query, choices, processor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, processor, processor, s, c));
     }
 
 
@@ -65,7 +65,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, s, c));
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;  
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractWithoutOrder(query, choices, extractor, processor, s, c));
     }
 
     #endregion
@@ -117,7 +117,7 @@ public static class Process
         ResultExtractor.ValidateLimit(limit);
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractTop(query, choices, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(query, choices, processor, s, limit, c));
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public static class Process
         ResultExtractor.ValidateLimit(limit);
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractTop(query, choices, extractor, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(query, choices, extractor, processor, s, limit, c));
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public static class Process
         ResultExtractor.ValidateLimit(limit);
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractTop(query, choices, extractor, processor, scorer, limit, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractTop(query, choices, extractor, processor, s, limit, c));
     }
 
     #endregion
@@ -196,7 +196,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractSorted(query, choices, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, processor, s, c));
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractSorted(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, extractor, processor, s, c));
     }
 
     /// <summary>
@@ -242,7 +242,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractSorted(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractSorted(query, choices, extractor, processor, s, c));
     }
 
     #endregion
@@ -266,7 +266,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractOne(query, choices, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, processor, s, c));
     }
 
     /// <summary>
@@ -289,7 +289,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractOne(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, extractor, processor, s, c));
     }
 
     /// <summary>
@@ -312,7 +312,7 @@ public static class Process
     {
         processor ??= DefaultStringProcessor;
         scorer ??= DefaultScorer;
-        return ResultExtractor.ExtractOne(query, choices, extractor, processor, scorer, cutoff);
+        return DistanceScoring.Run(scorer, cutoff, (s, c) => ResultExtractor.ExtractOne(query, choices, extractor, processor, s, c));
     }
 
     /// <summary>

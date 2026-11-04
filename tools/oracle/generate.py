@@ -23,8 +23,10 @@ import random
 import sys
 from pathlib import Path
 
+import numpy as np
 import rapidfuzz
-from rapidfuzz import fuzz
+from rapidfuzz import fuzz, process
+from thefuzz import process as thefuzz_process
 from rapidfuzz.distance import (
     DamerauLevenshtein,
     Hamming,
@@ -254,6 +256,54 @@ def sentence_record(group: str, a: str, b: str) -> dict:
     }
 
 
+def process_cases(rng: random.Random) -> dict:
+    """Cases for Process: Cdist matrices, distance-scorer searches and TheFuzz dedupe."""
+
+    def sentence(lo: int, hi: int) -> str:
+        return " ".join(rng.choice(WORDS) for _ in range(rng.randint(lo, hi)))
+
+    def near(s: str) -> str:
+        words = s.split()
+        i = rng.randrange(len(words))
+        words[i] = mutate(rng, words[i], ASCII[:26], 1) or words[i]
+        return " ".join(words)
+
+    queries = [sentence(1, 4) for _ in range(15)]
+    choices = [sentence(1, 6) for _ in range(20)] + [near(q) for q in queries[:5]]
+    cdist = []
+    for name, scorer, cutoff in [
+        ("ratio", fuzz.ratio, 0),
+        ("ratio", fuzz.ratio, 50),
+        ("wratio", fuzz.WRatio, 0),
+        ("partial_ratio", fuzz.partial_ratio, 0),
+        ("token_set_ratio", fuzz.token_set_ratio, 0),
+        ("qratio", fuzz.QRatio, 0),
+        ("levenshtein", Levenshtein.distance, None),
+        ("levenshtein", Levenshtein.distance, 3),
+    ]:
+        kwargs = {} if cutoff is None else {"score_cutoff": cutoff}
+        matrix = process.cdist(queries, choices, scorer=scorer, dtype=np.float64, **kwargs)
+        cdist.append({"scorer": name, "cutoff": cutoff, "matrix": matrix.tolist()})
+
+    extract = []
+    words = sorted(set(WORDS))
+    for _ in range(40):
+        query = mutate(rng, rng.choice(words), ASCII[:26], rng.randint(0, 2))
+        max_distance = rng.choice([None, 0, 1, 2, 3])
+        kwargs = {} if max_distance is None else {"score_cutoff": max_distance}
+        found = process.extract(query, words, scorer=Levenshtein.distance, limit=None, **kwargs)
+        extract.append({"query": query, "max_distance": max_distance, "results": [[c, s, i] for c, s, i in found]})
+
+    dedupe = []
+    for _ in range(60):
+        base = [sentence(1, 3) for _ in range(rng.randint(2, 6))]
+        items = base + [near(rng.choice(base)) for _ in range(rng.randint(0, 4))]
+        rng.shuffle(items)
+        dedupe.append({"items": items, "expected": sorted(thefuzz_process.dedupe(items))})
+
+    return {"queries": queries, "choices": choices, "cdist": cdist, "extract_distance": extract, "choices_words": words, "dedupe": dedupe}
+
+
 def write(name: str, payload: dict) -> Path:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     data = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
@@ -280,6 +330,9 @@ def main() -> int:
     for name, rows in (("char-pairs", chars), ("sentence-pairs", sentences)):
         path = write(name, {"meta": meta, "rows": rows})
         print(f"{path.relative_to(OUT_DIR.parents[2])}: {len(rows)} rows, {path.stat().st_size:,} bytes")
+    # Separate random stream, so adding these cases does not change the pairs above.
+    path = write("process-cases", {"meta": meta, **process_cases(random.Random(SEED + 1))})
+    print(f"{path.relative_to(OUT_DIR.parents[2])}: {path.stat().st_size:,} bytes")
     return 0
 
 

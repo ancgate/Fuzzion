@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using Xunit;
@@ -27,7 +27,10 @@ public class RegressionTests
             catch {}
             return [];
         }).ToList();
-        var scorerTypes = types.Where(t => scorerType.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass).ToList();
+        // Only scorers that ScorerCache can create (public parameterless constructor). Adapters
+        // that wrap a function (Scorers.FromDistance / FromSimilarity) are covered in
+        // Phase5ProcessTests.AdaptersHandleEmptyStrings.
+        var scorerTypes = types.Where(t => scorerType.IsAssignableFrom(t) && !t.IsAbstract && t.IsClass && t.GetConstructor(Type.EmptyTypes) != null).ToList();
 
         string emptyString = "";
         string whitespaceString = " ";

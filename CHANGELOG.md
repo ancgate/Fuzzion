@@ -17,6 +17,9 @@
 - Added set-based metrics `Jaccard`, `SorensenDice`, `Overlap` and `Tanimoto` on q-grams (`QGramOptions`: length, padding, set or multiset counting) and on any `IEnumerable<T>`, plus `QGrams.Of` (plan items #8-#12). Written from the definitions, not from kdjones/fuzzystring, whose versions count distinct characters and score `Dice("aaaa", "aaaa")` as 0.25.
 - Added `RatcliffObershelp` (matches Python's `difflib.SequenceMatcher.ratio()`, with optional `autoJunk`), `LongestCommonSubstring` (`Find`, `Of`, normalized similarity) and `LongestCommonSubsequence.Of` (plan items #13-#15).
 - Added `ApproximatelyEquals` extension methods with `Tolerance` and `SimilarityMetric` to combine metrics into a yes/no answer (plan item #16).
+- Added distance scorers for searches: `Scorers.FromDistance(f, maxDistance)` returns an `IDistanceScorer`; `Process.Extract*` and pipelines then return the smallest distances first and keep only results within `maxDistance` (null = no limit, 0 = exact only). The `cutoff` argument stays a minimum similarity and is rejected for distance scorers. Also `Scorers.FromSimilarity` (plan item #26).
+- Added `Process.Cdist` and `Process.Cpdist` (as RapidFuzz's `cdist`/`cpdist`): matrix and pairwise scoring with optional multi-threading (`workers`), cancellation, a score cutoff, and built-in scorers prepared once per query (plan items #24, #25).
+- Added `Process.Dedupe` (as TheFuzz's `dedupe`), with results in order of first appearance (plan item #27).
 - Performance: `Osa` is bit-parallel for inputs up to 64 characters (as fast as `Levenshtein`); longer inputs, `Jaro` and `DamerauLevenshtein` use straightforward algorithms for now. See the performance follow-ups in the implementation plan.
 
 ## Fuzzion 0.1.0-preview.1

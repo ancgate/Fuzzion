@@ -295,6 +295,32 @@ var best = Process.ExtractOneBy(query, events, e => e.Name);
 var top = Process.ExtractTopBy(query, events, e => e.Name, limit: 2);
 ```
 
+### Distance Scorers, Matrices and Deduplication
+
+Search with a distance (lower is better) by wrapping it with `Scorers.FromDistance`.
+Results come back closest first; `maxDistance` drops anything further away:
+
+```csharp
+var scorer = Scorers.FromDistance((a, b) => Levenshtein.Distance(a, b), maxDistance: 2);
+Process.ExtractSorted("appel", new[] { "bandana", "apple", "banana", "appel" }, s => s, scorer);
+// [(appel, 0), (apple, 2)]
+```
+
+`Process.Cdist` scores every query against every choice (optionally on all cores), and
+`Process.Cpdist` scores pairs, as RapidFuzz's `cdist` / `cpdist`:
+
+```csharp
+double[,] scores = Process.Cdist(new[] { "apple", "banana" }, new[] { "apple", "appel", "banana" }, workers: -1);
+// [[100, 80, 18.18], [18.18, 18.18, 100]]
+```
+
+`Process.Dedupe` removes near-duplicates, as TheFuzz's `dedupe`:
+
+```csharp
+Process.Dedupe(new[] { "Frodo Baggin", "Frodo Baggins", "F. Baggins", "Samwise G.", "Gandalf", "Bilbo Baggins" });
+// ["Frodo Baggins", "Samwise G.", "Gandalf"]
+```
+
 ## Fluent Pipeline API
 
 The `Process.Configure()` fluent builder creates reusable, immutable pipelines with preconfigured scoring, caching, and parallel execution.

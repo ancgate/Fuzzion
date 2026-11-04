@@ -21,7 +21,8 @@ standard-library `difflib`. They are exact; copy them into tests as they are.
 | 2 - Distance metrics | Done (correct and oracle-checked; see the performance follow-ups in Phase 8) |
 | 3 - Fuzz scorer parity | Done |
 | 4 - Set-based metrics | Done |
-| 5-9 | Not started |
+| 5 - Process | Done (see the implementation note under #26) |
+| 6-9 | Not started |
 
 ---
 
@@ -835,6 +836,15 @@ The extractors use `OptimalScore > WorstScore` to decide the sort direction, and
 `cutoff` as "maximum allowed distance" for distance scorers. Existing scorers default
 to `(100, 0)`, so nothing changes for them. **Size:** M
 
+**Implementation note (as built):** instead of `IScorerInfo`, distance scorers implement
+`IDistanceScorer : IRatioScorer` with an `int? MaxDistance`. The maximum lives on the
+scorer because the searches' `cutoff` parameter defaults to 0, which cannot mean both
+"no limit" and "exact matches only" for a distance. Passing a non-zero `cutoff` with a
+distance scorer throws. The searches run on the negated distance and flip the scores
+back at each public entry point (`Extractor/DistanceScoring.cs`), so the four extractor
+variants did not need to change. `Levenshtein.Distance` has optional cost parameters, so
+pass a lambda: `Scorers.FromDistance((a, b) => Levenshtein.Distance(a, b))`.
+
 **Unit tests**
 
 | Test | Expected (oracle) |
@@ -1161,10 +1171,10 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] #16 `ApproximatelyEquals` (optional)
 
 ### Phase 5 - Process
-- [ ] #26 Scorers where lower is better
-- [ ] #24 `Cdist`
-- [ ] #25 `Cpdist`
-- [ ] #27 `Dedupe`
+- [x] #26 Scorers where lower is better
+- [x] #24 `Cdist`
+- [x] #25 `Cpdist`
+- [x] #27 `Dedupe`
 
 ### Phase 6 - Edit operations
 - [ ] #28 `EditOps` / `OpCodes` types
