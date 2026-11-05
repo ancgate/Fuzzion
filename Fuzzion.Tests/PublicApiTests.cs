@@ -24,14 +24,17 @@ public class PublicApiTests
     public void PublicApiMatchesBaseline()
     {
         var actual = Describe(typeof(Fuzz).Assembly);
-        var path = BaselinePath();
 
         if (Environment.GetEnvironmentVariable("FUZZION_UPDATE_PUBLIC_API") == "1")
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            File.WriteAllLines(path, actual);
+            var source = SourceBaselinePath();
+            Directory.CreateDirectory(Path.GetDirectoryName(source)!);
+            File.WriteAllLines(source, actual);
             return;
         }
+
+        // The baseline is copied next to the test binaries (see Fuzzion.Tests.csproj).
+        var path = Path.Combine(AppContext.BaseDirectory, "PublicApi", BaselineName);
 
         Assert.True(File.Exists(path), $"Missing {path}. Run the tests with FUZZION_UPDATE_PUBLIC_API=1 to create it.");
         var expected = File.ReadAllLines(path).Where(l => l.Length > 0).ToArray();
@@ -43,8 +46,23 @@ public class PublicApiTests
             string.Join(Environment.NewLine, added.Select(l => "+ " + l).Concat(removed.Select(l => "- " + l))));
     }
 
-    private static string BaselinePath([CallerFilePath] string thisFile = "") =>
-        Path.Combine(Path.GetDirectoryName(thisFile)!, "PublicApi", BaselineName);
+    /// <summary>
+    /// The baseline in the source tree, found by walking up from the test output to the
+    /// folder that holds Fuzzion.Tests.csproj. ([CallerFilePath] cannot be used: CI builds
+    /// map source paths to "/_/" for reproducible builds.)
+    /// </summary>
+    private static string SourceBaselinePath()
+    {
+        for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir != null; dir = dir.Parent)
+        {
+            if (File.Exists(Path.Combine(dir.FullName, "Fuzzion.Tests.csproj")))
+            {
+                return Path.Combine(dir.FullName, "PublicApi", BaselineName);
+            }
+        }
+
+        throw new InvalidOperationException("Could not find Fuzzion.Tests.csproj above " + AppContext.BaseDirectory);
+    }
 
     /// <summary>One line per public/protected type and member, sorted, in a runtime-independent format.</summary>
     internal static string[] Describe(Assembly assembly)
