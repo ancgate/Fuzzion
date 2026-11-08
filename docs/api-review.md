@@ -38,13 +38,25 @@ surface is `Fuzzion.Tests/PublicApi/Fuzzion.api.txt`, enforced by `PublicApiTest
 | No `[Obsolete]` members | Nothing needed deprecating before the first release. |
 | Helper types stay public: `Fuzzion.Utils` (`Heap<T>`, `MinHeap<T>`, `Permutation`, `Permutor<T>`, `PatternMatchVector`, `IPatternMatchVector<T>`), `Fuzzion.Extractor.ResultExtractor` (and nested classes), `Fuzzion.Extensions` | They were public in Raffinert.FuzzySharp v6, and Fuzzion promises the same API to migrating users; `IPatternMatchVector<T>` also appears in public `Indel.Block*` methods. Candidates to make internal in a 2.0. |
 
-## Undocumented members
+## XML documentation
 
-`GenerateDocumentationFile` is on, so the package ships IntelliSense docs. 247 public
-members have no XML docs; all are inherited from Raffinert.FuzzySharp (mostly scorer and
-strategy classes under `Fuzzion.SimilarityRatio`, the helper types above, `EditOp`,
-`OpCode`, `MatchingBlock` and the `ResultExtractor` overloads). Members added by Fuzzion
-are documented. The "missing XML comment" warning (CS1591) is suppressed so that real
-doc errors stay visible; filling in the inherited docs is a documentation-only follow-up
-that does not affect the API freeze. The review fixed the malformed doc comments it found
-(an unescaped `<=` in two inherited comments, a misplaced comment and missing `param` tags).
+Every public and protected member has XML docs, and a missing one now fails the build
+(`CS1591` is an error in `Fuzzion.csproj`). The 247 members inherited from
+Raffinert.FuzzySharp without docs were documented after reading their code, and the
+docs state the behaviour below where it can surprise a caller.
+
+## Inherited behaviour found while documenting
+
+None of this changes in 1.0 (the API is frozen and these are inherited from
+Raffinert.FuzzySharp); each is documented on the member. Candidates for 1.x or 2.0:
+
+| Member | Behaviour | Possible change |
+|---|---|---|
+| `ResultExtractor.Parallel`, `.Cached`, `.Parallel.Cached` | A `null` processor throws `NullReferenceException`; the sequential overloads use `StringPreprocessor.Full` instead. `ResultExtractor` does not handle distance scorers (only `Process` and the pipelines do). | Same default everywhere; argument checks. `Process` is the supported entry point. |
+| `CachedWeightedRatioScorer` | Caches the simple, token sort, token set and partial token set parts; the partial ratio and partial token sort parts are recomputed for every choice. | Use `CachedPartialRatioScorer` / `CachedPartialTokenSortScorer` inside it (speed only). |
+| `EditOpsExtensions.AsOpCodes(ops, srcLen, destLen)` | Wrong with `REPLACE` operations (overlapping `KEEP` ranges); correct for insert/delete only. | `[Obsolete]`, pointing to `EditOps.AsOpCodes()`. |
+| `EnumerableExtensions.MaxN` / `MaxNBy` | Return the top n smallest first; `n <= 0` on a non-empty source throws when enumerated. | Make internal in 2.0. |
+| `Permutation.IsPermutationOf` | Compares as sets: `[a, a, b]` counts as a permutation of `[b, a]`. | Make internal in 2.0. |
+| `Indel`, `Levenshtein`, `LongestCommonSubsequence` instances | Treat a `null` source or value as empty; the newer `Osa`, `Jaro`, ... instances throw `ArgumentNullException`. | One rule for all. |
+| `ICachedStrategy`, `CachedScorerBase<T>`, `ICachedRatioScorer<T>`, `Scorer`, `CachedScorer` | Public but unused by the library, or with only internal implementations. | Make internal in 2.0. |
+| `ExtractedResult<T>.CompareTo` | Compares by score only, lowest first. | Documented; keep. |

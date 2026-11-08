@@ -28,9 +28,8 @@
     <PackageReleaseNotes>See https://github.com/ancgate/Fuzzion/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <!-- Ship XML docs so IntelliSense shows them. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- 247 inherited members (mostly scorer/strategy classes) have no XML docs yet; see
-         docs/api-review.md. Other XML doc problems (CS1570, CS1573, ...) still warn. -->
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Every public member is documented: a missing doc comment fails the build. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
     <!-- Checks that the public API is the same on every target framework. -->
     <EnablePackageValidation>true</EnablePackageValidation>
   </PropertyGroup>

@@ -1149,7 +1149,7 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 | Versioning | `1.0.0-rc.1` (release candidate); `AssemblyVersion` 1.0.0.0 for all 1.x. Rules in `RELEASING.md`. |
 | CI | `.github/workflows/ci.yml`: Linux and Windows (the .NET Framework 4.6.2 / 4.7.2 tests run on Windows), oracle fixtures regenerated and compared, pack, and NuGet publish on `v*` tags from the `nuget` environment's `NUGET_API_KEY` secret. **GitHub Actions are disabled on this fork until the owner enables them**, so CI has not run yet. The .NET Framework tests were run locally on Mono instead: all pass (this found and fixed one runtime difference, title-case lowercasing in `FullUnicode`). |
 | NuGet ID | Not claimed yet: publishing and the `Fuzzion.*` prefix reservation need the owner's NuGet account (steps in `RELEASING.md`). `Fuzzion` was still free on nuget.org when checked in Phase 0. |
-| Docs | README updated per feature; XML docs shipped in the package (247 inherited members still undocumented, listed in `docs/api-review.md`); `CONTRIBUTING.md`, `RELEASING.md`. DocFX site not added (optional). |
+| Docs | README updated per feature; XML docs on every public member, enforced by the build; `CONTRIBUTING.md`, `RELEASING.md`. DocFX site not added (optional). |
 | API review | `docs/api-review.md`: string overloads added to `Indel`/`LongestCommonSubsequence`, `Tolerance` renamed to `SimilarityTolerance`, no `[Obsolete]` members needed, inherited helper types kept public for compatibility. API frozen by `PublicApiTests` (782 lines), and package validation checks every target framework. |
 | Upstream sync | Documented in `CONTRIBUTING.md` (`upstream` remote, cherry-pick, rename, re-run the oracle). |
 | Benchmark regression | `.github/workflows/benchmarks.yml` (on demand): base and head measured on the same runner, fails on more than 20% slowdown. |
@@ -1238,10 +1238,10 @@ benchmark (`--job short`) and fails on a regression larger than 20%. **Size:** S
 - [x] P8.1-P8.4 Phase 2 performance follow-ups
 
 ### Definition of done (every item)
-- [ ] Public API has XML docs
-- [ ] Unit tests from this plan, plus the shared tests T1-T13 where they apply
-- [ ] Oracle fixtures added and passing
-- [ ] Builds for every target framework, including `netstandard2.0` and `net45`
-- [ ] Benchmark class added
-- [ ] README section and CHANGELOG line
-- [ ] No new runtime dependencies
+- [x] Public API has XML docs (enforced: a missing doc comment fails the build)
+- [x] Unit tests from this plan, plus the shared tests T1-T13 where they apply
+- [x] Oracle fixtures added and passing
+- [x] Builds for every target framework, including `netstandard2.0` and `net45`
+- [x] Benchmark class added (see docs/benchmarks.md, "Other benchmark classes")
+- [x] README section and CHANGELOG line, plus a runnable example in `examples/`
+- [x] No new runtime dependencies

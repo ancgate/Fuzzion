@@ -4,6 +4,12 @@
 
 *Release candidate: every phase of the implementation plan. Not yet published.*
 
+### Documentation
+
+- Every public member now has XML docs (the 247 inherited ones were missing them), and a missing doc comment fails the build. Surprising inherited behaviour found on the way is listed in [docs/api-review.md](docs/api-review.md).
+- The README's "Run .NET fiddle" links (which ran Raffinert.FuzzySharp) now open the matching runnable example.
+- Benchmark classes for every feature: edit operations, the remaining Phase 3 scorers, Unicode, `Dedupe`, `Cpdist` and `ApproximatelyEquals`.
+
 ### Examples
 
 - Added [examples/](examples/README.md): 30 runnable examples covering every feature, plus recipes ("did you mean", company names, record linkage, autocomplete, diffs, canonical values, log grouping). CI runs them all.
