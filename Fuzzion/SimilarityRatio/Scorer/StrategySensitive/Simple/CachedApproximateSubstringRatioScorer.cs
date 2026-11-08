@@ -34,8 +34,10 @@ public sealed class CachedApproximateSubstringRatioScorer : CachedSimpleRatioSco
         _isStrategyOwner = isStrategyOwner;
     }
 
+    /// <inheritdoc />
     protected override CachedScorer Scorer => Calculate;
 
+    /// <inheritdoc />
     public override void Dispose()
     {
         if (_disposed)

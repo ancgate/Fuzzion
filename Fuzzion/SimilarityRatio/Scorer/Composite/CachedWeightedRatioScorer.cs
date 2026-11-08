@@ -4,6 +4,11 @@ using Fuzzion.SimilarityRatio.Strategy;
 
 namespace Fuzzion.SimilarityRatio.Scorer.Composite;
 
+/// <summary>
+/// <see cref="WeightedRatioScorer"/> against one fixed query. The simple ratio, token sort, token set
+/// and partial token set parts are prepared once; the partial ratio and partial token sort parts are
+/// computed for each value. No preprocessing is applied. Dispose it when done.
+/// </summary>
 public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
 {
     private static readonly double UNBASE_SCALE = .95;
@@ -18,6 +23,8 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
     private readonly CachedPartialTokenSetScorer _partialTokenSetScorer;
     private bool _disposed;
 
+    /// <summary>Prepares <paramref name="input1"/> as the query.</summary>
+    /// <param name="input1">The query.</param>
     public CachedWeightedRatioScorer(string input1)
     {
         _input1 = input1;
@@ -28,6 +35,7 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
         _partialTokenSetScorer = new CachedPartialTokenSetScorer(_input1);
     }
 
+    /// <inheritdoc />
     public double Score(string input2)
     {
         int len1 = _input1.Length;
@@ -66,6 +74,7 @@ public sealed class CachedWeightedRatioScorer : ICachedRatioScorer
         return Math.Max(baseRatio, Math.Max(tokenSort, tokenSet));
     }
 
+    /// <summary>Releases the pooled memory held for the query.</summary>
     public void Dispose()
     {
         if (_disposed)

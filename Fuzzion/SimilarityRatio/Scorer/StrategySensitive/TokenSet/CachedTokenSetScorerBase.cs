@@ -4,11 +4,20 @@ using Fuzzion.Extensions;
 
 namespace Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
+/// <summary>
+/// Base class for cached token set scorers: the query is split into words once, and each
+/// <see cref="Score"/> call works as <see cref="TokenSetScorerBase"/> does. No preprocessing is applied.
+/// </summary>
+/// <param name="input1">The query.</param>
 public abstract class CachedTokenSetScorerBase(string input1) : ICachedRatioScorer
 {
     private HashSet<string> Tokens1 { get; set; } = new HashSet<string>(input1.SplitByAnySpace());
+    /// <summary>
+    /// The function that compares the joined word strings and returns a score from 0 to 100; each subclass supplies it.
+    /// </summary>
     protected abstract Fuzzion.Scorer Scorer { get; }
 
+    /// <inheritdoc />
     public double Score(string input2)
     {
         var tokens2 = new HashSet<string>(input2.SplitByAnySpace());
@@ -35,6 +44,7 @@ public abstract class CachedTokenSetScorerBase(string input1) : ICachedRatioScor
         return Math.Max(score1, Math.Max(score2, score3));
     }
 
+    /// <summary>Does nothing: these scorers hold no pooled memory.</summary>
     public void Dispose()
     {
     }

@@ -4,8 +4,21 @@ using System;
 
 namespace Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
+/// <summary>
+/// Base class for abbreviation scorers, which test whether the words of one string abbreviate
+/// words of the other. Words are runs of letters; digits and other characters only separate them.
+/// Each word of the string with fewer words is paired with a different word of the other string;
+/// a pair is scored with <see cref="StrategySensitiveScorerBase.Scorer"/> only when all characters
+/// of the shorter word appear in order in the longer word, and scores 0 otherwise. The result is
+/// the best average over all pairings. The score is 0 when the longer string is less than 1.5 times
+/// as long as the shorter, or when the string with fewer words has more than four.
+/// </summary>
 public abstract class TokenAbbreviationScorerBase : StrategySensitiveScorerBase
 {
+    /// <summary>Scores whether one string's words abbreviate the other's; the order of the inputs does not matter.</summary>
+    /// <param name="shorter">One input (swapped with <paramref name="longer"/> if it is the longer one).</param>
+    /// <param name="longer">The other input.</param>
+    /// <returns>A score from 0 to 100.</returns>
     public override double Score(string shorter, string longer)
     {
         SequenceUtils.SwapIfSourceIsLonger(ref shorter, ref longer);

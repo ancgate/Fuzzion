@@ -4,8 +4,15 @@ using System.Collections.Generic;
 
 namespace Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
+/// <summary>
+/// Base class for token set scorers. Each string is split on whitespace into a set of distinct
+/// words; the sorted common words, and the common words followed by each string's other sorted
+/// words, are compared pairwise with <see cref="StrategySensitiveScorerBase.Scorer"/>, and the
+/// highest of the three scores is returned. 0 when either string has no words.
+/// </summary>
 public abstract class TokenSetScorerBase : StrategySensitiveScorerBase
 {
+    /// <inheritdoc />
     public override double Score(string input1, string input2)
     {
         var tokens1 = new HashSet<string>(input1.SplitByAnySpace());

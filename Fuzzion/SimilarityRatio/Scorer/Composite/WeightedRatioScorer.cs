@@ -2,12 +2,21 @@
 
 namespace Fuzzion.SimilarityRatio.Scorer.Composite;
 
+/// <summary>
+/// A weighted combination of the other ratios for best results, as FuzzyWuzzy's and RapidFuzz's
+/// <c>WRatio</c>. It takes the highest of: the simple ratio; then, when one string is at least
+/// 1.5 times as long as the other, the partial ratio, partial token sort and partial token set ratios
+/// (scaled by 0.9, or by 0.6 when one string is more than 8 times as long, and the token ratios also by 0.95);
+/// otherwise the token sort and token set ratios scaled by 0.95. 0 when either input is empty.
+/// Used by <see cref="Fuzz.WeightedRatio(string, string)"/>.
+/// </summary>
 public class WeightedRatioScorer : ScorerBase
 {
     private static readonly double UNBASE_SCALE = .95;
     private static readonly double PARTIAL_SCALE = .90;
     private static readonly bool TRY_PARTIALS = true;
 
+    /// <inheritdoc />
     public override double Score(string input1, string input2)
     {
         int len1 = input1.Length;

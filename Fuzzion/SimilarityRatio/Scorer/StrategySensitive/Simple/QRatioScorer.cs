@@ -8,5 +8,6 @@ namespace Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 /// </summary>
 public sealed class QRatioScorer : SimpleRatioScorerBase
 {
+    /// <inheritdoc />
     protected override Fuzzion.Scorer Scorer => QRatioStrategy.Calculate;
 }
