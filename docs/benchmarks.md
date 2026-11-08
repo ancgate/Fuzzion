@@ -98,6 +98,20 @@ rough.
 
 Source: `LevenshteinCutoffBenchmarks`.
 
+## Other benchmark classes
+
+Every feature has a benchmark class; these have no recorded results yet. Run them on a
+quiet machine before quoting numbers.
+
+| Class | Covers |
+|---|---|
+| `EditOpsBenchmarks` | `Levenshtein.GetEditOps` / `GetOpCodes`, `Indel.GetEditOps`, `EditOps.Apply` (Phase 6) |
+| `TokenScorerParityBenchmarks` | `QRatio`, `TokenRatio`, `PartialTokenRatio`, `TokenDifferenceRatio`, `PartialTokenDifferenceRatio`, `Ratio` with a cutoff (Phase 3) |
+| `UnicodeBenchmarks` | `Full`, `FullUnicode`, `RemoveDiacritics`, `CodePoints.Compare` (Phase 7) |
+| `ProcessExtrasBenchmarks` | `Process.Dedupe`, `Process.Cpdist`, `ApproximatelyEquals` (Phases 4 and 5) |
+| `SetMetricsBenchmarks` | `Jaccard`, `Tanimoto`, `RatcliffObershelp`, `LongestCommonSubstring` (Phase 4) |
+| `ApproximateSubstringRatioBenchmarks`, `Ratio*`, `PartialRatio*`, `Token*`, `PartialToken*`, `WeightedRatio*`, `Extract*` | The scorers and searches inherited from Raffinert.FuzzySharp |
+
 ## Regression check
 
 The *Benchmark regression check* workflow (`.github/workflows/benchmarks.yml`, run on
