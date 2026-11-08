@@ -119,7 +119,7 @@ dotnet run --project examples/Fuzzion.Examples -- all
 ## Ratio Examples
 
 ### Simple Ratios
-<p align="right"><a href="https://dotnetfiddle.net/9JpFTQ">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/02_ChoosingAScorer.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.Ratio("mysmilarstring", "myawfullysimilarstirng");
@@ -129,7 +129,7 @@ Fuzz.Ratio("mysmilarstring", "mysimilarstring");
 ```
 
 ### Partial Ratio
-<p align="right"><a href="https://dotnetfiddle.net/rk0dIO">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/04_PartialMatching.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.PartialRatio("similar", "somewhresimlrbetweenthisstring");
@@ -160,7 +160,7 @@ it, so it is not a unique match boundary. This directional API does not return a
 start index or edit script.
 
 ### Token Sort Ratio
-<p align="right"><a href="https://dotnetfiddle.net/b5RVp2">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenSortRatio("order words out of", "  words out of order");
@@ -170,7 +170,7 @@ Fuzz.PartialTokenSortRatio("order words out of", "  words out of order");
 ```
 
 ### Token Set Ratio
-<p align="right"><a href="https://dotnetfiddle.net/ZfZRGb">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenSetRatio("fuzzy was a bear", "fuzzy fuzzy fuzzy bear");
@@ -180,7 +180,7 @@ Fuzz.PartialTokenSetRatio("fuzzy was a bear", "fuzzy fuzzy fuzzy bear");
 ```
 
 ### Token Initialism Ratio
-<p align="right"><a href="https://dotnetfiddle.net/87181A">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenInitialismRatio("NASA", "National Aeronautics and Space Administration");
@@ -195,7 +195,7 @@ Fuzz.PartialTokenInitialismRatio("NASA", "National Aeronautics Space Administrat
 ```
 
 ### Token Abbreviation Ratio
-<p align="right"><a href="https://dotnetfiddle.net/MVlwrW">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenAbbreviationRatio("bl 420", "Baseline section 420", StringPreprocessor.Full);
@@ -205,7 +205,7 @@ Fuzz.PartialTokenAbbreviationRatio("bl 420", "Baseline section 420", StringPrepr
 ```
 
 ### Weighted Ratio
-<p align="right"><a href="https://dotnetfiddle.net/n9QxAk">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/02_ChoosingAScorer.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the quick brown fox jumps over the small lazy dog");
@@ -248,7 +248,7 @@ ScoreAlignment a = Fuzz.PartialRatioAlignment("this is a test", "yes this is a t
 
 Find the best match(es) from a collection of choices.
 
-<p align="right"><a href="https://dotnetfiddle.net/8lEzk3">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/07_SearchAList.cs">Runnable example</a></p>
 
 ```csharp
 Process.ExtractOne("cowboys", new[] { "Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys" });
@@ -279,7 +279,7 @@ Process.ExtractOne("cowboys", new[] { "Atlanta Falcons", "New York Jets", "New Y
 
 ### Generic Type Extraction
 
-<p align="right"><a href="https://dotnetfiddle.net/YDtl6k">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/08_SearchObjects.cs">Runnable example</a></p>
 
 Extraction can operate on objects of any type. Use the `extractor` parameter to reduce the object to the string it should be compared on:
 ```csharp
@@ -368,7 +368,7 @@ The `Process.Configure()` fluent builder creates reusable, immutable pipelines w
 
 Equivalent to the static `Process` methods, but reusable across multiple queries:
 
-<p align="right"><a href="https://dotnetfiddle.net/KEFXxm">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 ```csharp
 var pipeline = Process.Configure().Build();
@@ -391,7 +391,7 @@ var result2 = pipeline.ExtractOne(
 
 ### Custom Scorer
 
-<p align="right"><a href="https://dotnetfiddle.net/6JVmU9">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 ```csharp
 var pipeline = Process.Configure()
@@ -422,7 +422,7 @@ var pipeline = Process.Configure()
 
 ### Cached Execution
 
-<p align="right"><a href="https://dotnetfiddle.net/y6qMJm">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 Automatic caching creates a `CachedWeightedRatioScorer` per extraction call, pre-initializing internal data structures for the query string:
 ```csharp
@@ -497,7 +497,7 @@ var weighted           = ScorerCache.Get<WeightedRatioScorer>();
 
 ### Cached Scorers (`ICachedRatioScorer`)
 
-<p align="right"><a href="https://dotnetfiddle.net/Ykr94M">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 Pre-initialize with a query string for repeated comparisons. These implement `IDisposable`:
 ```csharp
@@ -520,7 +520,7 @@ Available cached scorers:
 
 ### Levenshtein Distance API
 
-<p align="right"><a href="https://dotnetfiddle.net/JzzcwS">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/13_EditDistances.cs">Runnable example</a></p>
 
 Low-level access to the bit-parallel Levenshtein distance implementation:
 
@@ -619,7 +619,7 @@ All three implement `IDisposable` -- use `using` to return pooled arrays.
 
 #### Levenshtein Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/hxUB72">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 ```csharp
 using var lev = new Levenshtein("chicago cubs vs new york mets");
@@ -632,7 +632,7 @@ int d2 = lev.DistanceFrom("atlanta braves vs pittsburgh pirates");
 
 #### Indel Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/UkyXk2">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 Indel distance counts only insertions and deletions (no replacements). `NormalizedSimilarityWith` returns a value between 0.0 (completely different) and 1.0 (identical):
 
@@ -668,7 +668,7 @@ double similarity = indel.NormalizedSimilarityWith(new[] { "hello", "there" });
 
 #### LongestCommonSubsequence Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/s60rZT">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 LCS distance is defined as `max(len1, len2) - LCS_length`:
 
@@ -680,7 +680,7 @@ int distance = lcs.DistanceFrom("chicago white sox");
 ```
 
 ## String Preprocessors
-<p align="right"><a href="https://dotnetfiddle.net/cIQ6PB">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/03_Preprocessing.cs">Runnable example</a></p>
 
 By default, `Fuzz` methods compare strings as-is. Pass `StringPreprocessor.Full` to normalize whitespace, lowercase, and strip non-alphanumeric characters before comparing:
 
