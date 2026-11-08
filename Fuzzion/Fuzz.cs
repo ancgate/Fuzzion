@@ -6,6 +6,11 @@ using Fuzzion.SimilarityRatio.Scorer.StrategySensitive;
 
 namespace Fuzzion;
 
+/// <summary>
+/// Similarity scores between two strings, from 0 (nothing in common) to 100 (equal):
+/// simple, partial, token-based and weighted ratios, as in RapidFuzz's <c>fuzz</c> module.
+/// Overloads take an optional preprocessor and a minimum score.
+/// </summary>
 public static partial class Fuzz
 {
     #region Ratio

@@ -8,6 +8,13 @@ using Fuzzion.SimilarityRatio.Scorer.Composite;
 
 namespace Fuzzion;
 
+/// <summary>
+/// Searches a list of choices for the ones closest to a query (<c>ExtractOne</c>,
+/// <c>ExtractTop</c>, <c>ExtractSorted</c>, <c>ExtractAll</c> and their <c>...By</c> versions
+/// for objects), scores many strings against many (<see cref="Cdist"/>, <see cref="Cpdist"/>)
+/// and removes near-duplicates (<see cref="Dedupe"/>). Use <see cref="Configure"/> for cached
+/// or parallel searches.
+/// </summary>
 public static partial class Process
 {
     internal static readonly WeightedRatioScorer DefaultScorer = (WeightedRatioScorer)ScorerCache.Get<WeightedRatioScorer>();
