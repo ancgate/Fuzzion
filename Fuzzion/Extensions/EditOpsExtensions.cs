@@ -4,8 +4,24 @@ using System.Collections.Generic;
 
 namespace Fuzzion.Extensions;
 
+/// <summary>
+/// Conversions of edit operations, kept from Raffinert.FuzzySharp. Prefer the methods on
+/// <see cref="EditOps"/>.
+/// </summary>
 public static class EditOpsExtensions
 {
+    /// <summary>
+    /// Converts single-element edit operations into one <see cref="OpCode"/> per operation, with
+    /// <see cref="EditType.KEEP"/> ranges in between. Inherited from Raffinert.FuzzySharp: it
+    /// ignores <see cref="EditType.REPLACE"/> operations and does not merge consecutive
+    /// operations. With replacements the result is wrong (replaced elements end up inside
+    /// overlapping <c>KEEP</c> ranges); it is correct only for insert/delete operations
+    /// (Indel, LCS). Use <see cref="EditOps.AsOpCodes()"/> instead.
+    /// </summary>
+    /// <param name="editOps">The operations, ordered by position.</param>
+    /// <param name="srcLen">Length of the source.</param>
+    /// <param name="destLen">Length of the destination.</param>
+    /// <returns>The opcodes.</returns>
     public static List<OpCode> AsOpCodes(this IEnumerable<EditOp> editOps, int srcLen, int destLen)
     {
         var opcodes = new List<OpCode>();
@@ -49,6 +65,15 @@ public static class EditOpsExtensions
         return opcodes;
     }
 
+    /// <summary>
+    /// The unchanged blocks between the operations, ending with a zero-length block at
+    /// (<paramref name="srcLen"/>, <paramref name="destLen"/>). Handles insert, delete and replace
+    /// operations. Same as <see cref="EditOps.AsMatchingBlocks()"/>.
+    /// </summary>
+    /// <param name="ops">The operations, ordered by position.</param>
+    /// <param name="srcLen">Length of the source.</param>
+    /// <param name="destLen">Length of the destination.</param>
+    /// <returns>The matching blocks.</returns>
     public static List<MatchingBlock> AsMatchingBlocks(
         this IEnumerable<EditOp> ops,
         int srcLen,

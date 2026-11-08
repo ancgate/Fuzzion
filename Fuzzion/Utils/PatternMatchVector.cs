@@ -4,12 +4,31 @@ using System.Runtime.CompilerServices;
 
 namespace Fuzzion.Utils;
 
+/// <summary>
+/// The bit masks of a pattern, used by the bit-parallel algorithms: for each distinct element,
+/// a mask with bit <c>i</c> set where the pattern has that element at position <c>i</c>. Create
+/// one with <see cref="PatternMatchVector.Create{T}"/>. It holds pooled memory, so dispose it
+/// when done. A low-level type kept public for compatibility with Raffinert.FuzzySharp; the
+/// <c>Indel.Block*</c> methods accept it.
+/// </summary>
+/// <typeparam name="TKey">Element type of the pattern.</typeparam>
 public interface IPatternMatchVector<in TKey> : IDisposable where TKey : notnull, IEquatable<TKey>
 {
+    /// <summary>Length of the pattern.</summary>
     int Length { get; }
+
+    /// <summary>Number of 64-bit words in each mask: <c>(Length + 63) / 64</c>.</summary>
     int Blocks { get; }
+
+    /// <summary>
+    /// The mask of <paramref name="key"/> (<see cref="Blocks"/> words, lowest positions in the
+    /// first word), or an all-zero mask when the pattern does not contain it.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     ReadOnlySpan<ulong> GetOrZero(TKey key);
 
+    /// <summary>Whether the pattern contains <paramref name="key"/>.</summary>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     bool ContainsKey(TKey key);
 }
 
@@ -18,8 +37,19 @@ internal interface IPatternMatchVectorImpl<TKey> : IPatternMatchVector<TKey> whe
     void Populate(ReadOnlySpan<TKey> source);
 }
 
+/// <summary>
+/// Creates <see cref="IPatternMatchVector{TKey}"/> instances. A low-level helper kept public for
+/// compatibility with Raffinert.FuzzySharp.
+/// </summary>
 public sealed class PatternMatchVector
 {
+    /// <summary>
+    /// Builds the bit masks of <paramref name="source"/>. <c>char</c> patterns use a specialized
+    /// implementation with direct lookup for characters up to U+00FF.
+    /// </summary>
+    /// <typeparam name="T">Element type of the pattern.</typeparam>
+    /// <param name="source">The pattern.</param>
+    /// <returns>The masks. They hold pooled memory, so dispose them when done.</returns>
     public static IPatternMatchVector<T> Create<T>(ReadOnlySpan<T> source) where T : notnull, IEquatable<T>
     {
         var blocks = (source.Length + 63) >> 6;

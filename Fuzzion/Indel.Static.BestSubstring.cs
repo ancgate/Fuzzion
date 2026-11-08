@@ -32,18 +32,24 @@ public readonly struct IndelSubstringMatch(int distance, int firstBestEndIndex) 
     /// </summary>
     public bool ImprovedOverEmptyMatch => FirstBestEndIndex >= 0;
 
+    /// <summary>
+    /// Whether <paramref name="other"/> has the same <see cref="Distance"/> and
+    /// <see cref="FirstBestEndIndex"/>.
+    /// </summary>
     public bool Equals(IndelSubstringMatch other)
     {
         return Distance == other.Distance
                && FirstBestEndIndex == other.FirstBestEndIndex;
     }
 
+    /// <inheritdoc/>
     public override bool Equals(object obj)
     {
         return obj is IndelSubstringMatch match
                && Equals(match);
     }
 
+    /// <inheritdoc/>
     public override int GetHashCode()
     {
         unchecked
@@ -52,6 +58,7 @@ public readonly struct IndelSubstringMatch(int distance, int firstBestEndIndex) 
         }
     }
 
+    /// <summary>Whether the two results are equal.</summary>
     public static bool operator ==(
         IndelSubstringMatch left,
         IndelSubstringMatch right)
@@ -59,6 +66,7 @@ public readonly struct IndelSubstringMatch(int distance, int firstBestEndIndex) 
         return left.Equals(right);
     }
 
+    /// <summary>Whether the two results differ.</summary>
     public static bool operator !=(
         IndelSubstringMatch left,
         IndelSubstringMatch right)
@@ -66,6 +74,7 @@ public readonly struct IndelSubstringMatch(int distance, int firstBestEndIndex) 
         return !left.Equals(right);
     }
 
+    /// <summary>Formats the result as <c>Distance = 2, FirstBestEndIndex = 7</c>.</summary>
     public override string ToString()
     {
         return $"Distance = {Distance}, FirstBestEndIndex = {FirstBestEndIndex}";
