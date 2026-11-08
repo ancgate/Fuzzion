@@ -1,0 +1,134 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  test:
+    name: Build and test (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows also runs the .NET Framework 4.6.2 / 4.7.2 test targets.
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore Fuzzion.slnx
+
+      - name: Build (all target frameworks)
+        run: dotnet build Fuzzion.slnx --configuration Release --no-restore -p:GeneratePackageOnBuild=false
+
+      - name: Test (.NET 8 and .NET 10)
+        run: |
+          dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net8.0
+          dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net10.0
+
+      - name: Run the examples
+        run: dotnet run --project examples/Fuzzion.Examples --configuration Release --no-build -- all
+
+      - name: Test (.NET Framework)
+        if: runner.os == 'Windows'
+        run: |
+          dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net462
+          dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net472
+
+  oracle:
+    name: Oracle fixtures are reproducible
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Regenerate the RapidFuzz / TheFuzz reference values
+        run: |
+          python -m pip install -r tools/oracle/requirements.txt
+          python tools/oracle/generate.py
+
+      - name: Fixtures must be unchanged
+        run: git diff --exit-code -- Fuzzion.Tests/Oracle/data
+
+  pack:
+    name: Pack
+    needs: [test, oracle]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # SourceLink and deterministic builds need the commit history
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: echo "PACKAGE_VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - name: Pack
+        shell: bash
+        run: |
+          VERSION_ARGS=()
+          if [ -n "${PACKAGE_VERSION:-}" ]; then
+            VERSION_ARGS=(-p:Version="$PACKAGE_VERSION" -p:PackageVersion="$PACKAGE_VERSION")
+          fi
+          dotnet pack Fuzzion/Fuzzion.csproj --configuration Release --output artifacts \
+            -p:GeneratePackageOnBuild=false -p:ContinuousIntegrationBuild=true "${VERSION_ARGS[@]}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: |
+            artifacts/*.nupkg
+            artifacts/*.snupkg
+          if-no-files-found: error
+
+  publish:
+    name: Publish to NuGet
+    # Only for version tags (for example v1.0.0-rc.1), after every check passed.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [pack]
+    runs-on: ubuntu-latest
+    environment: nuget
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: artifacts
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Push
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo "::error::The NUGET_API_KEY secret is not set (repository Settings > Environments > nuget)."
+            exit 1
+          fi
+          dotnet nuget push "artifacts/*.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json --skip-duplicate

@@ -1,0 +1,72 @@
+name: Benchmark regression check
+
+# Runs on demand (Actions > Benchmark regression check > Run workflow). The base and the
+# head are measured on the same runner in the same job, so the comparison does not depend
+# on how fast that runner is. The medium job is used because short runs of identical code
+# differed by up to 19% in testing. Shared runners are still noisy: treat a failure as a prompt to
+# re-run and look closer, not as proof.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Branch, tag or commit to compare against"
+        default: "master"
+        required: true
+      filter:
+        description: "BenchmarkDotNet filter (glob)"
+        default: "*DistanceMetricsBenchmarks* *CdistBenchmarks* *JaroBenchmarks*"
+        required: true
+      threshold:
+        description: "Allowed slowdown (0.20 = 20%)"
+        default: "0.20"
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: head
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base }}
+          path: base
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Run benchmarks (base, then head)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for side in base head; do
+            # A missing benchmark class on the base side is fine; it is reported as "new".
+            dotnet run -c Release --project "$side/Fuzzion.Benchmarks" -- \
+              --filter ${{ inputs.filter }} --job medium --exporters json \
+              --artifacts "results/$side" || echo "::warning::benchmarks failed on $side"
+          done
+
+      - name: Compare
+        run: python head/tools/benchmarks/compare.py results/base results/head --threshold ${{ inputs.threshold }}
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results
+          path: results

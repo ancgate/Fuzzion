@@ -1,28 +1,18 @@
-﻿[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://stand-with-ukraine.pp.ua)
+# Fuzzion
 
-## Terms of use<sup>[?](https://github.com/Tyrrrz/.github/blob/master/docs/why-so-political.md)</sup>
+Fuzzion is a high-performance .NET fuzzy string matching library inspired by SeatGeek's FuzzyWuzzy and RapidFuzz.
 
-By using this project or its source code, for any purpose and in any shape or form, you grant your **implicit agreement** to all the following statements:
+Fuzzion is based on [Raffinert.FuzzySharp](https://github.com/Raffinert/FuzzySharp) by Yevhen Cherkes, itself based on [FuzzySharp](https://github.com/JakeBayer/FuzzySharp) by Jacob Bayer. It keeps their bit-parallel distance algorithms, [partial_ratio fixes](https://github.com/rapidfuzz/RapidFuzz/blob/main/api_differences.md#partial_ratio-implementation), cached scorers, and extraction pipelines, and extends them toward full [RapidFuzz](https://github.com/rapidfuzz/RapidFuzz) parity plus set-based similarity metrics. See the [implementation plan](docs/IMPLEMENTATION-PLAN.md) for the roadmap.
 
-- You **condemn Russia and its military aggression against Ukraine**
-- You **recognize that Russia is an occupant that unlawfully invaded a sovereign state**
-- You **support Ukraine's territorial integrity, including its claims over temporarily occupied territories of Crimea and Donbas**
-- You **reject false narratives perpetuated by Russian state propaganda**
+[![CI](https://github.com/ancgate/Fuzzion/actions/workflows/ci.yml/badge.svg)](https://github.com/ancgate/Fuzzion/actions/workflows/ci.yml)
 
-To learn more about the war and how you can help, [click here](https://stand-with-ukraine.pp.ua). Glory to Ukraine! 🇺🇦
-
-# Raffinert.FuzzySharp
-
-[![nuget version](https://img.shields.io/nuget/v/Raffinert.FuzzySharp.svg?style=flat-square)](https://www.nuget.org/packages/Raffinert.FuzzySharp)
-[![nuget downloads](https://img.shields.io/nuget/dt/Raffinert.FuzzySharp?label=Downloads)](https://www.nuget.org/packages/Raffinert.FuzzySharp)
-
-Raffinert.FuzzySharp is a high-performance .NET fuzzy string matching library inspired by SeatGeek's FuzzyWuzzy and RapidFuzz.
-
-It is a bit-parallel accelerated version of the original [FuzzySharp](https://github.com/JakeBayer/FuzzySharp), with multiple fixes to the [partial_ratio implementation](https://github.com/rapidfuzz/RapidFuzz/blob/main/api_differences.md#partial_ratio-implementation), lower-level distance APIs, cached scorers, and reusable extraction pipelines.
+> **Status:** release candidate `1.0.0-rc.1`. The public API is frozen (see
+> [docs/api-review.md](docs/api-review.md)); changes before 1.0.0 will only fix problems
+> found in the candidate.
 
 ## Overview
 
-Use Raffinert.FuzzySharp when you need to:
+Use Fuzzion when you need to:
 
 - Score two strings for similarity.
 - Find the best match in a list of choices.
@@ -36,6 +26,7 @@ Use Raffinert.FuzzySharp when you need to:
 - [Installation](#installation)
 - [Compatibility](#compatibility)
 - [Quick Start](#quick-start)
+- [Examples](#examples)
 - [Choosing a Scorer](#choosing-a-scorer)
 - [Ratio Examples](#ratio-examples)
 - [Process Extraction](#process-extraction)
@@ -51,18 +42,18 @@ Use Raffinert.FuzzySharp when you need to:
 ## Installation
 
 ```powershell
-Install-Package Raffinert.FuzzySharp
+Install-Package Fuzzion -Prerelease
 ```
 
 or
 
 ```bash
-dotnet add package Raffinert.FuzzySharp
+dotnet add package Fuzzion --prerelease
 ```
 
 ## Compatibility
 
-Raffinert.FuzzySharp targets:
+Fuzzion targets:
 
 - .NET Standard 2.0 and 2.1
 - .NET Framework 4.5, 4.6, 4.6.2, 4.7.2, and 4.8
@@ -96,14 +87,29 @@ Similarity scores are `double` values in the range 0–100.
 
 By default, `Fuzz` methods compare strings as-is. `Process` extraction methods use `StringPreprocessor.Full` by default, which normalizes whitespace, lowercases, and strips non-alphanumeric characters.
 
+## Examples
+
+The [examples](examples/README.md) folder has 30 runnable programs, from first steps to
+complete recipes: searching lists and objects, typo-tolerant search, deduplication,
+every distance and set metric, edit operations, Unicode, custom scorers, "did you mean",
+company-name matching, record linkage, autocomplete, diffs and log grouping.
+
+```bash
+dotnet run --project examples/Fuzzion.Examples -- all
+```
+
 ## Choosing a Scorer
 
 | Scorer | Use when |
 |--------|----------|
 | `Fuzz.Ratio` | You need direct similarity between two strings. |
+| `Fuzz.QRatio` | Like `Ratio`, but an empty input always scores 0 (even two empty inputs). |
 | `Fuzz.PartialRatio` | One string may be a substring or close substring of the other. |
+| `Fuzz.ApproximateSubstringRatio` | You need the best Indel-distance match of the shorter input within the longer input. |
 | `Fuzz.TokenSortRatio` | Word order should not matter. |
 | `Fuzz.TokenSetRatio` | Duplicate words or extra common words should have less impact. |
+| `Fuzz.TokenRatio` | You want the better of `TokenSortRatio` and `TokenSetRatio`. |
+| `Fuzz.PartialTokenRatio` | You want the better of the partial token scores (100 when any word is shared). |
 | `Fuzz.TokenInitialismRatio` | You need to compare an initialism with its expanded phrase. |
 | `Fuzz.TokenAbbreviationRatio` | You need abbreviation-aware matching. |
 | `Fuzz.WeightedRatio` | You want a general-purpose scorer that combines several strategies. |
@@ -113,7 +119,7 @@ By default, `Fuzz` methods compare strings as-is. `Process` extraction methods u
 ## Ratio Examples
 
 ### Simple Ratios
-<p align="right"><a href="https://dotnetfiddle.net/9JpFTQ">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/02_ChoosingAScorer.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.Ratio("mysmilarstring", "myawfullysimilarstirng");
@@ -123,15 +129,38 @@ Fuzz.Ratio("mysmilarstring", "mysimilarstring");
 ```
 
 ### Partial Ratio
-<p align="right"><a href="https://dotnetfiddle.net/rk0dIO">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/04_PartialMatching.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.PartialRatio("similar", "somewhresimlrbetweenthisstring");
 // 71.42857142857143
 ```
 
+### Approximate Substring Ratio
+
+```csharp
+double score = Fuzz.ApproximateSubstringRatio(
+    "invoice number 12345",
+    "processed invoice number 12345 successfully");
+// 100
+```
+
+`ApproximateSubstringRatio` searches for the best approximate occurrence of the
+shorter input, considering every possible start position implicitly. It uses the
+Indel edit model: insertions and deletions cost one, while a substitution costs
+two. The score is normalized relative to the shorter input's length. Equal-length
+inputs are evaluated in both directions unless the first direction is an exact
+match, so the high-level score is symmetric. Its numeric results are not
+equivalent to `PartialRatio`.
+
+For endpoint information, call `Indel.BestSubstringMatch` directly; its
+`FirstBestEndIndex` is the first endpoint that strictly improves on the distance
+of deleting the complete pattern. Equal-distance later endpoints do not replace
+it, so it is not a unique match boundary. This directional API does not return a
+start index or edit script.
+
 ### Token Sort Ratio
-<p align="right"><a href="https://dotnetfiddle.net/b5RVp2">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenSortRatio("order words out of", "  words out of order");
@@ -141,7 +170,7 @@ Fuzz.PartialTokenSortRatio("order words out of", "  words out of order");
 ```
 
 ### Token Set Ratio
-<p align="right"><a href="https://dotnetfiddle.net/ZfZRGb">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenSetRatio("fuzzy was a bear", "fuzzy fuzzy fuzzy bear");
@@ -151,7 +180,7 @@ Fuzz.PartialTokenSetRatio("fuzzy was a bear", "fuzzy fuzzy fuzzy bear");
 ```
 
 ### Token Initialism Ratio
-<p align="right"><a href="https://dotnetfiddle.net/87181A">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenInitialismRatio("NASA", "National Aeronautics and Space Administration");
@@ -166,7 +195,7 @@ Fuzz.PartialTokenInitialismRatio("NASA", "National Aeronautics Space Administrat
 ```
 
 ### Token Abbreviation Ratio
-<p align="right"><a href="https://dotnetfiddle.net/MVlwrW">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/05_TokenScorers.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.TokenAbbreviationRatio("bl 420", "Baseline section 420", StringPreprocessor.Full);
@@ -176,20 +205,50 @@ Fuzz.PartialTokenAbbreviationRatio("bl 420", "Baseline section 420", StringPrepr
 ```
 
 ### Weighted Ratio
-<p align="right"><a href="https://dotnetfiddle.net/n9QxAk">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/02_ChoosingAScorer.cs">Runnable example</a></p>
 
 ```csharp
 Fuzz.WeightedRatio("The quick brown fox jimps ofver the small lazy dog", "the quick brown fox jumps over the small lazy dog");
 // 94.94949494949495
 ```
 
-`WeightedRatio` intentionally retains its legacy full `TokenSortRatio`/`TokenSetRatio` partial branch for compatibility.
+`WeightedRatio` gives the same results as RapidFuzz's `WRatio`. When one string is at least 1.5 times longer than the other, it compares the shorter one with parts of the longer one using the partial token scores. Because `PartialTokenSetRatio` is 100 whenever two strings share a word, short choices that share one common word with the query can score 85.5 (for example `"braves vs mets"` for any query containing "vs"). If that is too generous for your data, use `TokenSortRatio`, `TokenSetRatio` or `Ratio` as the scorer.
+
+### Minimum Score and Spans
+
+Every `Fuzz` scorer has an overload that takes a minimum score. Scores below it
+return 0, and `Ratio`/`QRatio` skip pairs whose lengths already rule the cutoff out:
+
+```csharp
+Fuzz.Ratio("kitten", "sitting");                   // 61.54
+Fuzz.Ratio("kitten", "sitting", scoreCutoff: 80);  // 0
+```
+
+`Ratio`, `QRatio`, `PartialRatio` and `ApproximateSubstringRatio` also accept
+`ReadOnlySpan<char>`, so you can score slices of a larger buffer without creating
+substrings:
+
+```csharp
+ReadOnlySpan<char> line = "id=42;name=new york mets;city=queens";
+double score = Fuzz.Ratio(line.Slice(11, 13), "new york mets".AsSpan()); // 100
+```
+
+### Partial Ratio Alignment
+
+`PartialRatioAlignment` returns the partial ratio together with where the best match is
+in each string:
+
+```csharp
+ScoreAlignment a = Fuzz.PartialRatioAlignment("this is a test", "yes this is a test!");
+// Score = 100, SourceStart = 0, SourceEnd = 14, DestStart = 4, DestEnd = 18
+// so "yes this is a test!".Substring(4, 14) == "this is a test"
+```
 
 ## Process Extraction
 
 Find the best match(es) from a collection of choices.
 
-<p align="right"><a href="https://dotnetfiddle.net/8lEzk3">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/07_SearchAList.cs">Runnable example</a></p>
 
 ```csharp
 Process.ExtractOne("cowboys", new[] { "Atlanta Falcons", "New York Jets", "New York Giants", "Dallas Cowboys" });
@@ -220,7 +279,7 @@ Process.ExtractOne("cowboys", new[] { "Atlanta Falcons", "New York Jets", "New Y
 
 ### Generic Type Extraction
 
-<p align="right"><a href="https://dotnetfiddle.net/YDtl6k">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/08_SearchObjects.cs">Runnable example</a></p>
 
 Extraction can operate on objects of any type. Use the `extractor` parameter to reduce the object to the string it should be compared on:
 ```csharp
@@ -252,6 +311,55 @@ var best = Process.ExtractOneBy(query, events, e => e.Name);
 var top = Process.ExtractTopBy(query, events, e => e.Name, limit: 2);
 ```
 
+### Unicode: Accents and Whole Characters
+
+`StringPreprocessor.RemoveDiacritics` strips accents (`"Crème Brûlée"` → `"Creme Brulee"`,
+`ß` → `ss`), and `StringPreprocessor.Compose` chains cleanup steps:
+
+```csharp
+var clean = StringPreprocessor.Compose(StringPreprocessor.RemoveDiacritics, StringPreprocessor.Full);
+Fuzz.Ratio("Crème BRÛLÉE!", "creme brulee", clean); // 100
+```
+
+`StringPreprocessor.FullUnicode` is like `Full` but matches RapidFuzz's `default_process`:
+it keeps all numbers (`²`, `½`), lowercases `İ`, and treats emoji and other characters
+outside the Basic Multilingual Plane as one character.
+
+.NET stores such characters as two `char`s, so every metric normally counts them twice.
+`CodePoints.Compare` counts each character once, as Python does, with any metric:
+
+```csharp
+Fuzz.Ratio("😀abc", "😀abd");                      // 80 (UTF-16: the emoji counts as 2)
+CodePoints.Compare("😀abc", "😀abd", Fuzz.Ratio);  // 75, as RapidFuzz
+var scorer = CodePoints.Scorer(ScorerCache.Get<WeightedRatioScorer>()); // for Process / Cdist
+```
+
+### Distance Scorers, Matrices and Deduplication
+
+Search with a distance (lower is better) by wrapping it with `Scorers.FromDistance`.
+Results come back closest first; `maxDistance` drops anything further away:
+
+```csharp
+var scorer = Scorers.Levenshtein(maxDistance: 2); // or Scorers.FromDistance(anyFunction, maxDistance)
+Process.ExtractSorted("appel", new[] { "bandana", "apple", "banana", "appel" }, s => s, scorer);
+// [(appel, 0), (apple, 2)]
+```
+
+`Process.Cdist` scores every query against every choice (optionally on all cores), and
+`Process.Cpdist` scores pairs, as RapidFuzz's `cdist` / `cpdist`:
+
+```csharp
+double[,] scores = Process.Cdist(new[] { "apple", "banana" }, new[] { "apple", "appel", "banana" }, workers: -1);
+// [[100, 80, 18.18], [18.18, 18.18, 100]]
+```
+
+`Process.Dedupe` removes near-duplicates, as TheFuzz's `dedupe`:
+
+```csharp
+Process.Dedupe(new[] { "Frodo Baggin", "Frodo Baggins", "F. Baggins", "Samwise G.", "Gandalf", "Bilbo Baggins" });
+// ["Frodo Baggins", "Samwise G.", "Gandalf"]
+```
+
 ## Fluent Pipeline API
 
 The `Process.Configure()` fluent builder creates reusable, immutable pipelines with preconfigured scoring, caching, and parallel execution.
@@ -260,7 +368,7 @@ The `Process.Configure()` fluent builder creates reusable, immutable pipelines w
 
 Equivalent to the static `Process` methods, but reusable across multiple queries:
 
-<p align="right"><a href="https://dotnetfiddle.net/KEFXxm">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 ```csharp
 var pipeline = Process.Configure().Build();
@@ -283,7 +391,7 @@ var result2 = pipeline.ExtractOne(
 
 ### Custom Scorer
 
-<p align="right"><a href="https://dotnetfiddle.net/6JVmU9">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 ```csharp
 var pipeline = Process.Configure()
@@ -314,7 +422,7 @@ var pipeline = Process.Configure()
 
 ### Cached Execution
 
-<p align="right"><a href="https://dotnetfiddle.net/y6qMJm">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Searching/09_Pipelines.cs">Runnable example</a></p>
 
 Automatic caching creates a `CachedWeightedRatioScorer` per extraction call, pre-initializing internal data structures for the query string:
 ```csharp
@@ -377,6 +485,7 @@ Stateless scorers for use with `Process` static methods and the `WithScorer()` b
 ```csharp
 var ratio              = ScorerCache.Get<DefaultRatioScorer>();
 var partialRatio       = ScorerCache.Get<PartialRatioScorer>();
+var approximateSubstring = ScorerCache.Get<ApproximateSubstringRatioScorer>();
 var tokenSet           = ScorerCache.Get<TokenSetScorer>();
 var partialTokenSet    = ScorerCache.Get<PartialTokenSetScorer>();
 var tokenSort          = ScorerCache.Get<TokenSortScorer>();
@@ -388,7 +497,7 @@ var weighted           = ScorerCache.Get<WeightedRatioScorer>();
 
 ### Cached Scorers (`ICachedRatioScorer`)
 
-<p align="right"><a href="https://dotnetfiddle.net/Ykr94M">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 Pre-initialize with a query string for repeated comparisons. These implement `IDisposable`:
 ```csharp
@@ -399,7 +508,9 @@ double score = scorer.Score("candidate string");
 
 Available cached scorers:
 - `CachedWeightedRatioScorer` -- weighted combination (default for `.Cached()`)
+- `CachedQRatioScorer`, `CachedPartialRatioScorer`, `CachedPartialTokenSortScorer`, `CachedTokenRatioScorer`, `CachedPartialTokenRatioScorer`
 - `CachedDefaultRatioScorer` -- simple Levenshtein ratio
+- `CachedApproximateSubstringRatioScorer` -- approximate substring Indel ratio
 - `CachedTokenSortScorer` -- token sort ratio
 - `CachedTokenSetScorer` -- token set ratio
 - `CachedPartialTokenSetScorer` -- partial token set ratio
@@ -409,7 +520,7 @@ Available cached scorers:
 
 ### Levenshtein Distance API
 
-<p align="right"><a href="https://dotnetfiddle.net/JzzcwS">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/13_EditDistances.cs">Runnable example</a></p>
 
 Low-level access to the bit-parallel Levenshtein distance implementation:
 
@@ -427,6 +538,79 @@ EditOp[] ops = Levenshtein.GetEditOps("kitten", "sitting");
 // [REPLACE(0, 0), REPLACE(4, 4), INSERT(6, 6)]
 ```
 
+### More Distance Metrics
+
+Fuzzion also has the other RapidFuzz distance metrics. Each has `Distance`,
+`Similarity`, `NormalizedDistance` and `NormalizedSimilarity`, with `string` and
+generic `ReadOnlySpan<T>` overloads, and gives the same results as RapidFuzz.
+
+| Class | Measures | Example |
+|---|---|---|
+| `Hamming` | Positions that differ (`pad: false` requires equal lengths) | `Hamming.Distance("karolin", "kathrin")` → 3 |
+| `Jaro` | Matching characters within a window, and their order; 0 to 1 | `Jaro.Similarity("MARTHA", "MARHTA")` → 0.944 |
+| `JaroWinkler` | Jaro plus a bonus for a shared start (`prefixWeight`, default 0.1) | `JaroWinkler.Similarity("MARTHA", "MARHTA")` → 0.961 |
+| `Osa` | Edits plus swaps of two neighbours, each part edited once | `Osa.Distance("CA", "ABC")` → 3 |
+| `DamerauLevenshtein` | Edits plus swaps of two neighbours, no restriction | `DamerauLevenshtein.Distance("CA", "ABC")` → 2 |
+| `Prefix` / `Postfix` | Length of the shared start / end | `Prefix.Similarity("prefix", "preface")` → 4 |
+
+`Indel.Similarity` is also available (`len1 + len2 - Distance`).
+
+```csharp
+double nameScore = JaroWinkler.NormalizedSimilarity("Jonathon", "Jonathan"); // 0.95
+int typos = DamerauLevenshtein.Distance("recieve", "receive");               // 1
+```
+
+`Hamming`, `Jaro`, `JaroWinkler`, `Osa` and `DamerauLevenshtein` also have instance
+classes (for example `new JaroWinkler(query).SimilarityWith(candidate)`) and generic
+versions (`JaroWinklerT<T>`).
+
+### Set-Based and Block Metrics
+
+These compare strings by their q-grams (overlapping substrings of length q, bigrams by
+default), or compare any two collections, such as word lists:
+
+| Class | Measures | Example |
+|---|---|---|
+| `Jaccard` | Shared q-grams ÷ all q-grams | `Jaccard.Similarity("night", "nacht")` → 0.143 |
+| `SorensenDice` | 2 × shared ÷ (q-grams in A + in B) | `SorensenDice.Similarity("night", "nacht")` → 0.25 |
+| `Overlap` | Shared ÷ q-grams in the smaller one | `Overlap.Similarity(new[] {"new", "york"}, new[] {"new", "york", "mets"})` → 1 |
+| `Tanimoto` | Like Jaccard, but repeated q-grams count | `Tanimoto.Similarity("aaab", "aab")` → 0.75 |
+| `RatcliffObershelp` | Python `difflib.SequenceMatcher.ratio()` | `RatcliffObershelp.Similarity("WIKIMEDIA", "WIKIMANIA")` → 0.778 |
+| `LongestCommonSubstring` | Longest run of consecutive shared characters | `LongestCommonSubstring.Of("xabcdey", "zzabcdq")` → `"abcd"` |
+
+Options: `new QGramOptions(q: 3, pad: true, mode: QGramMode.Multiset)` changes the
+q-gram length, adds start/end markers so short strings still have q-grams, and counts
+repeated q-grams. `LongestCommonSubsequence.Of(a, b)` returns the subsequence itself.
+
+To combine several metrics into a yes/no answer:
+
+```csharp
+bool same = "Jon Smith".ApproximatelyEquals("John Smith", SimilarityTolerance.Normal,
+    SimilarityMetric.JaroWinkler, SimilarityMetric.Levenshtein); // true
+```
+
+### Edit Operations
+
+`Levenshtein.GetEditOps` and `Indel.GetEditOps` return the edits that turn one string
+into the other (`EditOps`); `GetOpCodes` returns them as ranges (`OpCodes`). Both match
+RapidFuzz and can be applied, inverted and converted:
+
+```csharp
+EditOps ops = Levenshtein.GetEditOps("spam", "park");
+// DELETE(0, 0), INSERT(3, 2), REPLACE(3, 3)
+ops.Apply("spam", "park");            // "park"
+ops.Inverse().Apply("park", "spam");  // "spam"
+Levenshtein.GetOpCodes("spam", "park");
+// DELETE(0,1,0,0), EQUAL(1,3,0,2), INSERT(3,3,2,3), REPLACE(3,4,3,4)
+```
+
+`Levenshtein.Distance` also takes `scoreCutoff` (stop early and return `scoreCutoff + 1`
+when the strings are further apart) and `scoreHint` (expected distance; only affects speed):
+
+```csharp
+Levenshtein.Distance("kitten", "sitting", scoreCutoff: 2); // 3, i.e. "more than 2"
+```
+
 ### Instance Distance Classes
 
 The `Levenshtein`, `Indel`, and `LongestCommonSubsequence` classes also offer an **instance API** for one-to-many comparisons. The constructor pre-computes a bit-parallel pattern match vector from the source string, which is then reused across all subsequent calls. This avoids rebuilding the internal data structure on every comparison, giving a significant speedup when comparing one source against many targets.
@@ -435,7 +619,7 @@ All three implement `IDisposable` -- use `using` to return pooled arrays.
 
 #### Levenshtein Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/hxUB72">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 ```csharp
 using var lev = new Levenshtein("chicago cubs vs new york mets");
@@ -448,7 +632,7 @@ int d2 = lev.DistanceFrom("atlanta braves vs pittsburgh pirates");
 
 #### Indel Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/UkyXk2">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 Indel distance counts only insertions and deletions (no replacements). `NormalizedSimilarityWith` returns a value between 0.0 (completely different) and 1.0 (identical):
 
@@ -459,6 +643,16 @@ int distance = indel.DistanceFrom("chicago white sox");
 // 11
 double similarity = indel.NormalizedSimilarityWith("chicago white sox");
 // 0.6206896551724138
+```
+
+The static approximate-substring API returns the best raw Indel distance and its
+endpoint:
+
+```csharp
+IndelSubstringMatch match = Indel.BestSubstringMatch(
+    "invoice number 12345".AsSpan(),
+    "processed invoice number 12345 successfully".AsSpan());
+// match.FirstBestEndIndex identifies the first strict improvement (the final '5')
 ```
 
 A generic variant `IndelT<T>` is available for comparing sequences of any `IEquatable<T>`:
@@ -474,7 +668,7 @@ double similarity = indel.NormalizedSimilarityWith(new[] { "hello", "there" });
 
 #### LongestCommonSubsequence Instance
 
-<p align="right"><a href="https://dotnetfiddle.net/s60rZT">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Metrics/19_ReusableInstances.cs">Runnable example</a></p>
 
 LCS distance is defined as `max(len1, len2) - LCS_length`:
 
@@ -486,7 +680,7 @@ int distance = lcs.DistanceFrom("chicago white sox");
 ```
 
 ## String Preprocessors
-<p align="right"><a href="https://dotnetfiddle.net/cIQ6PB">Run .NET fiddle</a></p>
+<p align="right"><a href="examples/Fuzzion.Examples/Basics/03_Preprocessing.cs">Runnable example</a></p>
 
 By default, `Fuzz` methods compare strings as-is. Pass `StringPreprocessor.Full` to normalize whitespace, lowercase, and strip non-alphanumeric characters before comparing:
 
@@ -502,7 +696,7 @@ Fuzz.Ratio("new york mets", "NEW YORK METS", StringPreprocessor.Full);
 
 ## Performance
 
-The distance implementations use bit-parallel algorithms designed to reduce both execution time and allocations. The table below compares naive DP Levenshtein distance calculation (baseline), original FuzzySharp, Fastenshtein, Quickenshtein, and Raffinert.FuzzySharp.
+The distance implementations use bit-parallel algorithms designed to reduce both execution time and allocations. The table below compares naive DP Levenshtein distance calculation (baseline), original FuzzySharp, Fastenshtein, Quickenshtein, and Raffinert.FuzzySharp (the code Fuzzion is based on; these results were measured upstream).
 
 Random words of 3 to 1024 random chars (`LevenshteinLarge.cs`):
 
@@ -514,13 +708,29 @@ Random words of 3 to 1024 random chars (`LevenshteinLarge.cs`):
 | [Quickenshtein](https://github.com/Turnerj/Quickenshtein)       |  12.918 ms | 12.8046 ms | 0.7019 ms |  0.06 |    0.00 |          - |          - |        12 B |       0.000 |
 | [Raffinert.FuzzySharp](https://github.com/Raffinert/FuzzySharp) |   4.970 ms |  0.3311 ms | 0.0181 ms |  0.02 |    0.00 |          - |          - |      3051 B |       0.000 |
 
-Benchmark sources are in [FuzzySharp.Benchmarks](FuzzySharp.Benchmarks).
+Benchmark sources are in [Fuzzion.Benchmarks](Fuzzion.Benchmarks).
+
+For Fuzzion's own Phase 8 measurements (SIMD `Cdist`, OSA, Jaro, Damerau-Levenshtein,
+Levenshtein cutoffs), see [docs/benchmarks.md](docs/benchmarks.md).
 
 ## Migration Notes
 
+### From Raffinert.FuzzySharp v6
+
+Fuzzion 0.1 has the same API as Raffinert.FuzzySharp v6.0.1. Change the package and namespaces:
+
+- Package: `Raffinert.FuzzySharp` → `Fuzzion`
+- Namespaces: `Raffinert.FuzzySharp` → `Fuzzion` (for example `Raffinert.FuzzySharp.PreProcess` → `Fuzzion.PreProcess`)
+
+Some scores change, to match RapidFuzz (see [docs/known-differences.md](docs/known-differences.md)):
+
+- `Ratio` and `TokenSortRatio` of two empty strings are 100 (were 0).
+- `WeightedRatio` uses the partial token scores when one string is at least 1.5 times longer, so those scores are often higher.
+- `Indel.NormalizedDistance` and `LongestCommonSubsequence.NormalizedSimilarity` had bugs that are fixed.
+
 ### From original FuzzySharp
 
-The package name is `Raffinert.FuzzySharp`, and the default namespace is `Raffinert.FuzzySharp`. This package keeps the familiar FuzzyWuzzy-style API while adding faster distance implementations, fixed partial-ratio behavior, cached scorers, and the fluent process pipeline.
+The package name is `Fuzzion`, and the default namespace is `Fuzzion`. It keeps the familiar FuzzyWuzzy-style API while adding faster distance implementations, fixed partial-ratio behavior, cached scorers, and the fluent process pipeline. Also apply the v4-to-v5 and v5-to-v6 notes below.
 
 ### From Raffinert.FuzzySharp v4 to v5
 
@@ -594,12 +804,13 @@ This does not remove extraction filtering: `Process` and `ResultExtractor` still
 - [Antti Haapala (python-Levenshtein)](https://github.com/ztane)
 - [David Necas (python-Levenshtein)](http://publications.physics.muni.cz/author/yeti)
 - [Jacob Bayer (original FuzzySharp library)](https://github.com/JakeBayer/FuzzySharp)
+- [Yevhen Cherkes (Raffinert.FuzzySharp, the code base Fuzzion starts from)](https://github.com/Raffinert/FuzzySharp)
 - [Max Bachmann (RapidFuzz)](https://github.com/rapidfuzz/RapidFuzz)
 - [Mikko Ohtamaa (python-Levenshtein)](https://github.com/miohtama/python-Levenshtein)
 - [Panayiotis (Java implementation)](https://github.com/xdrop)
 
 ## Support
 
-Support the project through [GitHub Sponsors](https://github.com/sponsors/ycherkes) or via [PayPal](https://www.paypal.com/donate/?business=KXGF7CMW8Y8WJ).
+Fuzzion builds on the work of Yevhen Cherkes. You can support the upstream author through [GitHub Sponsors](https://github.com/sponsors/ycherkes).
 
-See [CHANGELOG.md](CHANGELOG.md) for release history.
+See [CHANGELOG.md](CHANGELOG.md) for release history and [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) for licenses of the code Fuzzion is based on.

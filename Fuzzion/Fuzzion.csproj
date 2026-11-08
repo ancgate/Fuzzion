@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>1.0.0-rc.1</Version>
+    <PackageVersion>1.0.0-rc.1</PackageVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <PackageId>Fuzzion</PackageId>
+    <Authors>Jefferson Bien-Aime</Authors>
+    <Company />
+    <Copyright>Copyright (c) 2026 Jefferson Bien-Aime. Based on Raffinert.FuzzySharp (Yevhen Cherkes) and FuzzySharp (Jacob Bayer).</Copyright>
+    <Description>Fast fuzzy string matching for .NET: FuzzyWuzzy-style scorers, RapidFuzz-compatible distance metrics, and set-based similarity. Based on Raffinert.FuzzySharp.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>Latest</LangVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ancgate/Fuzzion</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>fuzzy string matching levenshtein jaro-winkler damerau jaccard rapidfuzz fuzzywuzzy similarity</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/ancgate/Fuzzion</RepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net45;net46;net462;net472;net48;NET60;NET80;NET90;NET10.0</TargetFrameworks>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>See https://github.com/ancgate/Fuzzion/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <!-- Ship XML docs so IntelliSense shows them. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Every public member is documented: a missing doc comment fails the build. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
+    <!-- Checks that the public API is the same on every target framework. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp3.1' OR '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net462' OR '$(TargetFramework)' == 'net472' OR '$(TargetFramework)' == 'net48'">
+    <PackageReference Include="IndexRange" Version="1.1.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" pack="true" PackagePath="." />
+        <None Include="../THIRD-PARTY-NOTICES.md" pack="true" PackagePath="." />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Meziantou.Polyfill" Version="1.0.166">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <MeziantouPolyfill_IncludedPolyfills>M:System.Collections.Generic.CollectionExtensions.GetValueOrDefault</MeziantouPolyfill_IncludedPolyfills>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Fuzzion.Tests" />
+        <InternalsVisibleTo Include="Fuzzion.Benchmarks" />
+    </ItemGroup>
+
+</Project>

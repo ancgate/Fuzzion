@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Runnable examples for Fuzzion. In your own project, install the package instead of
+    referencing the source:
+
+        dotnet add package Fuzzion (with the prerelease option)
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- Also runs on .NET 9 and 10 when .NET 8 is not installed. -->
+    <RollForward>Major</RollForward>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>FuzzionExamples</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Fuzzion\Fuzzion.csproj" />
+  </ItemGroup>
+
+</Project>

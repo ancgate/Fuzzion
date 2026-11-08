@@ -1,0 +1,250 @@
+﻿using Fuzzion.Utils;
+using System;
+using Fuzzion.Edits;
+using System.Runtime.CompilerServices;
+
+namespace Fuzzion;
+
+/// <summary>
+/// Provides static methods for calculating the Indel (insertion-deletion) distance and similarity between sequences.
+/// Implements algorithms inspired by RapidFuzz's Indel distance implementation.
+/// </summary>
+public sealed partial class Indel
+{
+    /// <summary>
+    /// Computes normalized Indel similarity for character spans using the
+    /// character-specialized common-affix trimming path.
+    /// </summary>
+    internal static double NormalizedSimilarityChar(
+        ReadOnlySpan<char> s1,
+        ReadOnlySpan<char> s2)
+    {
+        var maximum = s1.Length + s2.Length;
+        SequenceUtils.TrimCommonAffix(ref s1, ref s2);
+        SequenceUtils.SwapIfSourceIsLonger(ref s1, ref s2);
+
+        var distance = DistanceImpl(s1, s2);
+        var normalizedDistance = maximum == 0 ? 0 : distance / (double)maximum;
+        var normalizedSimilarity = 1 - normalizedDistance;
+
+        return normalizedSimilarity;
+    }
+
+    /// <summary>
+    /// Computes the Indel distance using precomputed block data for the first sequence.
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1Vector">Precomputed per-symbol bitmasks for s1.</param>
+    /// <param name="s2">Second sequence.</param>
+    /// <returns>The Indel distance between the two sequences.</returns>
+    public static int BlockDistance<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var maximum = s1Vector.Length + s2.Length;
+        var lcsSim = LongestCommonSubsequence.BlockSimilarity(s1Vector, s2);
+        var dist = maximum - 2 * lcsSim;
+        return dist;
+    }
+
+    /// <summary>
+    /// Computes the normalized Indel distance using precomputed block data for the first sequence.
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1Vector"></param>
+    /// <param name="s2">Second sequence.</param>
+    /// <returns>The normalized Indel distance between the two sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double BlockNormalizedDistance<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var maximum = s1Vector.Length + s2.Length;
+        var dist = BlockDistance(s1Vector, s2);
+        var normDist = maximum == 0 ? 0 : dist / (double)maximum;
+        return normDist;
+    }
+
+    /// <summary>
+    /// Computes the normalized Indel similarity using precomputed block data for the first sequence.
+    /// This is defined as 1 - BlockNormalizedDistance(block, s1, s2).
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1Vector"></param>
+    /// <param name="s2">Second sequence.</param>
+    /// <returns>The normalized Indel similarity between the two sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double BlockNormalizedSimilarity<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var normDist = BlockNormalizedDistance(s1Vector, s2);
+        var normSim = 1.0 - normDist;
+        return normSim;
+    }
+
+    /// <summary>
+    /// Computes the Indel distance (minimum number of insertions and deletions) between two sequences.
+    /// This is defined as len(s1) + len(s2) - 2 * LCS(s1, s2).
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1">First sequence.</param>
+    /// <param name="s2">Second sequence.</param>
+    /// <param name="processor">Optional preprocessor for normalization.</param>
+    /// <returns>The Indel distance between the two sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int Distance<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        SequenceUtils.TrimCommonAffixAndSwapIfNeeded(ref s1, ref s2);
+
+        return DistanceImpl(s1, s2);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int DistanceImpl<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        using var patternMatchVector = PatternMatchVector.Create(s1);
+        return DistanceImpl(patternMatchVector, s2);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static int DistanceImpl<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var maximum = s1Vector.Length + s2.Length;
+        var lcsSim = LongestCommonSubsequence.SimilarityImpl(s1Vector, s2);
+        var dist = maximum - 2 * lcsSim;
+        return dist;
+    }
+
+    /// <summary>
+    /// The insertions and deletions that turn <paramref name="s1"/> into <paramref name="s2"/>
+    /// (Indel never replaces). Same as RapidFuzz's <c>Indel.editops</c>.
+    /// </summary>
+    public static EditOps GetEditOps(string s1, string s2) =>
+        LongestCommonSubsequence.GetEditOps(s1.AsSpan(), s2.AsSpan());
+
+    /// <inheritdoc cref="GetEditOps(string, string)"/>
+    public static EditOps GetEditOps<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, Processor<T> processor = null)
+        where T : IEquatable<T> =>
+        LongestCommonSubsequence.GetEditOps(s1, s2, processor);
+
+    /// <summary>The Indel edits as ranges (RapidFuzz's <c>Indel.opcodes</c>).</summary>
+    public static OpCodes GetOpCodes(string s1, string s2) => GetEditOps(s1, s2).AsOpCodes();
+
+    /// <inheritdoc cref="GetOpCodes(string, string)"/>
+    public static OpCodes GetOpCodes<T>(ReadOnlySpan<T> s1, ReadOnlySpan<T> s2, Processor<T> processor = null)
+        where T : IEquatable<T> =>
+        GetEditOps(s1, s2, processor).AsOpCodes();
+
+    /// <summary>
+    /// Indel similarity: <c>len1 + len2 - Distance</c>, which is twice the length of the
+    /// longest common subsequence.
+    /// </summary>
+    public static int Similarity<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        return s1.Length + s2.Length - Distance(s1, s2);
+    }
+
+    /// <summary>
+    /// Computes the normalized Indel distance between two sequences, in the range [0, 1].
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1">First sequence.</param>
+    /// <param name="s2">Second sequence.</param>
+    /// <param name="processor">Optional preprocessor for normalization.</param>
+    /// <returns>The normalized Indel distance between the two sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double NormalizedDistance<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        // Do not trim the common prefix/suffix here: normalization must use the full
+        // lengths. Distance() trims internally.
+        return NormalizedDistanceImpl(s1, s2);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static double NormalizedDistanceImpl<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var dist = DistanceImpl(s1Vector, s2);
+        return NormalizedDistanceImpl(s1Vector.Length, s2.Length, dist);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static double NormalizedDistanceImpl<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var dist = Distance(s1, s2);
+        return NormalizedDistanceImpl(s1.Length, s2.Length, dist);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static double NormalizedDistanceImpl(int s1Length, int s2Length, int distance)
+    {
+        var maximum = s1Length + s2Length;
+        var normDist = maximum == 0 ? 0 : distance / (double)maximum;
+        return normDist;
+    }
+    /// <summary>
+    /// Computes the normalized Indel similarity between two sequences, in the range [0, 1].
+    /// This is defined as 1 - NormalizedDistance(s1, s2).
+    /// </summary>
+    /// <typeparam name="T">Element type, must implement IEquatable&lt;T&gt;.</typeparam>
+    /// <param name="s1">First sequence.</param>
+    /// <param name="s2">Second sequence.</param>
+    /// <param name="processor">Optional preprocessor for normalization.</param>
+    /// <returns>The normalized Indel similarity between the two sequences.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static double NormalizedSimilarity<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2,
+        Processor<T> processor = null) where T : IEquatable<T>
+    {
+        if (processor != null)
+        {
+            processor(ref s1);
+            processor(ref s2);
+        }
+
+        return NormalizedSimilarityImpl(s1, s2);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static double NormalizedSimilarityImpl<T>(IPatternMatchVector<T> s1Vector,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var normDist = NormalizedDistanceImpl(s1Vector, s2);
+        var normSim = 1 - normDist;
+        return normSim;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static double NormalizedSimilarityImpl<T>(ReadOnlySpan<T> s1,
+        ReadOnlySpan<T> s2) where T : IEquatable<T>
+    {
+        var normDist = NormalizedDistanceImpl(s1, s2);
+        var normSim = 1 - normDist;
+        return normSim;
+    }
+}
