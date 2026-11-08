@@ -26,6 +26,7 @@ Use Fuzzion when you need to:
 - [Installation](#installation)
 - [Compatibility](#compatibility)
 - [Quick Start](#quick-start)
+- [Examples](#examples)
 - [Choosing a Scorer](#choosing-a-scorer)
 - [Ratio Examples](#ratio-examples)
 - [Process Extraction](#process-extraction)
@@ -85,6 +86,17 @@ Fuzz.WeightedRatio(
 Similarity scores are `double` values in the range 0–100.
 
 By default, `Fuzz` methods compare strings as-is. `Process` extraction methods use `StringPreprocessor.Full` by default, which normalizes whitespace, lowercases, and strips non-alphanumeric characters.
+
+## Examples
+
+The [examples](examples/README.md) folder has 30 runnable programs, from first steps to
+complete recipes: searching lists and objects, typo-tolerant search, deduplication,
+every distance and set metric, edit operations, Unicode, custom scorers, "did you mean",
+company-name matching, record linkage, autocomplete, diffs and log grouping.
+
+```bash
+dotnet run --project examples/Fuzzion.Examples -- all
+```
 
 ## Choosing a Scorer
 

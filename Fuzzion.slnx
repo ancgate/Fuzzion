@@ -2,4 +2,5 @@
   <Project Path="Fuzzion.Benchmarks/Fuzzion.Benchmarks.csproj" />
   <Project Path="Fuzzion.Tests/Fuzzion.Tests.csproj" />
   <Project Path="Fuzzion/Fuzzion.csproj" />
+  <Project Path="examples/Fuzzion.Examples/Fuzzion.Examples.csproj" />
 </Solution>

@@ -4,6 +4,10 @@
 
 *Release candidate: every phase of the implementation plan. Not yet published.*
 
+### Examples
+
+- Added [examples/](examples/README.md): 30 runnable examples covering every feature, plus recipes ("did you mean", company names, record linkage, autocomplete, diffs, canonical values, log grouping). CI runs them all.
+
 ### Release and API (Phase 9)
 
 - **Breaking (pre-release):** `Tolerance` was renamed to `SimilarityTolerance`.

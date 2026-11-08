@@ -43,6 +43,9 @@ jobs:
           dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net8.0
           dotnet test Fuzzion.Tests/Fuzzion.Tests.csproj --configuration Release --no-build --framework net10.0
 
+      - name: Run the examples
+        run: dotnet run --project examples/Fuzzion.Examples --configuration Release --no-build -- all
+
       - name: Test (.NET Framework)
         if: runner.os == 'Windows'
         run: |
